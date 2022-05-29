@@ -1,5 +1,5 @@
 {
-    "name": "MapStoreExtension",
+    "name": "MapStoreCatasto",
     "version": "1.0.0",
     "description": "Template project to create MapStore extensions",
     "main": "index.js",
@@ -133,6 +133,6 @@
         "travis": "eslint js --ext .jsx,.js && karma start ./karma.conf.single-run.js --browsers FirefoxHeadless --reporters dots,junit,coverage,coveralls",
         "updateDevDeps": "node updateDevDependencies.js"
     },
-    "author": "GeoSolutions",
+    "author": "GeoDataLab",
     "license": "BSD-2-Clause"
 }
