@@ -1,8 +1,150 @@
-    {
-    "locale": "it-IT",
-    "messages": {
-        "extension": {
-            "message": "Messaggio!"
+{
+  "locale": "it-IT",
+  "messages": {
+    "extension": {
+      "number":"Numero",
+      "catastoOpenPanel": {
+        "nominative": "Nominative",
+        "title": "Ricerca Catastale",
+        "searchButton": "Cerca",
+        "noResults": "Nessun risultato per la tua ricerca",
+        "toggleSearchFilterTooltip": "Filtra i risultati",
+        "error" : "Siamo spiacenti, c'è stato un errore nel caricamento del catasto. Ti chiediamo di riprovare.",
+        "owners": "Titolari",
+        "resumePreviousResults": "Torna alla tabella precedente",
+        "services": {
+          "particles": {
+            "placeholder": "Ricerca per immobili",
+            "filters": {
+              "cities": {
+                "name": "Comune",
+                "placeholder": "Scegli un comune",
+                "noResultsText": "Nessun comune trovato"
+              },
+              "sections": {
+                "name": "Sezione",
+                "placeholder": "Scegli una sezione",
+                "noResultsText": "Nessuna sezione trovata"
+              },
+              "sheets": {
+                "name": "Foglio",
+                "placeholder": "Scegli un foglio",
+                "noResultsText": "Nessun foglio trovato",
+                "zoomTooltip": "Zoom sul foglio"
+              },
+              "lands": {
+                "name": "Terreno",
+                "placeholder": "Scegli un terreno",
+                "noResultsText": "Nessun terreno trovato",
+                "zoomTooltip": "Zoom sul terreno",
+                "detailTooltip": "Visualizza dettagli terreno"
+              },
+              "buildings": {
+                "name": "Fabbricato",
+                "placeholder": "Scegli un fabbricato",
+                "noResultsText": "Nessun fabbricato trovato",
+                "zoomTooltip": "Zoom sul fabbricato",
+                "detailTooltip": "Visualizza dettagli fabbricato"
+              }
+            }
+          },
+          "naturalSubjects": {
+            "name": "Persone Fisiche",
+            "placeholder": "Ricerca per persone fisiche",
+            "filters": {
+              "firstAndLastName": {
+                "name": "Nome e Cognome",
+                "placeholder": "Filtra per nome e cognome",
+                "filters": {
+                  "firstName": {
+                    "name": "Nome"
+                  },
+                  "lastName": {
+                    "name": "Cognome"
+                  }
+                }
+              },
+              "fiscalCode": {
+                "name": "Codice Fiscale",
+                "placeholder": "Filtra per codice fiscale"
+              }
+            },
+            "columns": {
+              "fiscalCode": "Codice Fiscale",
+              "dateOfBirth": "Data di nascita",
+              "cityOfBirth": "Comune di nascita"
+            }
+          },
+          "legalSubjects": {
+            "name": "Persone Giuridiche",
+            "placeholder": "Ricerca per persone giuridiche",
+            "filters": {
+              "vatNumber": {
+                "name": "Partita IVA",
+                "placeholder": "Filtra per partita IVA"
+              },
+              "businessName": {
+                "name": "Ragione Sociale",
+                "placeholder": "Filtra per ragione sociale"
+              }
+            },
+            "columns": {
+              "businessName": "Ragione Sociale",
+              "vatNumber": "Partita IVA",
+              "branch": "Sede"
+            }
+          }
+        },
+        "subjectProperties": {
+          "name": "Immobili",
+          "zoomTooltip": "Zoom sull'immobile",
+          "detailTooltip": "Visualizza immobili",
+          "columns":{
+            "subordinate": "Subalterno",
+            "right": "Titolo",
+            "part": "Quota",
+            "classification": "Classamento",
+            "class": "Classe",
+            "consistency": "Consistenza",
+            "income": "Rendita",
+            "lot": "Partita"
+          }
+        },
+        "landDetails": {
+          "name": "Dettagli Terreno",
+          "columns":{
+            "subordinate": "Subalterno",
+            "quality": "Qualità",
+            "class": "Classe",
+            "hectares": "Ettari",
+            "are": "Are",
+            "centiare": "Centiare",
+            "lot": "Partita",
+            "cadastralRent": "Reddito Dominicale",
+            "agriculturalRent": "Reddito Agrario",
+            "viewerTooltip": "Visualizza titolari"
+          }
+        },
+        "buildingDetails": {
+          "name": "Dettagli Fabbricato",
+          "columns":{
+            "subordinate": "Subalterno",
+            "censusZone": "Zona Censuaria",
+            "category": "Categoria",
+            "class": "Classe",
+            "consistency": "Consistenza",
+            "rent": "Rendita",
+            "lot": "Partita",
+            "viewerTooltip": "Visualizza titolari"
+          }
+        },
+        "searchContainer": {
+          "title": "Configura la tua ricerca",
+          "serviceSelect": {
+            "placeholder": "Scegli un'opzione di ricerca"
+          }
         }
+      }
     }
+  }
 }

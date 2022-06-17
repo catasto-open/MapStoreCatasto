@@ -1,3 +1,4 @@
 module.exports = {
-    name: "CatastoOpen"
+    name: "CatastoOpen",
+    geoserverUrl: "http://localhost:8080/geoserver/"
 };
