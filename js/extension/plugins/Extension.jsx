@@ -1,50 +1,19 @@
-import {connect} from "react-redux";
 import { name } from '../../../config';
-
-import ExtensionComponent from "../components/Component";
-import Rx from "rxjs";
-import { changeZoomLevel } from "@mapstore/actions/map";
-
 import '../assets/style.css';
+import burgerMenuContainer from "@js/extension/containers/BurgerMenu";
+import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
+
+
 export default {
     name,
-    component: connect(state => ({
-        value: state.sampleExtension && state.sampleExtension.value
-    }), {
-        onIncrease: () => {
-            return {
-                type: 'INCREASE_COUNTER'
-            };
-        }, changeZoomLevel
-    })(ExtensionComponent),
-    reducers: {
-        sampleExtension: (state = { value: 1 }, action) => {
-            if (action.type === 'INCREASE_COUNTER') {
-                return { value: state.value + 1 };
-            }
-            return state;
-        }
-    },
+    component: SmartCatastoOpenPanel,
     epics: {
-        logCounterValue: (action$, store) => action$.ofType('INCREASE_COUNTER').switchMap(() => {
-            /* eslint-disable */
-            console.log('CURRENT VALUE: ' + store.getState().sampleExtension.value);
-            /* eslint-enable */
-            return Rx.Observable.empty();
-        })
+        ...require("@js/extension/epics/catastoOpen").default(),
+        ...require("@js/extension/epics/resultGrid").default()
     },
-    containers: {
-        Toolbar: {
-            name: "sampleExtension",
-            position: 10,
-            text: "INC",
-            doNotHide: true,
-            action: () => {
-                return {
-                    type: 'INCREASE_COUNTER'
-                };
-            },
-            priority: 1
-        }
-    }
+    reducers: {
+        catastoOpen: require('@js/extension/reducers/catastoOpen').default,
+        resultGrid: require('@js/extension/reducers/resultGrid').default
+    },
+    containers: burgerMenuContainer
 };

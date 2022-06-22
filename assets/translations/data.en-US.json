@@ -1,8 +1,149 @@
-    {
-    "locale": "en-US",
-    "messages": {
-        "extension": {
-            "message": "Message!"
+{
+  "locale": "en-US",
+  "messages": {
+    "extension": {
+      "number":"Number",
+      "catastoOpenPanel": {
+        "title": "Cadastral Search",
+        "searchButton": "Search",
+        "noResults": "No results for your search",
+        "toggleSearchFilterTooltip": "Filter results",
+        "error" : "We are sorry, there was an error in loading the land registry. We ask you to try again.",
+        "owners": "Owners",
+        "resumePreviousResults": "Go back to the previous table",
+        "services": {
+          "particles": {
+            "placeholder": "Search by properties",
+            "filters": {
+              "cities": {
+                "name": "City",
+                "placeholder": "Choose a city",
+                "noResultsText": "No city found"
+              },
+              "sections": {
+                "name": "Section",
+                "placeholder": "Choose a section",
+                "noResultsText": "Choose a section"
+              },
+              "sheets": {
+                "name": "Sheet",
+                "placeholder": "Choose a sheet",
+                "noResultsText": "No sheet found",
+                "zoomTooltip": "Zoom to sheet"
+              },
+              "lands": {
+                "name": "Land",
+                "placeholder": "Choose a land",
+                "noResultsText": "No land found",
+                "zoomTooltip": "Zoom to land",
+                "detailTooltip": "Show land details"
+              },
+              "buildings": {
+                "name": "Building",
+                "placeholder": "Choose a building",
+                "noResultsText": "No building found",
+                "zoomTooltip": "Zoom to building",
+                "detailTooltip": "Show building details"
+              }
+            }
+          },
+          "naturalSubjects": {
+            "name": "Natural Subjects",
+            "placeholder": "Search by natural persons",
+            "filters": {
+              "firstAndLastName": {
+                "name": "First and Last Name",
+                "placeholder": "Filter by first and last name",
+                "filters": {
+                  "firstName": {
+                    "name": "First Name"
+                  },
+                  "lastName": {
+                    "name": "Family Name"
+                  }
+                }
+              },
+              "fiscalCode": {
+                "name": "Fiscal Code",
+                "placeholder": "Filter by fiscal code"
+              }
+            },
+            "columns": {
+              "fiscalCode": "Fiscal Code",
+              "dateOfBirth": "Date of birth",
+              "cityOfBirth": "City of birth"
+            }
+          },
+          "legalSubjects": {
+            "name": "Legal Subjects",
+            "placeholder": "",
+            "filters": {
+              "vatNumber": {
+                "name": "VAT Number",
+                "placeholder": "Filter by VAT Number"
+              },
+              "businessName": {
+                "name": "Business Name",
+                "placeholder": "Filter by business name"
+              }
+            },
+            "columns": {
+              "businessName": "Business Name",
+              "vatNumber": "Vat Number",
+              "branch": "Branch"
+            }
+          }
+        },
+        "subjectProperties": {
+          "name": "Properties",
+          "zoomTooltip": "Zoom to property",
+          "detailTooltip": "Show properties",
+          "columns":{
+            "subordinate": "Subordinate",
+            "right": "Right",
+            "part": "Part",
+            "classification": "Classification",
+            "class": "Class",
+            "consistency": "Consistency",
+            "income": "Income",
+            "lot": "Lot"
+          }
+        },
+        "landDetails": {
+          "name": "Land Details",
+          "columns":{
+            "subordinate": "Subordinate",
+            "quality": "Quality",
+            "class": "Class",
+            "hectares": "Hectares",
+            "are": "Are",
+            "centiare": "Centiare",
+            "lot": "Lot",
+            "cadastralRent": "Cadastral Rent",
+            "agriculturalRent": "Agricultural Rent",
+            "viewerTooltip": "View Owners"
+          }
+        },
+        "buildingDetails": {
+          "name": "Building Details",
+          "columns":{
+            "subordinate":"Subordinate",
+            "censusZone": "Census Zone",
+            "category": "Category",
+            "class": "Class",
+            "consistency": "Consistency",
+            "rent": "Rent",
+            "lot": "Lot",
+            "viewerTooltip": "View Owners"
+          }
+        },
+        "searchContainer": {
+          "title": "Configure your search",
+          "serviceSelect": {
+            "placeholder": "Select a search filter"
+          }
         }
+      }
     }
+  }
 }
