@@ -13,7 +13,7 @@
         "owners": "Titolari",
         "resumePreviousResults": "Torna alla tabella precedente",
         "services": {
-          "particles": {
+          "parcels": {
             "placeholder": "Ricerca per immobili",
             "filters": {
               "cities": {

@@ -73,7 +73,7 @@ import {
 import {addGroup, addLayer, removeNode} from "@mapstore/actions/layers";
 import {zoomToExtent} from "@mapstore/actions/map";
 import {resultGridLoadRows} from "@js/extension/actions/resultGrid";
-
+import {backendSelector} from "@js/extension/selectors/catastoOpen";
 /**
  * Epics for CATASTO-OPEN PLUGIN
  * @name epics.catastoOpen
@@ -120,11 +120,15 @@ export default () => ({
                     resultGridLoadRows(state.catastoOpen?.searchResults),
                     reloadedSearchResults()).delay(500);
             }),
-    loadCityDataEpic: (action$) =>
+    loadCityDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_CITY_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const citySearchTxt = action?.citySearchTxt ||  null;
-                return Rx.Observable.defer(() => getCityData(citySearchTxt))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getCityData(citySearchTxt, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedCityData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -141,11 +145,15 @@ export default () => ({
                     loadSectionData(cityCode)
                 ]));
             }),
-    loadSectionDataEpic: (action$) =>
+    loadSectionDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_SECTION_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const cityCode = (action.cityCode) ? action.cityCode : null;
-                return Rx.Observable.defer(() => getSectionByCityCode(cityCode))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getSectionByCityCode(cityCode, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSectionData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -159,11 +167,15 @@ export default () => ({
                     Rx.Observable.of(...([removeLayerFromMap(), loadSheetData(cityCode)])) :
                     Rx.Observable.of(...([loadSheetData(cityCode)]));
             }),
-    loadSheetDataEpic: (action$) =>
+    loadSheetDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_SHEET_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const cityCode = action?.cityCode || null;
-                return Rx.Observable.defer(() => getSheetByCityCode(cityCode))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getSheetByCityCode(cityCode, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSheetData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -182,12 +194,16 @@ export default () => ({
                         loadLandData(cityCode, sheetNumber),
                         loadBuildingData(cityCode, sheetNumber));
             }),
-    loadLandDataEpic: (action$) =>
+    loadLandDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_LAND_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const cityCode = action?.cityCode || null;
                 const sheetNumber = action?.sheetNumber || null;
-                return Rx.Observable.defer(() => getLandByCityCodeAndSheetNumber(cityCode, sheetNumber))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getLandByCityCodeAndSheetNumber(cityCode, sheetNumber, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLandData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -198,12 +214,16 @@ export default () => ({
                 const landChanged = state.catastoOpen?.landChanged;
                 return landChanged ? Rx.Observable.of(removeLayerFromMap()) : Rx.Observable.empty();
             }),
-    loadBuildingDataEpic: (action$) =>
+    loadBuildingDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_BUILDING_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const cityCode = action?.cityCode || null;
                 const sheetNumber = action?.sheetNumber || null;
-                return Rx.Observable.defer(() => getBuildingByCityCodeAndSheetNumber(cityCode, sheetNumber))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getBuildingByCityCodeAndSheetNumber(cityCode, sheetNumber, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -221,14 +241,18 @@ export default () => ({
                 const subjectType = state?.catastoOpen?.selectedService?.id;
                 return Rx.Observable.of(updateSubjectFormType(subjectType));
             }),
-    loadNaturalSubjectDataEpic: (action$) =>
+    loadNaturalSubjectDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_NATURAL_SUBJECT_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const naturalSubject = action.subjectForm;
                 const fiscalCode = naturalSubject?.fiscalCode ? "\'" + naturalSubject.fiscalCode + "\'" : null;
                 const firstName = naturalSubject?.firstName ? "\'" + naturalSubject.firstName.trim() + "\'" : null;
                 const lastName = naturalSubject?.lastName ?  "\'" + naturalSubject.lastName.replace("'", "`").trim() + "\'" : null;
-                return Rx.Observable.defer(() => getNaturalSubjects(firstName, lastName, fiscalCode))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getNaturalSubjects(firstName, lastName, fiscalCode, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedNaturalSubjectData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -237,13 +261,17 @@ export default () => ({
             .switchMap((action) => {
                 return Rx.Observable.of(resultGridLoadRows(action?.naturalSubjects));
             }),
-    loadLegalSubjectDataEpic: (action$) =>
+    loadLegalSubjectDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_LEGAL_SUBJECT_DATA)
             .switchMap((action) => {
+                const state = store.getState();
                 const legalSubject = action.subjectForm;
                 const vatNumber = (legalSubject?.vatNumber) ? "\'" + legalSubject.vatNumber + "\'" : null;
                 const businessName = (legalSubject?.businessName) ? "\'" + legalSubject.businessName.trim() + "\'" : null;
-                return Rx.Observable.defer(() => getLegalSubjects(vatNumber, businessName))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getLegalSubjects(vatNumber, businessName, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLegalSubjectData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -252,10 +280,14 @@ export default () => ({
             .switchMap((action) => {
                 return Rx.Observable.of(resultGridLoadRows(action?.legalSubjects));
             }),
-    loadSubjectPropertyDataEpic: (action$) =>
+    loadSubjectPropertyDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_SUBJECT_PROPERTY_DATA)
             .switchMap((action) => {
-                return Rx.Observable.defer(() => getPropertyBySubject(action?.subject?.subjects, action?.subject?.subjectType))
+                const state = store.getState();
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getPropertyBySubject(action?.subject?.subjects, action?.subject?.subjectType, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSubjectPropertyData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -302,7 +334,10 @@ export default () => ({
                 const selectedCityCode = state.catastoOpen?.selectedCity?.code;
                 const selectedSheetNumber = state.catastoOpen?.selectedSheet?.number;
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
-                return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingDetailData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -318,7 +353,10 @@ export default () => ({
                 const selectedCityCode = state.catastoOpen?.selectedCity?.code;
                 const selectedSheetNumber = state.catastoOpen?.selectedSheet?.number;
                 const selectedLandNumber = state.catastoOpen?.selectedLand?.number;
-                return Rx.Observable.defer(() =>  getLandDetails(selectedCityCode, selectedSheetNumber, selectedLandNumber))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() =>  getLandDetails(selectedCityCode, selectedSheetNumber, selectedLandNumber, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLandDetailData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -333,7 +371,10 @@ export default () => ({
                 const state = store.getState();
                 const cityCode = state.catastoOpen?.selectedCity?.code;
                 const property = action?.property;
-                return Rx.Observable.defer(() =>  getPropertyOwners(property, cityCode))
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() =>  getPropertyOwners(property, cityCode, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedPropertyOwnerData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),

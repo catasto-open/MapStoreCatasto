@@ -44,3 +44,5 @@ export const subjectFormButtonActiveSelector = (state) => {
 export const loadingSubjectPropertySelector = (state) => get(state, "catastoOpen.loadingSubjectProperties");
 export const loadedSubjectPropertySelector = (state) => get(state, "catastoOpen.loadedSubjectProperties");
 export const subjectPropertySelector = (state) => get(state, "catastoOpen.subjectProperties");
+
+export const backendSelector = (state) => get(state, "catastoOpen.backend");

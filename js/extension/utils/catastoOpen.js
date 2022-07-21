@@ -18,18 +18,19 @@ export const srsName = "EPSG:4326";
 
 export const services = [
     {
-        id: "PARTICLE",
-        placeholder: "extension.catastoOpenPanel.services.particles.placeholder",
+        id: "PARCEL",
+        placeholder: "extension.catastoOpenPanel.services.parcels.placeholder",
         filters: [
             {
                 id: "LANDS",
-                name: "extension.catastoOpenPanel.services.particles.filters.lands.name"
+                name: "extension.catastoOpenPanel.services.parcels.filters.lands.name"
             },
             {
                 id: "BUILDINGS",
-                name: "extension.catastoOpenPanel.services.particles.filters.buildings.name"
+                name: "extension.catastoOpenPanel.services.parcels.filters.buildings.name"
             }
-        ]
+        ],
+        state_identifier: "parcels"
     },
     {
         id: "NATURAL-SUBJECT",
@@ -55,7 +56,8 @@ export const services = [
                 name: "extension.catastoOpenPanel.services.naturalSubjects.filters.fiscalCode.name",
                 placeholder: "extension.catastoOpenPanel.services.naturalSubjects.filters.fiscalCode.placeholder"
             }
-        ]
+        ],
+        state_identifier: "naturalSubjects"
     },
     {
         id: "LEGAL-SUBJECT",
@@ -71,7 +73,8 @@ export const services = [
                 name: "extension.catastoOpenPanel.services.legalSubjects.filters.businessName.name",
                 placeholder: "extension.catastoOpenPanel.services.legalSubjects.filters.businessName.placeholder"
             }
-        ]
+        ],
+        state_identifier: "legalSubjects"
     }
 ];
 

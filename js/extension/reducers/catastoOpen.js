@@ -39,7 +39,8 @@ import {
     CATASTO_OPEN_LOAD_LAND_DETAIL_DATA,
     CATASTO_OPEN_LOADED_LAND_DETAIL_DATA,
     CATASTO_OPEN_LOAD_PROPERTY_OWNER_DATA,
-    CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA
+    CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA,
+    CATASTO_OPEN_SET_BACKEND
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer, landDetailLayer,
@@ -60,6 +61,7 @@ export default function(state = {}, action) {
         const serviceChanged = state?.selectedService && state.selectedService?.id !== action?.service?.id;
         return serviceChanged ?
             {
+                backend: state?.backend,
                 selectedService: action?.service,
                 layer: state?.layer
             } : {
@@ -70,6 +72,7 @@ export default function(state = {}, action) {
 
     case CATASTO_OPEN_LOAD_ERROR:
         return {
+            backend: state?.backend,
             error: true
         };
 
@@ -391,6 +394,11 @@ export default function(state = {}, action) {
             previousSearchResultType: state.searchResultType,
             searchResults: action?.propertyOwners,
             searchResultType: propertyOwnerLayer
+        };
+    case CATASTO_OPEN_SET_BACKEND:
+        return {
+            ...state,
+            backend: action.backend
         };
     default:
         return state;

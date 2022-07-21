@@ -12,7 +12,7 @@
         "owners": "Owners",
         "resumePreviousResults": "Go back to the previous table",
         "services": {
-          "particles": {
+          "parcels": {
             "placeholder": "Search by properties",
             "filters": {
               "cities": {
@@ -76,7 +76,7 @@
           },
           "legalSubjects": {
             "name": "Legal Subjects",
-            "placeholder": "",
+            "placeholder": "Search by legal persons",
             "filters": {
               "vatNumber": {
                 "name": "VAT Number",
