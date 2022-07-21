@@ -1,5 +1,5 @@
 import axios from "axios";
-import {geoserverUrl} from "../../../config";
+
 import {
     cityLayer,
     sectionLayer,
@@ -15,14 +15,12 @@ import {
     buildingDetailLayer, propertyOwnerLayer
 } from "@js/extension/utils/catastoOpen";
 
-export const geoserverOwsUrl = geoserverUrl.concat('', 'ows/');
-
 const service = 'WFS';
 const version = '1.0.0';
 const request = 'GetFeature';
 const outputFormat = 'application/json';
 
-export const getCityData = (city) => {
+export const getCityData = (city, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -36,7 +34,7 @@ export const getCityData = (city) => {
     return axios.get(geoserverOwsUrl,  { params: requestParams});
 };
 
-export const getSectionByCityCode = (cityCode)  => {
+export const getSectionByCityCode = (cityCode, geoserverOwsUrl)  => {
     const requestParams = {
         service: service,
         version: version,
@@ -50,7 +48,7 @@ export const getSectionByCityCode = (cityCode)  => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getSheetByCityCode = (cityCode)  => {
+export const getSheetByCityCode = (cityCode, geoserverOwsUrl)  => {
     const requestParams = {
         service: service,
         version: version,
@@ -67,7 +65,7 @@ export const getSheetByCityCode = (cityCode)  => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getLandByCityCodeAndSheetNumber = (cityCode, sheetNumber) => {
+export const getLandByCityCodeAndSheetNumber = (cityCode, sheetNumber, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -82,7 +80,7 @@ export const getLandByCityCodeAndSheetNumber = (cityCode, sheetNumber) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber) => {
+export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -97,7 +95,7 @@ export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getNaturalSubjects = (firstName, lastName, fiscalCode) => {
+export const getNaturalSubjects = (firstName, lastName, fiscalCode, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -111,7 +109,7 @@ export const getNaturalSubjects = (firstName, lastName, fiscalCode) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getLegalSubjects = (vatNumber, businessName) => {
+export const getLegalSubjects = (vatNumber, businessName, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -124,7 +122,7 @@ export const getLegalSubjects = (vatNumber, businessName) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getPropertyBySubject = (subjects, subjectType) => {
+export const getPropertyBySubject = (subjects, subjectType, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -139,7 +137,7 @@ export const getPropertyBySubject = (subjects, subjectType) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getLandDetails = (cityCode, citySheet, landNumber) => {
+export const getLandDetails = (cityCode, citySheet, landNumber, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -153,7 +151,7 @@ export const getLandDetails = (cityCode, citySheet, landNumber) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getBuildingDetails = (cityCode, citySheet, buildingNumber) => {
+export const getBuildingDetails = (cityCode, citySheet, buildingNumber, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -167,7 +165,7 @@ export const getBuildingDetails = (cityCode, citySheet, buildingNumber) => {
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getPropertyOwners = (property, cityCode) => {
+export const getPropertyOwners = (property, cityCode, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,

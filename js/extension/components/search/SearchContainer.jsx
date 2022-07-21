@@ -85,7 +85,8 @@ class SearchContainer extends React.Component {
         loadSubjects: PropTypes.func,
         loadLayer: PropTypes.func,
         loadLandDetails: PropTypes.func,
-        loadBuildingDetails: PropTypes.func
+        loadBuildingDetails: PropTypes.func,
+        filterServices: PropTypes.array
     };
 
     static defaultProps = {
@@ -257,7 +258,13 @@ class SearchContainer extends React.Component {
     }
 
     serviceOptions() {
-        return services.map((s) => (
+        const reducedFilterServices = this.props.filterServices.reduce(
+            (finallist, obj)  => {
+                var x = finallist.concat([obj.state_identifier]);
+                return x;
+            }, []
+        );
+        return services.filter(item => reducedFilterServices.includes(item.state_identifier)).map((s) => (
             {
                 ...s,
                 value: s.id,

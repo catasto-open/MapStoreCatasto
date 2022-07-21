@@ -51,6 +51,7 @@ export const CATASTO_OPEN_LOAD_BUILDING_DETAIL_DATA = 'CATASTO_OPEN:LOAD_BUILDIN
 export const CATASTO_OPEN_LOADED_BUILDING_DETAIL_DATA = 'CATASTO_OPEN:LOADED_BUILDING_DETAIL_DATA';
 export const CATASTO_OPEN_LOAD_PROPERTY_OWNER_DATA = 'CATASTO_OPEN:LOAD_PROPERTY_OWNER_DATA';
 export const CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA = 'CATASTO_OPEN:LOADED_PROPERTY_OWNER_DATA';
+export const CATASTO_OPEN_SET_BACKEND = 'CATASTO_OPEN:SET_BACKEND';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -370,5 +371,12 @@ export function loadedPropertyOwnerData(payload, propertyType) {
     return {
         type: CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA,
         propertyOwners
+    };
+}
+
+export function setBackend(backend) {
+    return {
+        type: CATASTO_OPEN_SET_BACKEND,
+        backend
     };
 }

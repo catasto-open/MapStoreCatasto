@@ -29,7 +29,8 @@ export const services = [
                 id: "BUILDINGS",
                 name: "extension.catastoOpenPanel.services.particles.filters.buildings.name"
             }
-        ]
+        ],
+        state_identifier: "particles"
     },
     {
         id: "NATURAL-SUBJECT",
@@ -55,7 +56,8 @@ export const services = [
                 name: "extension.catastoOpenPanel.services.naturalSubjects.filters.fiscalCode.name",
                 placeholder: "extension.catastoOpenPanel.services.naturalSubjects.filters.fiscalCode.placeholder"
             }
-        ]
+        ],
+        state_identifier: "naturalSubjects"
     },
     {
         id: "LEGAL-SUBJECT",
@@ -71,7 +73,8 @@ export const services = [
                 name: "extension.catastoOpenPanel.services.legalSubjects.filters.businessName.name",
                 placeholder: "extension.catastoOpenPanel.services.legalSubjects.filters.businessName.placeholder"
             }
-        ]
+        ],
+        state_identifier: "legalSubjects"
     }
 ];
 

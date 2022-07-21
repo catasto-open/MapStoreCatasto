@@ -14,7 +14,8 @@ import {
 import {
     deactivateCatastoOpenPanel, loadLayer, loadPropertyOwnerData,
     loadSubjectPropertyData,
-    resumePreviousSearchResults
+    resumePreviousSearchResults,
+    setBackend
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -199,7 +200,11 @@ class CatastoOpenPanel extends React.Component {
         loadSubjectPropertyData: PropTypes.func,
         resumePreviousResults: PropTypes.func,
         loadLayer: PropTypes.func,
-        loadPropertyOwners: PropTypes.func
+        loadPropertyOwners: PropTypes.func,
+        filterServices: PropTypes.array,
+        ownerDetails: PropTypes.object,
+        backend: PropTypes.object,
+        setBackend: PropTypes.func
     };
 
     static defaultProps = {
@@ -215,8 +220,38 @@ class CatastoOpenPanel extends React.Component {
             height: '100%',
             pointerEvents: 'none',
             backgroundColor: 'transparent'
-        }
+        },
+        filterServices: [
+            {
+                "state_identifier": "particles",
+                "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
+                "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"]
+            },
+            {
+                "state_identifier": "naturalSubjects",
+                "naturalSubjectColumnsKeys": ["fiscalCode", "dateOfBirth", "cityOfBirth"]
+            },
+            {
+                "state_identifier": "legalSubjects",
+                "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"]
+            }
+        ],
+        ownerDetails: {
+            subjectPropertyColumnsKeys: ["city", "section", "sheet", "number", "subordinate", "right", "part", "classification", "_class", "consistency", "income", "lot"],
+            propertyOwnerColumnsKeys: ["nominative", "fiscalCode", "city", "right", "part"]
+        },
+        backend: {
+            name: "Geoserver",
+            url: "http://geoserver:8080/geoserver/"
+        },
+        setBackend: () => {}
     };
+
+    componentWillMount() {
+        this.props.setBackend(
+            this.props.backend
+        );
+    }
 
     renderSearchResults = () => {
         const results = this.props.searchResults;
@@ -228,35 +263,50 @@ class CatastoOpenPanel extends React.Component {
         let addLayerOnSelect = false;
         let loadPropertyOwnerOnSelect = false;
         let resume = false;
+        const particelsDef = this.props.filterServices.filter(item => item.state_identifier === "particles");
+        const naturalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "naturalSubjects");
+        const legalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "legalSubjects");
         switch (this.props.searchResultType) {
         case naturalSubjectType:
-            columns = naturalSubjectColumns;
+            columns = naturalSubjectsDef.length === 1 ? naturalSubjectColumns.filter(
+                item => (item.key === "selectButton" || naturalSubjectsDef[0].naturalSubjectColumnsKeys.includes(item.key))
+            ) : naturalSubjectColumns;
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.naturalSubjects.name";
             break;
         case legalSubjectType:
-            columns = legalSubjectColumns;
+            columns = legalSubjectsDef.length === 1 ? legalSubjectColumns.filter(
+                item => (item.key === "selectButton" || legalSubjectsDef[0].legalSubjectColumnsKeys.includes(item.key))
+            ) : legalSubjectColumns;
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.legalSubjects.name";
             break;
         case subjectPropertyLayer:
-            columns = subjectPropertyColumns;
+            columns = this.props.ownerDetails.subjectPropertyColumnsKeys?.length !== 0 ? subjectPropertyColumns.filter(
+                item => (item.key === "selectButton" || item.key === "propertyType" || this.props.ownerDetails.subjectPropertyColumnsKeys.includes(item.key))
+            ) : subjectPropertyColumns;
             addLayerOnSelect = true;
             resume = true;
             title = "extension.catastoOpenPanel.subjectProperties.name";
             break;
         case buildingDetailLayer:
-            columns = buildingDetailColumns;
+            columns = particelsDef.length === 1 ? buildingDetailColumns.filter(
+                item => (item.key === "selectButton" || particelsDef[0].buildingDetailColumns.includes(item.key))
+            ) : buildingDetailColumns;
             title = "extension.catastoOpenPanel.buildingDetails.name";
             loadPropertyOwnerOnSelect = true;
             break;
         case landDetailLayer:
-            columns = landDetailColumns;
+            columns = particelsDef.length === 1 ? landDetailColumns.filter(
+                item => (item.key === "selectButton" || particelsDef[0].landDetailColumnsKeys.includes(item.key))
+            ) : landDetailColumns;
             title = "extension.catastoOpenPanel.landDetails.name";
             loadPropertyOwnerOnSelect = true;
             break;
         case propertyOwnerLayer:
-            columns = propertyOwnerColumns;
+            columns = this.props.ownerDetails.subjectPropertyColumnsKeys?.length !== 0 ? propertyOwnerColumns.filter(
+                item => (item.key === "selectButton" || this.props.ownerDetails.subjectPropertyColumnsKeys.includes(item.key))
+            ) : propertyOwnerColumns;
             title = "extension.catastoOpenPanel.owners";
             resume = true;
             break;
@@ -303,7 +353,7 @@ class CatastoOpenPanel extends React.Component {
                         onClose={() => this.props.deactivate(this.props)}
                         glyph="book"
                         zIndex={1031}>
-                        <SmartSearchContainer/>
+                        <SmartSearchContainer filterServices={this.props.filterServices} />
                         {this.props.loadError ?
                             <Alert bsStyle="danger" style={{borderRadius: 5}}>
                                 <Message msgId={"extension.catastoOpenPanel.error"} />
@@ -335,7 +385,8 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         loadSubjectPropertyData: loadSubjectPropertyData,
         resumePreviousResults: resumePreviousSearchResults,
         loadLayer: loadLayer,
-        loadPropertyOwners: loadPropertyOwnerData
+        loadPropertyOwners: loadPropertyOwnerData,
+        setBackend: setBackend
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;
