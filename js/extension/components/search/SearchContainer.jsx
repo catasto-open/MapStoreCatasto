@@ -147,9 +147,9 @@ class SearchContainer extends React.Component {
                     onChange={(val) => this.props.onSelectCity(val && val.value ? val : null)}
                     value={this.props.selectedCity}
                     onInputChange={(inputValue)=> this.props.loadCities(inputValue)}
-                    title={"extension.catastoOpenPanel.services.particles.filters.cities.name"}
-                    placeholder={"extension.catastoOpenPanel.services.particles.filters.cities.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.particles.filters.cities.noResultsText"}
+                    title={"extension.catastoOpenPanel.services.parcels.filters.cities.name"}
+                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.cities.placeholder"}
+                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.cities.noResultsText"}
                 />
                 <SearchFilter
                     active={!!this.props.selectedCity}
@@ -158,9 +158,9 @@ class SearchContainer extends React.Component {
                     options={this.sectionOptions()}
                     onChange={(val) => this.props.onSelectSection(val && val.value ? val : null)}
                     value={this.props.selectedSection}
-                    title={"extension.catastoOpenPanel.services.particles.filters.sections.name"}
-                    placeholder={"extension.catastoOpenPanel.services.particles.filters.sections.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.particles.filters.sections.noResultsText"}
+                    title={"extension.catastoOpenPanel.services.parcels.filters.sections.name"}
+                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.sections.placeholder"}
+                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sections.noResultsText"}
                 />
                 <SearchFilter
                     buttonStyle={style}
@@ -171,11 +171,11 @@ class SearchContainer extends React.Component {
                     options={this.geomOptions(this.props.sheets)}
                     onChange={(val) => this.props.onSelectSheet(val && val.value ? val : null)}
                     value={this.props.selectedSheet}
-                    title={"extension.catastoOpenPanel.services.particles.filters.sheets.name"}
-                    placeholder={"extension.catastoOpenPanel.services.particles.filters.sheets.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.particles.filters.sheets.noResultsText"}
+                    title={"extension.catastoOpenPanel.services.parcels.filters.sheets.name"}
+                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.sheets.placeholder"}
+                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sheets.noResultsText"}
                     zoomActive={!!this.props.selectedSheet}
-                    zoomTooltip={"extension.catastoOpenPanel.services.particles.filters.sheets.zoomTooltip"}
+                    zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.sheets.zoomTooltip"}
                     onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedSheet, sheetLayer))}/>
                 <SearchFilter
                     buttonStyle={style}
@@ -186,15 +186,15 @@ class SearchContainer extends React.Component {
                     options={this.geomOptions(this.props.lands)}
                     onChange={(val) => this.props.onSelectLand(val && val.value ? val : null)}
                     value={this.props.selectedLand}
-                    title={"extension.catastoOpenPanel.services.particles.filters.lands.name"}
-                    placeholder={"extension.catastoOpenPanel.services.particles.filters.lands.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.particles.filters.lands.noResultsText"}
+                    title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
+                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
+                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
                     zoomActive={!!this.props.selectedLand}
-                    zoomTooltip={"extension.catastoOpenPanel.services.particles.filters.lands.zoomTooltip"}
+                    zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
                     onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
                     detailActive
                     onDetailClick={this.props.loadLandDetails}
-                    detailTooltip={"extension.catastoOpenPanel.services.particles.filters.lands.detailTooltip"}
+                    detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.detailTooltip"}
                 />
                 <SearchFilter
                     buttonStyle={style}
@@ -205,15 +205,15 @@ class SearchContainer extends React.Component {
                     options={this.geomOptions(this.props.buildings)}
                     onChange={(val) => this.props.onSelectBuilding(val && val.value ? val : null)}
                     value={this.props.selectedBuilding}
-                    title={"extension.catastoOpenPanel.services.particles.filters.buildings.name"}
-                    placeholder={"extension.catastoOpenPanel.services.particles.filters.buildings.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.particles.filters.buildings.noResultsText"}
+                    title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
+                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
+                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
                     zoomActive={!!this.props.selectedBuilding}
-                    zoomTooltip={"extension.catastoOpenPanel.services.particles.filters.buildings.zoomTooltip"}
+                    zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
                     onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
                     detailActive
                     onDetailClick={this.props.loadBuildingDetails}
-                    detailTooltip={"extension.catastoOpenPanel.services.particles.filters.buildings.detailTooltip"}
+                    detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
                 />
             </div>
         );

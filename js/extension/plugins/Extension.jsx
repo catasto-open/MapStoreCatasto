@@ -22,7 +22,7 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *                 "en" : "Search by properties",
  *                 "it" : "Ricerca per immobili"
  *              },
- *             "state_identifier" : "particles",
+ *             "state_identifier" : "parcels",
  *             "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
  *              "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"]
  *          },

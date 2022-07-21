@@ -86,22 +86,22 @@ const subjectPropertyColumns = [
             return value === subjectLandPropertyType ?
                 <OverlayTrigger placement="bottom"
                     overlay={<Tooltip><Message
-                        msgId="extension.catastoOpenPanel.services.particles.filters.lands.name"/></Tooltip>}>
+                        msgId="extension.catastoOpenPanel.services.parcels.filters.lands.name"/></Tooltip>}>
                     <Glyphicon glyph="1-layer"/>
                 </OverlayTrigger> : value === subjectBuildingPropertyType ?
                     <OverlayTrigger placement="bottom"
                         overlay={<Tooltip><Message
-                            msgId="extension.catastoOpenPanel.services.particles.filters.buildings.name"/></Tooltip>}>
+                            msgId="extension.catastoOpenPanel.services.parcels.filters.buildings.name"/></Tooltip>}>
                         <Glyphicon glyph="home"/>
                     </OverlayTrigger> : null;
         }
     },
     { key: 'city',
-        name: <Message msgId={"extension.catastoOpenPanel.services.particles.filters.cities.name"} />,
+        name: <Message msgId={"extension.catastoOpenPanel.services.parcels.filters.cities.name"} />,
         resizable: true, sortable: true, filterable: true},
-    { key: 'section', name: <Message msgId={"extension.catastoOpenPanel.services.particles.filters.sections.name"} />,
+    { key: 'section', name: <Message msgId={"extension.catastoOpenPanel.services.parcels.filters.sections.name"} />,
         resizable: true, sortable: true, filterable: true},
-    { key: 'sheet', name: <Message msgId={"extension.catastoOpenPanel.services.particles.filters.sheets.name"} />,
+    { key: 'sheet', name: <Message msgId={"extension.catastoOpenPanel.services.parcels.filters.sheets.name"} />,
         resizable: true, sortable: true, filterable: true},
     { key: 'number', name: <Message msgId={"extension.number"} />,
         resizable: true, sortable: true, filterable: true},
@@ -176,7 +176,7 @@ const propertyOwnerColumns = [
         resizable: true, sortable: true, filterable: true},
     { key: 'fiscalCode', name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.fiscalCode"} />,
         resizable: true, sortable: true, filterable: true},
-    { key: 'city', name: <Message msgId={"extension.catastoOpenPanel.services.particles.filters.cities.name"} />,
+    { key: 'city', name: <Message msgId={"extension.catastoOpenPanel.services.parcels.filters.cities.name"} />,
         resizable: true, sortable: true, filterable: true},
     { key: 'right', name: <Message msgId={"extension.catastoOpenPanel.subjectProperties.columns.right"} />,
         resizable: true, sortable: true, filterable: true},
@@ -223,7 +223,7 @@ class CatastoOpenPanel extends React.Component {
         },
         filterServices: [
             {
-                "state_identifier": "particles",
+                "state_identifier": "parcels",
                 "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
                 "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"]
             },
@@ -247,10 +247,12 @@ class CatastoOpenPanel extends React.Component {
         setBackend: () => {}
     };
 
-    componentWillMount() {
-        this.props.setBackend(
-            this.props.backend
-        );
+    componentWillReceiveProps(nextProp) {
+        if (nextProp.active !== this.props.active) {
+            this.props.setBackend(
+                this.props.backend
+            );
+        }
     }
 
     renderSearchResults = () => {
@@ -263,7 +265,7 @@ class CatastoOpenPanel extends React.Component {
         let addLayerOnSelect = false;
         let loadPropertyOwnerOnSelect = false;
         let resume = false;
-        const particelsDef = this.props.filterServices.filter(item => item.state_identifier === "particles");
+        const parcelsDef = this.props.filterServices.filter(item => item.state_identifier === "parcels");
         const naturalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "naturalSubjects");
         const legalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "legalSubjects");
         switch (this.props.searchResultType) {
@@ -290,15 +292,15 @@ class CatastoOpenPanel extends React.Component {
             title = "extension.catastoOpenPanel.subjectProperties.name";
             break;
         case buildingDetailLayer:
-            columns = particelsDef.length === 1 ? buildingDetailColumns.filter(
-                item => (item.key === "selectButton" || particelsDef[0].buildingDetailColumns.includes(item.key))
+            columns = parcelsDef.length === 1 ? buildingDetailColumns.filter(
+                item => (item.key === "selectButton" || parcelsDef[0].buildingDetailColumns.includes(item.key))
             ) : buildingDetailColumns;
             title = "extension.catastoOpenPanel.buildingDetails.name";
             loadPropertyOwnerOnSelect = true;
             break;
         case landDetailLayer:
-            columns = particelsDef.length === 1 ? landDetailColumns.filter(
-                item => (item.key === "selectButton" || particelsDef[0].landDetailColumnsKeys.includes(item.key))
+            columns = parcelsDef.length === 1 ? landDetailColumns.filter(
+                item => (item.key === "selectButton" || parcelsDef[0].landDetailColumnsKeys.includes(item.key))
             ) : landDetailColumns;
             title = "extension.catastoOpenPanel.landDetails.name";
             loadPropertyOwnerOnSelect = true;

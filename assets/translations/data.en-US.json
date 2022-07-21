@@ -12,7 +12,7 @@
         "owners": "Owners",
         "resumePreviousResults": "Go back to the previous table",
         "services": {
-          "particles": {
+          "parcels": {
             "placeholder": "Search by properties",
             "filters": {
               "cities": {
