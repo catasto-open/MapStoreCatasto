@@ -6,6 +6,7 @@ export const catastoOpenActiveSelector = (state) => get(state,
 export const selectedServiceSelector = (state) => get(state, "catastoOpen.selectedService");
 
 export const errorSelector = (state) => get(state, "catastoOpen.error");
+export const messageForUserSelector = (state) => get(state, "catastoOpen.messageForUser");
 
 export const citySelector = (state) => get(state, "catastoOpen.cities");
 export const selectedCitySelector = (state) => get(state, "catastoOpen.selectedCity");
@@ -46,3 +47,6 @@ export const loadedSubjectPropertySelector = (state) => get(state, "catastoOpen.
 export const subjectPropertySelector = (state) => get(state, "catastoOpen.subjectProperties");
 
 export const backendSelector = (state) => get(state, "catastoOpen.backend");
+export const isTemporalSearchCheckedSelector = (state) => get(state, "catastoOpen.isTemporalSearchChecked");
+export const startDateSelector = (state) => get(state, "catastoOpen.startDate");
+export const endDateSelector = (state) => get(state, "catastoOpen.endDate");

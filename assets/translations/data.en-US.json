@@ -69,6 +69,8 @@
               }
             },
             "columns": {
+              "lastName": "Last name",
+              "firstName": "First name",
               "fiscalCode": "Fiscal Code",
               "dateOfBirth": "Date of birth",
               "cityOfBirth": "City of birth"
@@ -142,7 +144,17 @@
           "serviceSelect": {
             "placeholder": "Select a search filter"
           }
-        }
+        },
+        "temporalSearch" : {
+            "label": "Temporal search",
+            "startDateLabel": "From",
+            "endDateLabel": "To"
+        },
+        "extraColumns" : {
+            "startDate": "Start date",
+            "endDate": "End date"
+        },
+        "dateInputError": "The range of date inserted is not correct."
       }
     }
   }

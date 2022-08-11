@@ -40,12 +40,18 @@ import {
     CATASTO_OPEN_LOADED_LAND_DETAIL_DATA,
     CATASTO_OPEN_LOAD_PROPERTY_OWNER_DATA,
     CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA,
-    CATASTO_OPEN_SET_BACKEND
+    CATASTO_OPEN_SET_BACKEND,
+    CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED,
+    CATASTO_OPEN_START_DATE_SELECTED,
+    CATASTO_OPEN_END_DATE_SELECTED,
+    CATASTO_OPEN_SET_MESSAGE_FOR_USER
 } from "@js/extension/actions/catastoOpen";
 import {
-    buildingDetailLayer, landDetailLayer,
+    buildingDetailLayer,
+    landDetailLayer,
     legalSubjectType,
-    naturalSubjectType, propertyOwnerLayer,
+    naturalSubjectType,
+    propertyOwnerLayer,
     subjectPropertyLayer
 } from "@js/extension/utils/catastoOpen";
 
@@ -56,7 +62,6 @@ export default function(state = {}, action) {
         return {
             layer: state?.layer
         };
-
     case CATASTO_OPEN_SELECT_SERVICE:
         const serviceChanged = state?.selectedService && state.selectedService?.id !== action?.service?.id;
         return serviceChanged ?
@@ -69,32 +74,32 @@ export default function(state = {}, action) {
                 selectedService: action?.service,
                 error: false
             };
-
     case CATASTO_OPEN_LOAD_ERROR:
         return {
             backend: state?.backend,
             error: true
         };
-
+    case CATASTO_OPEN_SET_MESSAGE_FOR_USER:
+        return {
+            ...state,
+            messageForUser: action.messageForUser
+        };
     case CATASTO_OPEN_ADD_LAYER:
         return {
             ...state,
             layer: action?.layer
         };
-
     case CATASTO_OPEN_LOAD_CITY_DATA:
         return {
             ...state,
             isLoadingCities: true
         };
-
     case CATASTO_OPEN_LOADED_CITY_DATA:
         return {
             ...state,
             cities: action?.cities,
             isLoadingCities: false
         };
-
     case CATASTO_OPEN_SELECT_CITY:
         const cityChanged = state?.selectedCity && state.selectedCity?.code !== action?.city?.code;
         return cityChanged ? {
@@ -113,20 +118,17 @@ export default function(state = {}, action) {
             selectedCity: action?.city,
             cityChanged
         };
-
     case CATASTO_OPEN_LOAD_SECTION_DATA:
         return {
             ...state,
             isLoadingSections: true
         };
-
     case CATASTO_OPEN_LOADED_SECTION_DATA:
         return {
             ...state,
             sections: action?.sections,
             isLoadingSections: false
         };
-
     case CATASTO_OPEN_SELECT_SECTION:
         const sectionChanged = state?.selectedSection && state.selectedSection?.code !== action?.section?.code;
         return sectionChanged ? {
@@ -144,13 +146,11 @@ export default function(state = {}, action) {
             selectedSection: action?.section,
             sectionChanged
         };
-
     case CATASTO_OPEN_LOAD_SHEET_DATA:
         return {
             ...state,
             isLoadingSheets: true
         };
-
     case CATASTO_OPEN_LOADED_SHEET_DATA:
         return {
             ...state,
@@ -158,7 +158,6 @@ export default function(state = {}, action) {
                 action?.sheets.filter(s => s.feature.properties?.section === state.selectedSection?.value),
             isLoadingSheets: false
         };
-
     case CATASTO_OPEN_SELECT_SHEET:
         const sheetChanged = state?.selectedSheet && state.selectedSheet?.number !== action?.sheet?.number;
         return sheetChanged ? {
@@ -175,20 +174,17 @@ export default function(state = {}, action) {
             selectedSheet: action?.sheet,
             sheetChanged
         };
-
     case CATASTO_OPEN_LOAD_LAND_DATA:
         return {
             ...state,
             isLoadingLands: true
         };
-
     case CATASTO_OPEN_LOADED_LAND_DATA:
         return {
             ...state,
             lands: action?.lands,
             isLoadingLands: false
         };
-
     case CATASTO_OPEN_SELECT_LAND:
         const landChanged = state?.selectedLand && state.selectedLand?.number !== action?.land?.number;
         return landChanged ? {
@@ -203,20 +199,17 @@ export default function(state = {}, action) {
             selectedLand: action?.land,
             landChanged
         };
-
     case CATASTO_OPEN_LOAD_BUILDING_DATA:
         return {
             ...state,
             isLoadingBuildings: true
         };
-
     case CATASTO_OPEN_LOADED_BUILDING_DATA:
         return {
             ...state,
             buildings: action?.buildings,
             isLoadingBuildings: false
         };
-
     case CATASTO_OPEN_SELECT_BUILDING:
         const buildingChanged = state?.selectedBuilding && state.selectedBuilding?.number !== action?.building?.number;
         return buildingChanged ? {
@@ -231,7 +224,6 @@ export default function(state = {}, action) {
             selectedBuilding: action?.building,
             buildingChanged
         };
-
     case CATASTO_OPEN_SELECT_SUBJECT_FILTER:
         const subjectFilterChanged = state?.selectedSubjectFilter && state.selectedSubjectFilter?.id !== action?.filter?.id;
         return subjectFilterChanged ? {
@@ -243,7 +235,6 @@ export default function(state = {}, action) {
         } : {...state,
             selectedSubjectFilter: action?.filter
         };
-
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_TYPE:
         return {
             ...state,
@@ -252,13 +243,11 @@ export default function(state = {}, action) {
                 ...state.subjectForm
             }
         };
-
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_FIRST_NAME:
         state.subjectForm.firstName = action?.firstName;
         return {
             ...state
         };
-
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LAST_NAME:
         state.subjectForm.lastName = action?.lastName;
         return {
@@ -270,7 +259,6 @@ export default function(state = {}, action) {
         return {
             ...state
         };
-
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_VAT_NUMBER:
         state.subjectForm.vatNumber = action?.vatNumber;
         return {
@@ -282,14 +270,12 @@ export default function(state = {}, action) {
         return {
             ...state
         };
-
     case CATASTO_OPEN_LOAD_LEGAL_SUBJECT_DATA:
         return {
             ...state,
             loadingResults: true,
             loadedResults: false
         };
-
     case CATASTO_OPEN_LOADED_LEGAL_SUBJECT_DATA:
         return {
             ...state,
@@ -298,14 +284,12 @@ export default function(state = {}, action) {
             loadingResults: false,
             loadedResults: true
         };
-
     case CATASTO_OPEN_LOAD_NATURAL_SUBJECT_DATA:
         return {
             ...state,
             loadingResults: true,
             loadedResults: false
         };
-
     case CATASTO_OPEN_LOADED_NATURAL_SUBJECT_DATA:
         return {
             ...state,
@@ -399,6 +383,53 @@ export default function(state = {}, action) {
         return {
             ...state,
             backend: action.backend
+        };
+    case CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED:
+        return {
+            ...state,
+            isTemporalSearchChecked: action.isTemporalSearchChecked,
+            startDate: null,
+            endDate: null,
+            subjectForm: null,
+            selectedSubjectFilter: null,
+            selectedCity: null,
+            selectedSection: null,
+            selectedSheet: null,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false
+        };
+    case CATASTO_OPEN_START_DATE_SELECTED:
+        return {
+            ...state,
+            startDate: action.startDate,
+            subjectForm: null,
+            selectedSubjectFilter: null,
+            selectedCity: null,
+            selectedSection: null,
+            selectedSheet: null,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false
+        };
+    case CATASTO_OPEN_END_DATE_SELECTED:
+        return {
+            ...state,
+            endDate: action.endDate,
+            subjectForm: null,
+            selectedSubjectFilter: null,
+            selectedCity: null,
+            selectedSection: null,
+            selectedSheet: null,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false
         };
     default:
         return state;

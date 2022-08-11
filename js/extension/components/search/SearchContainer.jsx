@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import {Panel} from 'react-bootstrap';
+import {Panel, Checkbox} from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import Message from '@mapstore/components/I18N/Message';
 import Select from 'react-select';
@@ -23,7 +23,11 @@ import {
     loadSubjectData,
     loadLayer,
     loadLandDetailData,
-    loadBuildingDetailData
+    loadBuildingDetailData,
+    onChangeTemporalSearchCheckbox,
+    startDateSelected,
+    endDateSelected,
+    setMessageForUser
 } from "@js/extension/actions/catastoOpen";
 import {
     selectedServiceSelector,
@@ -43,9 +47,14 @@ import {
     isLoadingSheetSelector,
     isLoadingLandSelector,
     buildingSelector,
-    selectedBuildingSelector, isLoadingBuildingSelector
+    selectedBuildingSelector,
+    isLoadingBuildingSelector,
+    isTemporalSearchCheckedSelector,
+    startDateSelector,
+    endDateSelector
 } from "@js/extension/selectors/catastoOpen";
 import SearchForm from "@js/extension/components/search/SearchForm";
+import SearchHistory from '@js/extension/components/search/SearchHistory';
 
 
 class SearchContainer extends React.Component {
@@ -86,7 +95,14 @@ class SearchContainer extends React.Component {
         loadLayer: PropTypes.func,
         loadLandDetails: PropTypes.func,
         loadBuildingDetails: PropTypes.func,
-        filterServices: PropTypes.array
+        filterServices: PropTypes.array,
+        isTemporalSearchChecked: PropTypes.bool,
+        onChangeTemporalSearchCheckbox: PropTypes.func,
+        startDateValue: PropTypes.any,
+        startDateValueOnChange: PropTypes.func,
+        endDateValue: PropTypes.any,
+        endDateValueOnChange: PropTypes.func,
+        setMessageForUser: PropTypes.func
     };
 
     static defaultProps = {
@@ -110,8 +126,25 @@ class SearchContainer extends React.Component {
         subjectFormButtonActive: true,
         subjectForm: null,
         loadSubjects: () => {},
-        loadLayer: () => {}
+        loadLayer: () => {},
+        isTemporalSearchChecked: false,
+        onChangeTemporalSearchCheckbox: () => {}
     };
+
+    componentWillReceiveProps(nextProp) {
+        if (nextProp.startDateValue && nextProp.endDateValue) {
+            if (nextProp.startDateValue > nextProp.endDateValue) {
+                this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
+            } else {
+                if (nextProp.endDateValue > new Date()) {
+                    this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
+                } else {
+                    this.props.setMessageForUser(null);
+                    loadCityData();
+                }
+            }
+        }
+    }
 
     renderHeader() {
         return (
@@ -124,15 +157,34 @@ class SearchContainer extends React.Component {
 
     renderServiceSelect() {
         return (
-            <Select
-                style={{marginBottom: 10}}
-                clearable={false}
-                searchable={false}
-                placeholder={<Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder"/>}
-                options={this.serviceOptions()}
-                onChange={(val) => this.props.onSelectService(val && val.value ? val :  null)}
-                value={this.props.selectedService}>
-            </Select>);
+            <>
+                <Select
+                    style={{marginBottom: 10}}
+                    clearable={false}
+                    searchable={false}
+                    placeholder={<Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder"/>}
+                    options={this.serviceOptions()}
+                    onChange={(val) => this.props.onSelectService(val && val.value ? val :  null)}
+                    value={this.props.selectedService}>
+                </Select>
+                { this.useTemporalSearch() &&
+                (<>
+                    <Checkbox
+                        checked={this.props.isTemporalSearchChecked}
+                        onChange={this.handleOnChangeOfCheckBox}
+                    >
+                        <Message msgId="extension.catastoOpenPanel.temporalSearch.label"/>
+                    </Checkbox>
+                    <SearchHistory
+                        active={this.props.isTemporalSearchChecked}
+                        startDateValue={this.props.startDateValue}
+                        startDateValueOnChange={this.props.startDateValueOnChange}
+                        endDateValue={this.props.endDateValue}
+                        endDateValueOnChange={this.props.endDateValueOnChange}
+                    />
+                </>
+                )}
+            </>);
     }
 
     renderPropertySearchFilter = () => {
@@ -140,7 +192,7 @@ class SearchContainer extends React.Component {
         return (
             <div>
                 <SearchFilter
-                    active={this.props.selectedService?.value === services[0].id}
+                    active={this.doWeHaveDatesValid() && this.props.selectedService?.value === services[0].id}
                     clearable={!this.props.selectedSection}
                     isLoading={this.props.isLoadingCities}
                     options={this.cityOptions()}
@@ -222,7 +274,7 @@ class SearchContainer extends React.Component {
     renderSubjectSearchForm = () => {
         const style = {marginBottom: 10};
         const placeholder = <Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder"/>;
-        if (this.props.selectedService?.value && this.props.selectedService?.value !== services[0].id) {
+        if (this.props.selectedService?.value && this.props.selectedService?.value !== services[0].id && this.doWeHaveDatesValid()) {
             return (
                 <div>
                     <Select
@@ -342,6 +394,35 @@ class SearchContainer extends React.Component {
         });
         return controls;
     };
+
+    useTemporalSearch = () => {
+        if (this.props.selectedService) {
+            const service = services.filter((item) => item.id === this.props.selectedService?.value);
+            if (service) {
+                const serviceConfig = this.props.filterServices.filter((item) => service[0].state_identifier === item.state_identifier);
+                return serviceConfig?.length === 1 ? serviceConfig[0].useTemporalSearch : false;
+            }
+            return false;
+        }
+        return false;
+    };
+
+    handleOnChangeOfCheckBox = (event) => {
+        return this.props.onChangeTemporalSearchCheckbox(event.target.checked);
+    };
+
+    doWeHaveDatesValid = () => {
+        if (this.useTemporalSearch()) {
+            if (!this.props.isTemporalSearchChecked) {
+                return true;
+            }
+            if (this.props.endDateValue && this.props.startDateValue) {
+                return this.props.startDateValue < this.props.endDateValue && this.props.endDateValue <= new Date();
+            }
+            return false;
+        }
+        return true;
+    };
 }
 
 export const searchContainerActions = {
@@ -361,7 +442,11 @@ export const searchContainerActions = {
     loadSubjects: loadSubjectData,
     loadLayer: loadLayer,
     loadLandDetails: loadLandDetailData,
-    loadBuildingDetails: loadBuildingDetailData
+    loadBuildingDetails: loadBuildingDetailData,
+    onChangeTemporalSearchCheckbox: onChangeTemporalSearchCheckbox,
+    startDateValueOnChange: startDateSelected,
+    endDateValueOnChange: endDateSelected,
+    setMessageForUser: setMessageForUser
 };
 
 export const searchContainerSelector = createStructuredSelector({
@@ -383,7 +468,10 @@ export const searchContainerSelector = createStructuredSelector({
     isLoadingBuildings: isLoadingBuildingSelector,
     selectedSubjectFilter: selectedSubjectFilterSelector,
     subjectFormButtonActive: subjectFormButtonActiveSelector,
-    subjectForm: subjectFormSelector
+    subjectForm: subjectFormSelector,
+    isTemporalSearchChecked: isTemporalSearchCheckedSelector,
+    startDateValue: startDateSelector,
+    endDateValue: endDateSelector
 });
 
 export default SearchContainer;
