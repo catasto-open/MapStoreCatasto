@@ -207,11 +207,11 @@ export default () => ({
                 const sheetNumber = action?.sheetNumber || null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const section = state.catastoOpen.selectedSection;
+                const section = state.catastoOpen.selectedSheet.feature.properties.section;
                 const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() => getLandByCityCodeAndSheetNumber(cityCode, sheetNumber, section.value, startDate, endDate, geoserverOwsUrl))
+                return Rx.Observable.defer(() => getLandByCityCodeAndSheetNumber(cityCode, sheetNumber, section, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLandData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -230,11 +230,11 @@ export default () => ({
                 const sheetNumber = action?.sheetNumber || null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const section = state.catastoOpen.selectedSection;
+                const section = state.catastoOpen.selectedSheet.feature.properties.section;
                 const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() => getBuildingByCityCodeAndSheetNumber(cityCode, sheetNumber, section.value, startDate, endDate, geoserverOwsUrl))
+                return Rx.Observable.defer(() => getBuildingByCityCodeAndSheetNumber(cityCode, sheetNumber, section, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -326,11 +326,20 @@ export default () => ({
                 }
                 const layout = state.maplayout.layout;
                 layout.right = 658;
+                const bbox = {
+                    crs: "EPSG:4326",
+                    bounds: {
+                        minx: Math.min(layer.bbox.bbox[0], layer.bbox.bbox[2]),
+                        miny: Math.min(layer.bbox.bbox[1], layer.bbox.bbox[3]),
+                        maxx: Math.min(layer.bbox.bbox[0], layer.bbox.bbox[2]),
+                        maxy: Math.max(layer.bbox.bbox[1], layer.bbox.bbox[3])
+                    }
+                };
                 return Rx.Observable.of(
                     addGroup(layer.group, undefined, {id: layer.group}),
                     addLayer(layer),
                     updateMapLayout(layout),
-                    zoomToExtent(layer.bbox.bbox, layer.bbox.crs, undefined, null));
+                    zoomToExtent(bbox.bounds, bbox.crs, undefined, null));
             }),
     removeLayerEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_REMOVE_LAYER)

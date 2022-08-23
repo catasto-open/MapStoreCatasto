@@ -139,8 +139,12 @@ class SearchContainer extends React.Component {
                 if (nextProp.endDateValue > new Date()) {
                     this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
                 } else {
-                    this.props.setMessageForUser(null);
-                    loadCityData();
+                    if (nextProp.startDateValue < new Date("01/01/0001")) {
+                        this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
+                    } else {
+                        this.props.setMessageForUser(null);
+                        loadCityData();
+                    }
                 }
             }
         }
@@ -417,7 +421,7 @@ class SearchContainer extends React.Component {
                 return true;
             }
             if (this.props.endDateValue && this.props.startDateValue) {
-                return this.props.startDateValue < this.props.endDateValue && this.props.endDateValue <= new Date();
+                return this.props.startDateValue < this.props.endDateValue && this.props.endDateValue <= new Date() && this.props.startDateValue > new Date("01/01/2022");
             }
             return false;
         }
