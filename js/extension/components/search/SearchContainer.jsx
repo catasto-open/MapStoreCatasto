@@ -132,20 +132,25 @@ class SearchContainer extends React.Component {
     };
 
     componentWillReceiveProps(nextProp) {
-        if (nextProp.startDateValue && nextProp.endDateValue) {
-            if (nextProp.startDateValue > nextProp.endDateValue) {
-                this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
-            } else {
-                if (nextProp.endDateValue > new Date()) {
+        if (nextProp.isTemporalSearchChecked) {
+            if (nextProp.startDateValue && nextProp.endDateValue) {
+                if (nextProp.startDateValue > nextProp.endDateValue) {
                     this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
                 } else {
-                    if (nextProp.startDateValue < new Date("01/01/0001")) {
+                    if (nextProp.endDateValue > new Date()) {
                         this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
                     } else {
                         this.props.setMessageForUser(null);
-                        loadCityData();
+                        if (nextProp.selectedService?.value === "PARCEL") {
+                            loadCityData();
+                        }
                     }
                 }
+            }
+        } else {
+            this.props.setMessageForUser(null);
+            if (nextProp.selectedService?.value === "PARCEL") {
+                loadCityData();
             }
         }
     }
@@ -421,7 +426,7 @@ class SearchContainer extends React.Component {
                 return true;
             }
             if (this.props.endDateValue && this.props.startDateValue) {
-                return this.props.startDateValue < this.props.endDateValue && this.props.endDateValue <= new Date() && this.props.startDateValue > new Date("01/01/2022");
+                return this.props.startDateValue < this.props.endDateValue && this.props.endDateValue <= new Date();
             }
             return false;
         }
