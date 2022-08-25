@@ -56,7 +56,7 @@ import {
     loadedLandDetailData,
     loadedPropertyOwnerData
 } from "@js/extension/actions/catastoOpen";
-import {services, fixDateOutOfRange} from "@js/extension/utils/catastoOpen";
+import {services, fixDateOutOfRange, srs} from "@js/extension/utils/catastoOpen";
 import {
     getBuildingByCityCodeAndSheetNumber,
     getBuildingDetails,
@@ -327,7 +327,7 @@ export default () => ({
                 const layout = state.maplayout.layout;
                 layout.right = 658;
                 const bbox = {
-                    crs: "EPSG:4326",
+                    crs: srs,
                     bounds: {
                         minx: Math.min(layer.bbox.bbox[0], layer.bbox.bbox[2]),
                         miny: Math.min(layer.bbox.bbox[1], layer.bbox.bbox[3]),
