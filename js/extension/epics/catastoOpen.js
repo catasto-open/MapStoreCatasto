@@ -331,7 +331,7 @@ export default () => ({
                     bounds: {
                         minx: Math.min(layer.bbox.bbox[0], layer.bbox.bbox[2]),
                         miny: Math.min(layer.bbox.bbox[1], layer.bbox.bbox[3]),
-                        maxx: Math.min(layer.bbox.bbox[0], layer.bbox.bbox[2]),
+                        maxx: Math.max(layer.bbox.bbox[0], layer.bbox.bbox[2]),
                         maxy: Math.max(layer.bbox.bbox[1], layer.bbox.bbox[3])
                     }
                 };
