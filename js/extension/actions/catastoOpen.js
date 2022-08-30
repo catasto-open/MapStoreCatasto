@@ -10,6 +10,7 @@ import {
 export const CATASTO_OPEN_ACTIVATE_PANEL = 'CATASTO_OPEN:ACTIVATE_PANEL';
 export const CATASTO_OPEN_DEACTIVATE_PANEL = 'CATASTO_OPEN:DEACTIVATE_PANEL';
 export const CATASTO_OPEN_LOAD_ERROR = 'CATASTO_OPEN:LOAD_ERROR';
+export const CATASTO_OPEN_SET_MESSAGE_FOR_USER = 'CATASTO_OPEN:SET_MESSAGE_FOR_USER';
 export const CATASTO_OPEN_SELECT_SERVICE = 'CATASTO_OPEN:SELECT_SERVICE';
 export const CATASTO_OPEN_RESUME_PREVIOUS_SEARCH_RESULTS = 'CATASTO_OPEN:RESUME_PREVIOUS_SEARCH_RESULTS';
 export const CATASTO_OPEN_RELOAD_SEARCH_RESULTS = 'CATASTO_OPEN:UPDATE_RELOAD_RESULTS';
@@ -52,6 +53,9 @@ export const CATASTO_OPEN_LOADED_BUILDING_DETAIL_DATA = 'CATASTO_OPEN:LOADED_BUI
 export const CATASTO_OPEN_LOAD_PROPERTY_OWNER_DATA = 'CATASTO_OPEN:LOAD_PROPERTY_OWNER_DATA';
 export const CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA = 'CATASTO_OPEN:LOADED_PROPERTY_OWNER_DATA';
 export const CATASTO_OPEN_SET_BACKEND = 'CATASTO_OPEN:SET_BACKEND';
+export const CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED = 'CATASTO_OPEN:TEMPORAL_SEARCH_CHECKED';
+export const CATASTO_OPEN_START_DATE_SELECTED = 'CATASTO_OPEN:START_DATE_SELECTED';
+export const CATASTO_OPEN_END_DATE_SELECTED = 'CATASTO_OPEN:END_DATE_SELECTED';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -69,6 +73,13 @@ export function loadError(error) {
     return {
         type: CATASTO_OPEN_LOAD_ERROR,
         error
+    };
+}
+
+export function setMessageForUser(messageForUser) {
+    return {
+        type: CATASTO_OPEN_SET_MESSAGE_FOR_USER,
+        messageForUser
     };
 }
 
@@ -378,5 +389,26 @@ export function setBackend(backend) {
     return {
         type: CATASTO_OPEN_SET_BACKEND,
         backend
+    };
+}
+
+export function onChangeTemporalSearchCheckbox(isTemporalSearchChecked) {
+    return {
+        type: CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED,
+        isTemporalSearchChecked
+    };
+}
+
+export function startDateSelected(startDate) {
+    return {
+        type: CATASTO_OPEN_START_DATE_SELECTED,
+        startDate
+    };
+}
+
+export function endDateSelected(endDate) {
+    return {
+        type: CATASTO_OPEN_END_DATE_SELECTED,
+        endDate
     };
 }

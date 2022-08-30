@@ -70,6 +70,8 @@
               }
             },
             "columns": {
+              "lastName": "Cognome",
+              "firstName": "Nome",
               "fiscalCode": "Codice Fiscale",
               "dateOfBirth": "Data di nascita",
               "cityOfBirth": "Comune di nascita"
@@ -143,7 +145,17 @@
           "serviceSelect": {
             "placeholder": "Scegli un'opzione di ricerca"
           }
-        }
+        },
+        "temporalSearch": {
+            "label": "Ricerca temporale",
+            "startDateLabel": "Dal",
+            "endDateLabel": "al"
+        },
+        "extraColumns" : {
+            "startDate": "Data inizio",
+            "endDate": "Data fine"
+        },
+        "dateInputError": "L'intervallo di date inserite non è corretto."
       }
     }
   }

@@ -9,6 +9,17 @@ export const subjectPropertyLayer = 'CatastoOpenDev:catasto_particelle_soggetto'
 export const landDetailLayer = 'CatastoOpenDev:catasto_dettagli_terreno';
 export const buildingDetailLayer = 'CatastoOpenDev:catasto_dettagli_fabbricato';
 export const propertyOwnerLayer = 'CatastoOpenDev:catasto_titolari_immobile';
+
+export const cityLayerTemp = 'CatastoOpenDev:catasto_comuni_temp';
+export const sectionLayerTemp = 'CatastoOpenDev:catasto_sezioni_temp';
+export const sheetLayerTemp = 'CatastoOpenDev:catasto_fogli_temp';
+export const landLayerTemp = 'CatastoOpenDev:catasto_terreni_temp';
+export const buildingLayerTemp = 'CatastoOpenDev:catasto_fabbricati_temp';
+export const subjectPropertyLayerTemp = 'CatastoOpenDev:catasto_particelle_soggetto_temp';
+export const landDetailLayerTemp = 'CatastoOpenDev:catasto_dettagli_terreno_temp';
+export const buildingDetailLayerTemp = 'CatastoOpenDev:catasto_dettagli_fabbricato_temp';
+export const propertyOwnerLayerTemp = 'CatastoOpenDev:catasto_titolari_immobile_temp';
+
 export const naturalSubjectType = 'P';
 export const legalSubjectType = 'G';
 export const subjectLandPropertyType = 'Terreni';
@@ -239,6 +250,8 @@ export const subjectPropertyParser = (feature) => {
     const lot = properties?.lot;
     const propertyType = properties?.propertytype;
     const extent = properties?.extent;
+    const startDate = properties?.startdate;
+    const endDate = properties?.enddate;
 
     return {
         city,
@@ -256,7 +269,9 @@ export const subjectPropertyParser = (feature) => {
         lot,
         propertyType,
         feature,
-        extent
+        extent,
+        startDate,
+        endDate
     };
 };
 
@@ -271,6 +286,9 @@ export const buildingDetailParser = (feature) => {
     const consistency = properties?.consistency;
     const rent = properties?.rent;
     const lot = properties?.lot;
+    const startDate = properties?.startdate;
+    const endDate = properties?.enddate;
+
     return {
         property,
         propertyType,
@@ -280,7 +298,9 @@ export const buildingDetailParser = (feature) => {
         _class,
         consistency,
         rent,
-        lot
+        lot,
+        startDate,
+        endDate
     };
 };
 
@@ -297,6 +317,9 @@ export const landDetailParser = (feature) => {
     const lot = properties?.lot;
     const cadastralRent = properties?.cadastralRent;
     const agriculturalRent = properties?.agriculturalRent;
+    const startDate = properties?.startdate;
+    const endDate = properties?.enddate;
+
     return {
         property,
         propertyType,
@@ -308,7 +331,9 @@ export const landDetailParser = (feature) => {
         centiare,
         lot,
         cadastralRent,
-        agriculturalRent
+        agriculturalRent,
+        startDate,
+        endDate
     };
 };
 
@@ -319,12 +344,23 @@ export const propertyOwnerParser = (feature) => {
     const city = properties?.city;
     const right = properties?.right;
     const part = properties?.part;
+    const startDate = properties?.startdate;
+    const endDate = properties?.enddate;
 
     return {
         nominative,
         fiscalCode,
         city,
         right,
-        part
+        part,
+        startDate,
+        endDate
     };
+};
+
+export const fixDateOutOfRange = (strdate) => {
+    if (strdate.slice(0, 4) === "0000") {
+        return "0001-01-01";
+    }
+    return strdate;
 };

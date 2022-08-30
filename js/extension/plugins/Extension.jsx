@@ -24,7 +24,8 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *              },
  *             "state_identifier" : "parcels",
  *             "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
- *              "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"]
+ *              "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"],
+ *              "useTemporalSearch": true
  *          },
  *          {
  *             "descriptions" : {
@@ -32,7 +33,8 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *                 "it" : "Ricerca per persone fisiche"
  *             },
  *             "state_identifier" : "naturalSubjects",
- *             "naturalSubjectColumnsKeys": ["fiscalCode", "dateOfBirth", "cityOfBirth"]
+ *             "naturalSubjectColumnsKeys": ["lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth"],
+ *             "useTemporalSearch": true
  *          },
  *          {
  *             "descriptions" : {
@@ -40,12 +42,14 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *                 "it" : "Ricerca per persone giuridiche"
  *             },
  *             "state_identifier" : "legalSubjects",
- *             "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"]
+ *             "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"],
+ *             "useTemporalSearch": true
  *          }
  *     ],
  *      "ownerDetails": {
  *      "subjectPropertyColumnsKeys": ["city", "section", "sheet", "number", "subordinate", "right", "part", "classification", "_class", "consistency", "income", "lot"],
- *          "propertyOwnerColumnsKeys": ["nominative", "fiscalCode", "city", "right", "part"]
+ *          "propertyOwnerColumnsKeys": ["nominative", "fiscalCode", "city", "right", "part"],
+ *          "showDate": true
  *          },
  *      "backend": {
  *          "name": "Geoserver",
