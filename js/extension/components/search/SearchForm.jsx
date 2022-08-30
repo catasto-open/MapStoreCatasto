@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from 'prop-types';
 import Message from '@mapstore/components/I18N/Message';
 import { Form, FormControl, Row, Col} from 'react-bootstrap';
+import Select from 'react-select';
 import Button from "@mapstore/components/misc/Button";
+import DateTimePicker from '@mapstore/components/misc/datetimepicker/index';
 
 class SearchForm extends React.Component {
     static propTypes = {
@@ -12,14 +14,62 @@ class SearchForm extends React.Component {
         value: PropTypes.object,
         onChange: PropTypes.func,
         activeButton: PropTypes.bool,
-        onSubmitForm: PropTypes.func
+        onSubmitForm: PropTypes.func,
+        updateSubjectFormLoadLuogo: PropTypes.func,
+        updateSubjectFormSelectBithPlace: PropTypes.func,
+        options: PropTypes.array,
+        isLoadingTown: PropTypes.bool,
+        selectedvalue: PropTypes.object
     };
 
     static defaultProps = {
         active: false,
         controls: [],
         activeButton: false,
-        onSubmitForm: () => {}
+        onSubmitForm: () => {},
+        updateSubjectFormLoadLuogo: () => {},
+        updateSubjectFormSelectBithPlace: () => {},
+        options: [],
+        isLoadingTown: false,
+        selectedvalue: null
+    };
+
+    renderSwitch = (c) => {
+        switch (c.id) {
+        case "BIRTH-DATE":
+            return (<DateTimePicker
+                format="DD/MM/YYYY"
+                time={false}
+                placeholder="DD/MM/YYYY"
+                onChange={c.onChange}
+            />);
+        case "BIRTH-PLACE":
+            return (<Select
+                clearable
+                searchable
+                options={this.props.options}
+                onInputChange={this.props.updateSubjectFormLoadLuogo}
+                onChange={this.props.updateSubjectFormSelectBithPlace}
+                isLoading={this.props.isLoadingTown}
+                value={this.props.selectedvalue}
+            >
+            </Select>);
+        case "IDENTIFICATION-CODE":
+            return (<FormControl
+                type="number"
+                onChange={e => c.onChange(e.target.value)}
+            />);
+        case "SUBJECT-CODE":
+            return (<FormControl
+                type="number"
+                onChange={e => c.onChange(e.target.value)}
+            />);
+        default:
+            return (<FormControl
+                type="text"
+                onChange={e => c.onChange(e.target.value)}
+            />);
+        }
     };
 
     renderSearchFormControls = () => {
@@ -35,10 +85,7 @@ class SearchForm extends React.Component {
                                 e.preventDefault();
                                 return this.props.activeButton ? this.props.onSubmitForm() : null;
                             }}>
-                            <FormControl
-                                type="text"
-                                onChange={e => c.onChange(e.target.value)}
-                            />
+                            {this.renderSwitch(c)}
                         </Form>
                     </Col>
                 </Row>

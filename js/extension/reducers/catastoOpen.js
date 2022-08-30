@@ -19,9 +19,15 @@ import {
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_TYPE,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_FIRST_NAME,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_LAST_NAME,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_BIRTH_DATE,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_LUOGO,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_FISCAL_CODE,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_SUBJECT_CODE,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_VAT_NUMBER,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_BUSINESS_NAME,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_ID_CODE,
     CATASTO_OPEN_DEACTIVATE_PANEL,
     CATASTO_OPEN_LOAD_LEGAL_SUBJECT_DATA,
     CATASTO_OPEN_LOADED_LEGAL_SUBJECT_DATA,
@@ -253,9 +259,34 @@ export default function(state = {}, action) {
         return {
             ...state
         };
-
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_BIRTH_DATE:
+        state.subjectForm.birthDate = action?.birthDate;
+        return {
+            ...state
+        };
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO:
+        return {
+            ...state,
+            isLoadingTown: true
+        };
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_LUOGO:
+        return {
+            ...state,
+            town: action.town,
+            isLoadingTown: false
+        };
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE:
+        return {
+            ...state,
+            selectedBirthPlace: action.selectedBirthPlace
+        };
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_FISCAL_CODE:
         state.subjectForm.fiscalCode = action?.fiscalCode;
+        return {
+            ...state
+        };
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_SUBJECT_CODE:
+        state.subjectForm.subjectCode = action?.subjectCode;
         return {
             ...state
         };
@@ -264,9 +295,13 @@ export default function(state = {}, action) {
         return {
             ...state
         };
-
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_BUSINESS_NAME:
         state.subjectForm.businessName = action?.businessName;
+        return {
+            ...state
+        };
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_ID_CODE:
+        state.subjectForm.identificationCode = action?.identificationCode;
         return {
             ...state
         };
