@@ -2,6 +2,7 @@ import axios from "axios";
 
 import {
     cityLayer,
+    townLayer,
     sectionLayer,
     sheetLayer,
     srsName,
@@ -9,6 +10,7 @@ import {
     landLayer,
     buildingLayer,
     naturalSubjectLayer,
+    naturalSubjectLayerWBday,
     legalSubjectLayer,
     subjectPropertyLayer,
     landDetailLayer,
@@ -53,6 +55,20 @@ export const getCityData = (city, endDate, geoserverOwsUrl) => {
         requestParams.typename = cityLayer;
     }
     return axios.get(geoserverOwsUrl,  { params: requestParams});
+};
+
+export const getTwonData = (city, geoserverOwsUrl) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: request,
+        outputFormat: outputFormat,
+        typename: townLayer
+    };
+    if (city !== null) {
+        requestParams.viewparams = 'city:' + city;
+    }
+    return axios.get(geoserverOwsUrl, {params: requestParams});
 };
 
 export const getSectionByCityCode = (cityCode, endDate, geoserverOwsUrl)  => {
@@ -139,21 +155,34 @@ export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber, secti
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getNaturalSubjects = (firstName, lastName, fiscalCode, geoserverOwsUrl) => {
+export const getNaturalSubjects = (firstName, lastName, birthDate, birthPlace, fiscalCode, subjectCode, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
         request: request,
-        outputFormat: outputFormat,
-        typename: naturalSubjectLayer
+        outputFormat: outputFormat
     };
-    requestParams.viewparams = 'firstName:' + firstName + ';'
-        + 'lastName:' + lastName + ';'
-        + 'fiscalCode:' + fiscalCode;
+    if (subjectCode !== null) {
+        requestParams.typename = naturalSubjectLayer;
+        requestParams.viewparams = 'subjectCode:' + subjectCode;
+        return axios.get(geoserverOwsUrl, { params: requestParams});
+    }
+    if (birthDate !== null && birthPlace !== null) {
+        requestParams.typename = naturalSubjectLayerWBday;
+        requestParams.viewparams = 'firstName:' + firstName + ';'
+            + 'lastName:' + lastName + ';'
+            + 'birthDate:' + birthDate + ';'
+            + 'birthPlace:' + birthPlace;
+    } else {
+        requestParams.typename = naturalSubjectLayer;
+        requestParams.viewparams = 'firstName:' + firstName + ';'
+            + 'lastName:' + lastName + ';'
+            + 'fiscalCode:' + fiscalCode;
+    }
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getLegalSubjects = (vatNumber, businessName, geoserverOwsUrl) => {
+export const getLegalSubjects = (vatNumber, businessName, identificationCode, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -161,6 +190,10 @@ export const getLegalSubjects = (vatNumber, businessName, geoserverOwsUrl) => {
         outputFormat: outputFormat,
         typename: legalSubjectLayer
     };
+    if (identificationCode !== null) {
+        requestParams.viewparams = 'subjectCode:' + identificationCode;
+        return axios.get(geoserverOwsUrl, { params: requestParams});
+    }
     requestParams.viewparams = 'vatNumber:' + vatNumber + ';'
         + 'businessName:' + businessName + ';';
     return axios.get(geoserverOwsUrl, { params: requestParams});

@@ -34,9 +34,15 @@ export const CATASTO_OPEN_SELECT_SUBJECT_FILTER = 'CATASTO_OPEN:SELECT_SUBJECT_F
 export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_TYPE = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_TYPE';
 export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_FIRST_NAME = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_FIRST_NAME';
 export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_LAST_NAME = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_LAST_NAME';
+export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_BIRTH_DATE = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_BIRTH_DATE';
+export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_LOAD_LUOGO';
+export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_LUOGO = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_LOADED_LUOGO';
+export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE';
 export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_FISCAL_CODE = 'CATASTO_OPEN:UPDATE_SUBJECT_FISCAL_CODE';
+export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_SUBJECT_CODE = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_SUBJECT_CODE';
 export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_VAT_NUMBER = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_VAT_NUMBER';
 export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_BUSINESS_NAME = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_BUSINESS_NAME';
+export const CATASTO_OPEN_UPDATE_SUBJECT_FORM_ID_CODE = 'CATASTO_OPEN:UPDATE_SUBJECT_FORM_ID_CODE';
 export const CATASTO_OPEN_LOAD_NATURAL_SUBJECT_DATA = 'CATASTO_OPEN:LOAD_NATURAL_SUBJECT_DATA';
 export const CATASTO_OPEN_LOAD_LEGAL_SUBJECT_DATA = 'CATASTO_OPEN:LOAD_LEGAL_SUBJECT_DATA';
 export const CATASTO_OPEN_LOAD_SUBJECT_PROPERTY_DATA = 'CATASTO_OPEN:LOAD_SUBJECT_PROPERTY_DATA';
@@ -269,10 +275,46 @@ export function updateSubjectFormLastName(lastName) {
     };
 }
 
+export function updateSubjectFormBirthDate(birthDate) {
+    return {
+        type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_BIRTH_DATE,
+        birthDate
+    };
+}
+
+export function updateSubjectFormLoadLuogo(birthPlaceTxt) {
+    return {
+        type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
+        birthPlaceTxt
+    };
+}
+
+export function updateSubjectFormLoadedLuogo(payload) {
+    const town = payload.features.map((feature) => (cityParser(feature)));
+    return {
+        type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_LUOGO,
+        town
+    };
+}
+
+export function updateSubjectFormSelectBithPlace(selectedBirthPlace) {
+    return {
+        type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE,
+        selectedBirthPlace
+    };
+}
+
 export function updateSubjectFormFiscalCode(fiscalCode) {
     return {
         type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_FISCAL_CODE,
         fiscalCode
+    };
+}
+
+export function updateSubjectFormSubjectCode(subjectCode) {
+    return {
+        type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_SUBJECT_CODE,
+        subjectCode
     };
 }
 
@@ -287,6 +329,13 @@ export function updateSubjectFormBusinessName(businessName) {
     return {
         type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_BUSINESS_NAME,
         businessName
+    };
+}
+
+export function updateSubjectFormIdCode(identificationCode) {
+    return {
+        type: CATASTO_OPEN_UPDATE_SUBJECT_FORM_ID_CODE,
+        identificationCode
     };
 }
 

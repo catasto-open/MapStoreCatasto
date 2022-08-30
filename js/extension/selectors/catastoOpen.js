@@ -39,12 +39,17 @@ export const subjectFormButtonActiveSelector = (state) => {
     return (state.catastoOpen?.subjectForm?.firstName?.length > 0 &&  state.catastoOpen?.subjectForm?.lastName?.length > 0)
         ||  state.catastoOpen?.subjectForm?.fiscalCode?.length === 16
         ||  state.catastoOpen?.subjectForm?.vatNumber?.length > 10
-        ||  state.catastoOpen?.subjectForm?.businessName?.length > 0;
+        ||  state.catastoOpen?.subjectForm?.businessName?.length > 0
+        ||  state.catastoOpen?.subjectForm?.subjectCode?.length > 0
+        ||  state.catastoOpen?.subjectForm?.identificationCode?.length > 0;
 };
 
 export const loadingSubjectPropertySelector = (state) => get(state, "catastoOpen.loadingSubjectProperties");
 export const loadedSubjectPropertySelector = (state) => get(state, "catastoOpen.loadedSubjectProperties");
 export const subjectPropertySelector = (state) => get(state, "catastoOpen.subjectProperties");
+export const isLoadingTownSelector = (state) => get(state, "catastoOpen.isLoadingTown");
+export const townSelector = (state) => get(state, "catastoOpen.town");
+export const selectedBirthPlaceSelector = (state) =>  get(state, "catastoOpen.selectedBirthPlace");
 
 export const backendSelector = (state) => get(state, "catastoOpen.backend");
 export const isTemporalSearchCheckedSelector = (state) => get(state, "catastoOpen.isTemporalSearchChecked");

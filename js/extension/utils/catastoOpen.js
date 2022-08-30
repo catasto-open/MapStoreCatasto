@@ -1,9 +1,11 @@
 export const cityLayer = 'CatastoOpenDev:catasto_comuni';
+export const townLayer = 'CatastoOpenDev:catasto_comuni_anag';
 export const sectionLayer = 'CatastoOpenDev:catasto_sezioni';
 export const sheetLayer = 'CatastoOpenDev:catasto_fogli';
 export const landLayer = 'CatastoOpenDev:catasto_terreni';
 export const buildingLayer = 'CatastoOpenDev:catasto_fabbricati';
 export const naturalSubjectLayer = 'CatastoOpenDev:catasto_persone_fisiche';
+export const naturalSubjectLayerWBday = 'catasto_persone_fisiche_with_bday';
 export const legalSubjectLayer = 'CatastoOpenDev:catasto_persone_giuridiche';
 export const subjectPropertyLayer = 'CatastoOpenDev:catasto_particelle_soggetto';
 export const landDetailLayer = 'CatastoOpenDev:catasto_dettagli_terreno';
@@ -59,6 +61,14 @@ export const services = [
                     {
                         id: "LAST-NAME",
                         name: "extension.catastoOpenPanel.services.naturalSubjects.filters.firstAndLastName.filters.lastName.name"
+                    },
+                    {
+                        id: "BIRTH-DATE",
+                        name: "extension.catastoOpenPanel.services.naturalSubjects.filters.firstAndLastName.filters.birthDate.name"
+                    },
+                    {
+                        id: "BIRTH-PLACE",
+                        name: "extension.catastoOpenPanel.services.naturalSubjects.filters.firstAndLastName.filters.birthPlace.name"
                     }
                 ]
             },
@@ -66,6 +76,11 @@ export const services = [
                 id: "FISCAL-CODE",
                 name: "extension.catastoOpenPanel.services.naturalSubjects.filters.fiscalCode.name",
                 placeholder: "extension.catastoOpenPanel.services.naturalSubjects.filters.fiscalCode.placeholder"
+            },
+            {
+                id: "SUBJECT-CODE",
+                name: "extension.catastoOpenPanel.services.naturalSubjects.filters.subjectCode.name",
+                placeholder: "extension.catastoOpenPanel.services.naturalSubjects.filters.subjectCode.placeholder"
             }
         ],
         state_identifier: "naturalSubjects"
@@ -83,6 +98,11 @@ export const services = [
                 id: "BUSINESS-NAME",
                 name: "extension.catastoOpenPanel.services.legalSubjects.filters.businessName.name",
                 placeholder: "extension.catastoOpenPanel.services.legalSubjects.filters.businessName.placeholder"
+            },
+            {
+                id: "IDENTIFICATION-CODE",
+                name: "extension.catastoOpenPanel.services.legalSubjects.filters.identificationCode.name",
+                placeholder: "extension.catastoOpenPanel.services.legalSubjects.filters.identificationCode.placeholder"
             }
         ],
         state_identifier: "legalSubjects"
@@ -107,6 +127,7 @@ export const sectionParser = (feature) => {
 export const geomFeatureParser = (feature) => {
     return {
         number: feature?.properties?.number,
+        section: feature?.properties?.section,
         id: feature?.id,
         feature
     };
@@ -358,9 +379,12 @@ export const propertyOwnerParser = (feature) => {
     };
 };
 
-export const fixDateOutOfRange = (strdate) => {
-    if (strdate.slice(0, 4) === "0000") {
-        return "0001-01-01";
-    }
-    return strdate;
+export const fixDateTimeZone = (date) => {
+    date.setMinutes(date.getMinutes() + 480);
+    return date;
+};
+
+export const tomorrow = () => {
+    let currentDate = new Date();
+    return new Date(currentDate.setDate(currentDate.getDate() + 1));
 };
