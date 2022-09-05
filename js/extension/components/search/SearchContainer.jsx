@@ -4,7 +4,7 @@ import {Panel, Checkbox} from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import Message from '@mapstore/components/I18N/Message';
 import Select from 'react-select';
-import {buildingLayer, geomFeatureToLayer, landLayer, services, sheetLayer} from "@js/extension/utils/catastoOpen";
+import {buildingLayer, geomFeatureToLayer, landLayer, services, sheetLayer, tomorrow} from "@js/extension/utils/catastoOpen";
 import SearchFilter from "@js/extension/components/search/SearchFilter";
 import {
     loadCityData,
@@ -15,9 +15,14 @@ import {
     selectSubjectFilter,
     updateSubjectFormFirstName,
     updateSubjectFormFiscalCode,
+    updateSubjectFormBirthDate,
     updateSubjectFormLastName,
+    updateSubjectFormLoadLuogo,
+    updateSubjectFormSelectBithPlace,
+    updateSubjectFormSubjectCode,
     updateSubjectFormVatNumber,
     updateSubjectFormBusinessName,
+    updateSubjectFormIdCode,
     selectLand,
     selectBuilding,
     loadSubjectData,
@@ -51,7 +56,10 @@ import {
     isLoadingBuildingSelector,
     isTemporalSearchCheckedSelector,
     startDateSelector,
-    endDateSelector
+    endDateSelector,
+    isLoadingTownSelector,
+    townSelector,
+    selectedBirthPlaceSelector
 } from "@js/extension/selectors/catastoOpen";
 import SearchForm from "@js/extension/components/search/SearchForm";
 import SearchHistory from '@js/extension/components/search/SearchHistory';
@@ -88,9 +96,14 @@ class SearchContainer extends React.Component {
         subjectForm: PropTypes.object,
         updateSubjectFormFirstName: PropTypes.func,
         updateSubjectFormLastName: PropTypes.func,
+        updateSubjectFormBirthDate: PropTypes.func,
+        updateSubjectFormLoadLuogo: PropTypes.func,
+        updateSubjectFormSelectBithPlace: PropTypes.func,
         updateSubjectFormFiscalCode: PropTypes.func,
+        updateSubjectFormSubjectCode: PropTypes.func,
         updateSubjectFormVatNumber: PropTypes.func,
         updateSubjectFormBusinessName: PropTypes.func,
+        updateSubjectFormIdCode: PropTypes.func,
         loadSubjects: PropTypes.func,
         loadLayer: PropTypes.func,
         loadLandDetails: PropTypes.func,
@@ -102,7 +115,10 @@ class SearchContainer extends React.Component {
         startDateValueOnChange: PropTypes.func,
         endDateValue: PropTypes.any,
         endDateValueOnChange: PropTypes.func,
-        setMessageForUser: PropTypes.func
+        setMessageForUser: PropTypes.func,
+        isLoadingTown: PropTypes.bool,
+        town: PropTypes.array,
+        selectedBirthPlace: PropTypes.object
     };
 
     static defaultProps = {
@@ -120,15 +136,23 @@ class SearchContainer extends React.Component {
         selectedSubjectFilter: null,
         updateSubjectFormFirstName: () => {},
         updateSubjectFormLastName: () => {},
+        updateSubjectFormBirthDate: () => {},
+        updateSubjectFormLoadLuogo: () => {},
+        updateSubjectFormSelectBithPlace: () => {},
         updateSubjectFormFiscalCode: () => {},
+        updateSubjectFormSubjectCode: () => {},
         updateSubjectFormVatNumber: () => {},
         updateSubjectFormBusinessName: () => {},
+        updateSubjectFormIdCode: () => {},
         subjectFormButtonActive: true,
         subjectForm: null,
         loadSubjects: () => {},
         loadLayer: () => {},
         isTemporalSearchChecked: false,
-        onChangeTemporalSearchCheckbox: () => {}
+        onChangeTemporalSearchCheckbox: () => {},
+        isLoadingTown: false,
+        town: [],
+        selectedBirthPlace: {}
     };
 
     componentWillReceiveProps(nextProp) {
@@ -137,21 +161,17 @@ class SearchContainer extends React.Component {
                 if (nextProp.startDateValue > nextProp.endDateValue) {
                     this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
                 } else {
-                    if (nextProp.endDateValue > new Date()) {
+                    if (nextProp.endDateValue > tomorrow() || nextProp.startDateValue < new Date("0000-12-31")) {
                         this.props.setMessageForUser("extension.catastoOpenPanel.dateInputError");
                     } else {
                         this.props.setMessageForUser(null);
-                        if (nextProp.selectedService?.value === "PARCEL") {
-                            loadCityData();
-                        }
+                        loadCityData();
                     }
                 }
             }
         } else {
             this.props.setMessageForUser(null);
-            if (nextProp.selectedService?.value === "PARCEL") {
-                loadCityData();
-            }
+            loadCityData();
         }
     }
 
@@ -298,6 +318,11 @@ class SearchContainer extends React.Component {
                         controls={this.subjectFormFilterControls()}
                         activeButton={this.props.subjectFormButtonActive}
                         onSubmitForm={() => this.props.loadSubjects(this.props.subjectForm)}
+                        updateSubjectFormLoadLuogo={this.props.updateSubjectFormLoadLuogo}
+                        updateSubjectFormSelectBithPlace={this.props.updateSubjectFormSelectBithPlace}
+                        options={this.props.town.map((_) => ({value: _.code, label: _.name}))}
+                        isLoadingTown={this.props.isLoadingTown}
+                        selectedvalue={this.props.selectedBirthPlace}
                     />
                 </div>);
         }
@@ -363,7 +388,7 @@ class SearchContainer extends React.Component {
         return geometries.map((g) => (
             {
                 value: g.number,
-                label: g.number,
+                label: `${g.number}-${g.section}`,
                 ...g
             }
         ));
@@ -388,14 +413,23 @@ class SearchContainer extends React.Component {
             case services[1].filters[0].filters[1].id:
                 c.onChange = this.props.updateSubjectFormLastName;
                 return c;
+            case services[1].filters[0].filters[2].id:
+                c.onChange = this.props.updateSubjectFormBirthDate;
+                return c;
             case services[1].filters[1].id:
                 c.onChange = this.props.updateSubjectFormFiscalCode;
+                return c;
+            case services[1].filters[2].id:
+                c.onChange = this.props.updateSubjectFormSubjectCode;
                 return c;
             case services[2].filters[0].id:
                 c.onChange = this.props.updateSubjectFormVatNumber;
                 return c;
             case services[2].filters[1].id:
                 c.onChange = this.props.updateSubjectFormBusinessName;
+                return c;
+            case services[2].filters[2].id:
+                c.onChange = this.props.updateSubjectFormIdCode;
                 return c;
             default:
                 return c;
@@ -426,7 +460,7 @@ class SearchContainer extends React.Component {
                 return true;
             }
             if (this.props.endDateValue && this.props.startDateValue) {
-                return this.props.startDateValue < this.props.endDateValue && this.props.endDateValue <= new Date();
+                return this.props.startDateValue < this.props.endDateValue && !(this.props.endDateValue > tomorrow() || this.props.startDateValue < new Date("0000-12-31"));
             }
             return false;
         }
@@ -445,9 +479,14 @@ export const searchContainerActions = {
     onSelectSubjectFilter: selectSubjectFilter,
     updateSubjectFormFirstName: updateSubjectFormFirstName,
     updateSubjectFormLastName: updateSubjectFormLastName,
+    updateSubjectFormBirthDate: updateSubjectFormBirthDate,
+    updateSubjectFormLoadLuogo: updateSubjectFormLoadLuogo,
+    updateSubjectFormSelectBithPlace: updateSubjectFormSelectBithPlace,
     updateSubjectFormFiscalCode: updateSubjectFormFiscalCode,
+    updateSubjectFormSubjectCode: updateSubjectFormSubjectCode,
     updateSubjectFormVatNumber: updateSubjectFormVatNumber,
     updateSubjectFormBusinessName: updateSubjectFormBusinessName,
+    updateSubjectFormIdCode: updateSubjectFormIdCode,
     loadSubjects: loadSubjectData,
     loadLayer: loadLayer,
     loadLandDetails: loadLandDetailData,
@@ -480,7 +519,10 @@ export const searchContainerSelector = createStructuredSelector({
     subjectForm: subjectFormSelector,
     isTemporalSearchChecked: isTemporalSearchCheckedSelector,
     startDateValue: startDateSelector,
-    endDateValue: endDateSelector
+    endDateValue: endDateSelector,
+    isLoadingTown: isLoadingTownSelector,
+    town: townSelector,
+    selectedBirthPlace: selectedBirthPlaceSelector
 });
 
 export default SearchContainer;

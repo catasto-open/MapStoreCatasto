@@ -60,12 +60,22 @@
                   },
                   "lastName": {
                     "name": "Family Name"
+                  },
+                  "birthDate": {
+                    "name": "Date of bith"
+                  },
+                  "birthPlace": {
+                    "name": "City of birth"
                   }
                 }
               },
               "fiscalCode": {
                 "name": "Fiscal Code",
                 "placeholder": "Filter by fiscal code"
+              },
+              "subjectCode": {
+                  "name": "Subject Code",
+                  "placeholder": "Filter by subject code"
               }
             },
             "columns": {
@@ -87,6 +97,10 @@
               "businessName": {
                 "name": "Business Name",
                 "placeholder": "Filter by business name"
+              },
+              "identificationCode": {
+                  "name": "Identification Code",
+                  "placeholder": "Filter by indentification code"
               }
             },
             "columns": {

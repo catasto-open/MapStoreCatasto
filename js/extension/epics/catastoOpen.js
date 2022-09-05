@@ -6,6 +6,7 @@ import {
     CATASTO_OPEN_DEACTIVATE_PANEL,
     CATASTO_OPEN_SELECT_SERVICE,
     CATASTO_OPEN_SELECT_CITY,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
     CATASTO_OPEN_LOAD_CITY_DATA,
     CATASTO_OPEN_SELECT_SECTION,
     CATASTO_OPEN_LOAD_SECTION_DATA,
@@ -35,6 +36,7 @@ import {
     CATASTO_OPEN_LOAD_LAND_DETAIL_DATA,
     loadError,
     loadCityData,
+    updateSubjectFormLoadedLuogo,
     loadedCityData,
     loadSectionData,
     loadedSectionData,
@@ -56,11 +58,12 @@ import {
     loadedLandDetailData,
     loadedPropertyOwnerData
 } from "@js/extension/actions/catastoOpen";
-import {services, fixDateOutOfRange, srs} from "@js/extension/utils/catastoOpen";
+import {services, fixDateTimeZone, srs} from "@js/extension/utils/catastoOpen";
 import {
     getBuildingByCityCodeAndSheetNumber,
     getBuildingDetails,
     getCityData,
+    getTwonData,
     getLandByCityCodeAndSheetNumber,
     getLandDetails,
     getLegalSubjects,
@@ -133,6 +136,18 @@ export default () => ({
                     .switchMap((response) => Rx.Observable.of(loadedCityData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
+    updateSubjectFormLoadedLuogoEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO)
+            .switchMap((action) => {
+                const state = store.getState();
+                const birthPlaceTxt = action?.birthPlaceTxt || null;
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getTwonData(birthPlaceTxt, geoserverOwsUrl))
+                    .switchMap((response) => Rx.Observable.of(updateSubjectFormLoadedLuogo(response.data)))
+                    .catch(e => Rx.Observable.of(loadError(e.message)));
+            }),
     selectCityEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_SELECT_CITY)
             .switchMap((action) => {
@@ -177,7 +192,7 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const section = state.catastoOpen.selectedSection;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getSheetByCityCode(cityCode, section.value, startDate, endDate, geoserverOwsUrl))
@@ -208,7 +223,7 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const section = state.catastoOpen.selectedSheet.feature.properties.section;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getLandByCityCodeAndSheetNumber(cityCode, sheetNumber, section, startDate, endDate, geoserverOwsUrl))
@@ -231,7 +246,7 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const section = state.catastoOpen.selectedSheet.feature.properties.section;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getBuildingByCityCodeAndSheetNumber(cityCode, sheetNumber, section, startDate, endDate, geoserverOwsUrl))
@@ -257,13 +272,16 @@ export default () => ({
             .switchMap((action) => {
                 const state = store.getState();
                 const naturalSubject = action.subjectForm;
+                const subjectCode = naturalSubject?.subjectCode ? naturalSubject.subjectCode : null;
                 const fiscalCode = naturalSubject?.fiscalCode ? "\'" + naturalSubject.fiscalCode + "\'" : null;
                 const firstName = naturalSubject?.firstName ? "\'" + naturalSubject.firstName.trim() + "\'" : null;
                 const lastName = naturalSubject?.lastName ?  "\'" + naturalSubject.lastName.replace("'", "`").trim() + "\'" : null;
+                const birthDate = naturalSubject?.birthDate ? "\'" + fixDateTimeZone(naturalSubject.birthDate).toISOString().slice(0, 10) + "\'" : null;
+                const birthPlace = state.catastoOpen?.selectedBirthPlace ? state.catastoOpen.selectedBirthPlace.value : null;
                 const backend = backendSelector(state);
-                var geoserverOwsUrl = backend.url;
+                let geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() => getNaturalSubjects(firstName, lastName, fiscalCode, geoserverOwsUrl))
+                return Rx.Observable.defer(() => getNaturalSubjects(firstName, lastName, birthDate, birthPlace, fiscalCode, subjectCode, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedNaturalSubjectData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -277,12 +295,13 @@ export default () => ({
             .switchMap((action) => {
                 const state = store.getState();
                 const legalSubject = action.subjectForm;
+                const identificationCode = legalSubject?.identificationCode ? legalSubject.identificationCode : null;
                 const vatNumber = (legalSubject?.vatNumber) ? "\'" + legalSubject.vatNumber + "\'" : null;
                 const businessName = (legalSubject?.businessName) ? "\'" + legalSubject.businessName.trim() + "\'" : null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() => getLegalSubjects(vatNumber, businessName, geoserverOwsUrl))
+                return Rx.Observable.defer(() => getLegalSubjects(vatNumber, businessName, identificationCode, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLegalSubjectData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -298,7 +317,7 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 return Rx.Observable.defer(() => getPropertyBySubject(action?.subject?.subjects, action?.subject?.subjectType, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSubjectPropertyData(response.data)))
@@ -358,7 +377,7 @@ export default () => ({
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, startDate, endDate, geoserverOwsUrl))
@@ -379,7 +398,7 @@ export default () => ({
                 const selectedLandNumber = state.catastoOpen?.selectedLand?.number;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() =>  getLandDetails(selectedCityCode, selectedSheetNumber, selectedLandNumber, startDate, endDate, geoserverOwsUrl))
@@ -399,7 +418,7 @@ export default () => ({
                 const property = action?.property;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateOutOfRange(state.catastoOpen.startDate.toISOString().slice(0, 10)) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() =>  getPropertyOwners(property, cityCode, startDate, endDate, geoserverOwsUrl))

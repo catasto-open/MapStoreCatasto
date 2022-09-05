@@ -61,13 +61,23 @@
                   },
                   "lastName": {
                     "name": "Cognome"
+                  },
+                  "birthDate": {
+                    "name": "Data di nascita"
+                  },
+                  "birthPlace": {
+                    "name": "Comune di nascita"
                   }
                 }
               },
               "fiscalCode": {
                 "name": "Codice Fiscale",
                 "placeholder": "Filtra per codice fiscale"
-              }
+                },
+              "subjectCode": {
+                    "name": "Codice Soggetto",
+                    "placeholder": "Filtra per codice soggeto"
+                }
             },
             "columns": {
               "lastName": "Cognome",
@@ -88,6 +98,10 @@
               "businessName": {
                 "name": "Ragione Sociale",
                 "placeholder": "Filtra per ragione sociale"
+              },
+              "identificationCode": {
+                  "name": "Codice Identificativo",
+                  "placeholder": "Filtra per codice identificativo"
               }
             },
             "columns": {
