@@ -45,7 +45,42 @@
                 "zoomTooltip": "Zoom to building",
                 "detailTooltip": "Show building details"
               }
-            }
+          },
+          "filtersTypes": {
+              "immobile": {
+                  "placeholder": "Filter by properties"
+              },
+              "immobilebyadd": {
+                  "placeholder": "Filter by address",
+                  "filters": {
+                      "toponym": {
+                          "name": "Toponym",
+                          "placeholder": "VIA, VIALLE, ..."
+                      },
+                      "addressName": {
+                          "name": "Address Name",
+                          "placeholder": "Enter the address"
+                      },
+                      "ncivico": {
+                          "name": "House Number",
+                          "placeholder": "Enter the house number"
+                      }
+                  }
+              },
+              "immobilebycode": {
+                  "placeholder": "Filter by property code",
+                  "filters": {
+                      "immobileType": {
+                          "name": "Property Type",
+                          "placeholder": "Choose the property type"
+                      },
+                      "immobileCode": {
+                          "name": "Property Code",
+                          "placeholder": "Enter the property code"
+                      }
+                  }
+              }
+          }
           },
           "naturalSubjects": {
             "name": "Natural Subjects",
@@ -158,6 +193,9 @@
           "serviceSelect": {
             "placeholder": "Select a search filter"
           }
+        },
+        "typesOfImmobileSearch": {
+            "placeholder": "Select a type of search filter"
         },
         "temporalSearch" : {
             "label": "Temporal search",

@@ -6,11 +6,20 @@ import Message from '@mapstore/components/I18N/Message';
 import Select from 'react-select';
 import {buildingLayer, geomFeatureToLayer, landLayer, services, sheetLayer, tomorrow} from "@js/extension/utils/catastoOpen";
 import SearchFilter from "@js/extension/components/search/SearchFilter";
+import FormCol from '@js/extension/components/search/FormCol';
 import {
     loadCityData,
     selectCity,
+    loadToponym,
+    selectToponym,
+    setAddressTxt,
+    setHouseNumber,
+    submitSearch,
+    selectImmType,
+    setImmCode,
     selectSection,
     selectService,
+    selectSearchImmobileType,
     selectSheet,
     selectSubjectFilter,
     updateSubjectFormFirstName,
@@ -36,7 +45,15 @@ import {
 } from "@js/extension/actions/catastoOpen";
 import {
     selectedServiceSelector,
+    selectedSearchImmTypeSelector,
     citySelector,
+    toponymSelector,
+    isLoadingToponymSelector,
+    selectedToponymSelector,
+    isValidInputOnImmAddressSelector,
+    hasSubmitedSearchSelector,
+    selectedImmTypeSelector,
+    isValidInputOnImmCodeSelector,
     selectedCitySelector,
     isLoadingCitySelector,
     sectionSelector,
@@ -69,11 +86,27 @@ class SearchContainer extends React.Component {
     static propTypes = {
         onSelectService: PropTypes.func,
         selectedService: PropTypes.object,
+        onSelectSearchImmType: PropTypes.func,
+        selectedSearchImmType: PropTypes.object,
         cities: PropTypes.array,
         loadCities: PropTypes.func,
         isLoadingCities: PropTypes.bool,
         onSelectCity: PropTypes.func,
         selectedCity: PropTypes.object,
+        loadToponym: PropTypes.func,
+        isLoadingToponym: PropTypes.bool,
+        onSelectToponym: PropTypes.func,
+        toponyms: PropTypes.array,
+        selectedToponym: PropTypes.object,
+        onChangeAddressTxt: PropTypes.func,
+        onChangeHouseNumber: PropTypes.func,
+        isValidInputOnImmAddress: PropTypes.bool,
+        isValidInputOnImmCode: PropTypes.bool,
+        onSubmitSearch: PropTypes.func,
+        hasSubmitedSearch: PropTypes.bool,
+        onSelectImmType: PropTypes.func,
+        onChangeImmCode: PropTypes.func,
+        selectedImmType: PropTypes.object,
         sections: PropTypes.array,
         isLoadingSections: PropTypes.bool,
         onSelectSection: PropTypes.func,
@@ -123,7 +156,14 @@ class SearchContainer extends React.Component {
 
     static defaultProps = {
         selectedService: null,
+        selectedSearchImmType: null,
         cities: [],
+        toponyms: [],
+        selectedToponym: null,
+        isLoadingToponym: false,
+        isValidInputOnImmAddress: false,
+        hasSubmitedSearch: false,
+        selectedImmType: null,
         selectedCity: null,
         sections: [],
         selectedSection: null,
@@ -213,11 +253,218 @@ class SearchContainer extends React.Component {
                     />
                 </>
                 )}
+                {this.props.selectedService?.value === services[0].id ?
+                    <Select
+                        style={{marginBottom: 10}}
+                        clearable={false}
+                        searchable={false}
+                        placeholder={<Message msgId="extension.catastoOpenPanel.typesOfImmobileSearch.placeholder"/>}
+                        options={this.searchImmTypeOptions()}
+                        onChange={this.props.onSelectSearchImmType}
+                        value={this.props.selectedSearchImmType}>
+                    </Select> :
+                    null
+                }
             </>);
     }
 
-    renderPropertySearchFilter = () => {
+    renderSwitchImmobile = () => {
         const style = {marginBottom: 10};
+        switch (this.props.selectedSearchImmType?.value) {
+        case services[0].filters[0].id:
+            return (
+                <>
+                    <SearchFilter
+                        active={!!this.props.selectedCity}
+                        clearable={!this.props.selectedSheet}
+                        isLoading={this.props.isLoadingSections}
+                        options={this.sectionOptions()}
+                        onChange={(val) => this.props.onSelectSection(val && val.value ? val : null)}
+                        value={this.props.selectedSection}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.sections.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.sections.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sections.noResultsText"}
+                    />
+                    <SearchFilter
+                        buttonStyle={style}
+                        selectStyle={style}
+                        active={!!this.props.selectedSection}
+                        clearable={!this.props.selectedLand && !this.props.selectedBuilding}
+                        isLoading={this.props.isLoadingSheets}
+                        options={this.geomOptions(this.props.sheets)}
+                        onChange={(val) => this.props.onSelectSheet(val && val.value ? val : null)}
+                        value={this.props.selectedSheet}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.sheets.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.sheets.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sheets.noResultsText"}
+                        zoomActive={!!this.props.selectedSheet}
+                        zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.sheets.zoomTooltip"}
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedSheet, sheetLayer))}/>
+                    <SearchFilter
+                        buttonStyle={style}
+                        selectStyle={style}
+                        active={!!this.props.selectedSheet}
+                        clearable
+                        isLoading={this.props.isLoadingLands}
+                        options={this.geomOptions(this.props.lands)}
+                        onChange={this.props.onSelectLand}
+                        value={this.props.selectedLand}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
+                        zoomActive={!!this.props.selectedLand}
+                        zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
+                        detailActive
+                        onDetailClick={this.props.loadLandDetails}
+                        detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.detailTooltip"}
+                    />
+                    <SearchFilter
+                        buttonStyle={style}
+                        selectStyle={style}
+                        active={!!this.props.selectedSheet}
+                        clearable
+                        isLoading={this.props.isLoadingBuildings}
+                        options={this.geomOptions(this.props.buildings)}
+                        onChange={this.props.onSelectBuilding}
+                        value={this.props.selectedBuilding}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
+                        zoomActive={!!this.props.selectedBuilding}
+                        zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
+                        detailActive
+                        onDetailClick={this.props.loadBuildingDetails}
+                        detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
+                    />
+                </>
+            );
+        case services[0].filters[1].id:
+            return (
+                <>
+                    <FormCol
+                        active={!!this.props.selectedCity}
+                        style={style}
+                        title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.toponym.name"}
+                        isSelect
+                        isLoading={this.props.isLoadingToponym}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.toponym.placeholder"}
+                        options={this.toponymOptions(this.props.toponyms)}
+                        onInputChange={this.props.loadToponym}
+                        onSelect={this.props.onSelectToponym}
+                        value={this.props.selectedToponym}
+                    />
+                    <FormCol
+                        active={!!this.props.selectedToponym}
+                        style={style}
+                        title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.addressName.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.addressName.placeholder"}
+                        onFormChange={this.props.onChangeAddressTxt}
+                    />
+                    <FormCol
+                        active={!!this.props.selectedToponym}
+                        style={style}
+                        title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.ncivico.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.ncivico.placeholder"}
+                        onFormChange={this.props.onChangeHouseNumber}
+                        showSearchButton
+                        activeButton={this.props.isValidInputOnImmAddress}
+                        onSubmitForm={() => this.props.onSubmitSearch(this.props.selectedSearchImmType.value)}
+                        buttonTxt={"extension.catastoOpenPanel.searchButton"}
+                    />
+                    <SearchFilter
+                        buttonStyle={style}
+                        selectStyle={style}
+                        active={this.props.hasSubmitedSearch}
+                        clearable
+                        isLoading={this.props.isLoadingBuildings}
+                        options={this.geomOptions(this.props.buildings)}
+                        onChange={(val) => this.props.onSelectBuilding(val && val.value ? val : null)}
+                        value={this.props.selectedBuilding}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
+                        zoomActive={!!this.props.selectedBuilding}
+                        zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
+                        detailActive
+                        onDetailClick={this.props.loadBuildingDetails}
+                        detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
+                    />
+                </>
+            );
+        case services[0].filters[2].id:
+            return (
+                <>
+                    <FormCol
+                        active={!!this.props.selectedCity}
+                        style={style}
+                        title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileType.name"}
+                        isSelect
+                        isLoading={false}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileType.placeholder"}
+                        options={this.immobileTypeOptions()}
+                        onSelect={this.props.onSelectImmType}
+                        value={this.props.selectedImmType}
+                    />
+                    <FormCol
+                        active={!!this.props.selectedImmType}
+                        style={style}
+                        title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileCode.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileCode.placeholder"}
+                        onFormChange={this.props.onChangeImmCode}
+                        showSearchButton
+                        activeButton={this.props.isValidInputOnImmCode}
+                        onSubmitForm={() => this.props.onSubmitSearch(this.props.selectedSearchImmType.value)}
+                        buttonTxt={"extension.catastoOpenPanel.searchButton"}
+                    />
+                    <SearchFilter
+                        buttonStyle={style}
+                        selectStyle={style}
+                        active={this.props.hasSubmitedSearch && this.props.selectedImmType?.value === services[0].filters[0].filters[0].id}
+                        clearable
+                        isLoading={this.props.isLoadingLands}
+                        options={this.geomOptions(this.props.lands)}
+                        onChange={this.props.onSelectLand}
+                        value={this.props.selectedLand}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
+                        zoomActive={!!this.props.selectedLand}
+                        zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
+                        detailActive
+                        onDetailClick={this.props.loadLandDetails}
+                        detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.detailTooltip"}
+                    />
+                    <SearchFilter
+                        buttonStyle={style}
+                        selectStyle={style}
+                        active={this.props.hasSubmitedSearch && this.props.selectedImmType?.value === services[0].filters[0].filters[1].id}
+                        clearable
+                        isLoading={this.props.isLoadingBuildings}
+                        options={this.geomOptions(this.props.buildings)}
+                        onChange={(val) => this.props.onSelectBuilding(val && val.value ? val : null)}
+                        value={this.props.selectedBuilding}
+                        title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
+                        placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
+                        noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
+                        zoomActive={!!this.props.selectedBuilding}
+                        zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
+                        detailActive
+                        onDetailClick={this.props.loadBuildingDetails}
+                        detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
+                    />
+                </>
+            );
+        default:
+            return null;
+        }
+    }
+
+    renderPropertySearchFilter = () => {
         return (
             <div>
                 <SearchFilter
@@ -232,70 +479,7 @@ class SearchContainer extends React.Component {
                     placeholder={"extension.catastoOpenPanel.services.parcels.filters.cities.placeholder"}
                     noResultsText={"extension.catastoOpenPanel.services.parcels.filters.cities.noResultsText"}
                 />
-                <SearchFilter
-                    active={!!this.props.selectedCity}
-                    clearable={!this.props.selectedSheet}
-                    isLoading={this.props.isLoadingSections}
-                    options={this.sectionOptions()}
-                    onChange={(val) => this.props.onSelectSection(val && val.value ? val : null)}
-                    value={this.props.selectedSection}
-                    title={"extension.catastoOpenPanel.services.parcels.filters.sections.name"}
-                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.sections.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sections.noResultsText"}
-                />
-                <SearchFilter
-                    buttonStyle={style}
-                    selectStyle={style}
-                    active={!!this.props.selectedSection}
-                    clearable={!this.props.selectedLand && !this.props.selectedBuilding}
-                    isLoading={this.props.isLoadingSheets}
-                    options={this.geomOptions(this.props.sheets)}
-                    onChange={(val) => this.props.onSelectSheet(val && val.value ? val : null)}
-                    value={this.props.selectedSheet}
-                    title={"extension.catastoOpenPanel.services.parcels.filters.sheets.name"}
-                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.sheets.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sheets.noResultsText"}
-                    zoomActive={!!this.props.selectedSheet}
-                    zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.sheets.zoomTooltip"}
-                    onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedSheet, sheetLayer))}/>
-                <SearchFilter
-                    buttonStyle={style}
-                    selectStyle={style}
-                    active={!!this.props.selectedSheet}
-                    clearable
-                    isLoading={this.props.isLoadingLands}
-                    options={this.geomOptions(this.props.lands)}
-                    onChange={(val) => this.props.onSelectLand(val && val.value ? val : null)}
-                    value={this.props.selectedLand}
-                    title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
-                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
-                    zoomActive={!!this.props.selectedLand}
-                    zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
-                    onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
-                    detailActive
-                    onDetailClick={this.props.loadLandDetails}
-                    detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.detailTooltip"}
-                />
-                <SearchFilter
-                    buttonStyle={style}
-                    selectStyle={style}
-                    active={!!this.props.selectedSheet}
-                    clearable
-                    isLoading={this.props.isLoadingBuildings}
-                    options={this.geomOptions(this.props.buildings)}
-                    onChange={(val) => this.props.onSelectBuilding(val && val.value ? val : null)}
-                    value={this.props.selectedBuilding}
-                    title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
-                    placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
-                    noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
-                    zoomActive={!!this.props.selectedBuilding}
-                    zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
-                    onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
-                    detailActive
-                    onDetailClick={this.props.loadBuildingDetails}
-                    detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
-                />
+                {this.props.selectedService?.value === services[0].id && this.renderSwitchImmobile()}
             </div>
         );
     }
@@ -358,6 +542,13 @@ class SearchContainer extends React.Component {
             }));
     }
 
+    searchImmTypeOptions = () => {
+        return services[0].filters.map((item) => ({
+            value: item.id,
+            label: <Message msgId={item.placeholder}/>
+        }));
+    }
+
     cityOptions = () => {
         return this.props.cities.map((c) => (
             {
@@ -366,6 +557,13 @@ class SearchContainer extends React.Component {
                 code: c.code
             }
         ));
+    };
+
+    toponymOptions = (toponyms) => {
+        return toponyms ? toponyms.map((t) => ({
+            value: t.code,
+            label: t.toponym
+        })) : {};
     };
 
     sectionOptions = () => {
@@ -399,6 +597,13 @@ class SearchContainer extends React.Component {
             ...f,
             value: f.id,
             label: <Message msgId={f.placeholder}/>
+        }));
+    };
+
+    immobileTypeOptions = () => {
+        return services[0].filters[0].filters.map((item) => ({
+            value: item.id,
+            label: <Message msgId={item.name}/>
         }));
     };
 
@@ -470,8 +675,16 @@ class SearchContainer extends React.Component {
 
 export const searchContainerActions = {
     onSelectService: selectService,
+    onSelectSearchImmType: selectSearchImmobileType,
     onSelectCity: selectCity,
     loadCities: loadCityData,
+    loadToponym: loadToponym,
+    onSelectToponym: selectToponym,
+    onChangeAddressTxt: setAddressTxt,
+    onChangeHouseNumber: setHouseNumber,
+    onSubmitSearch: submitSearch,
+    onSelectImmType: selectImmType,
+    onChangeImmCode: setImmCode,
     onSelectSection: selectSection,
     onSelectSheet: selectSheet,
     onSelectLand: selectLand,
@@ -499,8 +712,16 @@ export const searchContainerActions = {
 
 export const searchContainerSelector = createStructuredSelector({
     selectedService: selectedServiceSelector,
+    selectedSearchImmType: selectedSearchImmTypeSelector,
     isLoadingCities: isLoadingCitySelector,
     cities: citySelector,
+    toponyms: toponymSelector,
+    isLoadingToponym: isLoadingToponymSelector,
+    selectedToponym: selectedToponymSelector,
+    isValidInputOnImmAddress: isValidInputOnImmAddressSelector,
+    hasSubmitedSearch: hasSubmitedSearchSelector,
+    selectedImmType: selectedImmTypeSelector,
+    isValidInputOnImmCode: isValidInputOnImmCodeSelector,
     selectedCity: selectedCitySelector,
     isLoadingSections: isLoadingSectionSelector,
     sections: sectionSelector,

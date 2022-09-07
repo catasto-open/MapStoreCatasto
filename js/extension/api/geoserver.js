@@ -2,13 +2,17 @@ import axios from "axios";
 
 import {
     cityLayer,
+    toponymLayer,
+    indirizzoImmLayer,
     townLayer,
     sectionLayer,
     sheetLayer,
     srsName,
     srs,
     landLayer,
+    landByCodeLayer,
     buildingLayer,
+    buildingByCodeLayer,
     naturalSubjectLayer,
     naturalSubjectLayerWBday,
     legalSubjectLayer,
@@ -20,11 +24,14 @@ import {
     sectionLayerTemp,
     sheetLayerTemp,
     landLayerTemp,
+    landByCodeLayerTemp,
     buildingLayerTemp,
+    buildingByCodeLayerTemp,
     subjectPropertyLayerTemp,
     landDetailLayerTemp,
     buildingDetailLayerTemp,
-    propertyOwnerLayerTemp
+    propertyOwnerLayerTemp,
+    indirizzoImmLayerTemp
 } from "@js/extension/utils/catastoOpen";
 
 const service = 'WFS';
@@ -261,11 +268,82 @@ export const getPropertyOwners = (property, cityCode, startDate, endDate, geoser
         typename: propertyOwnerLayer
     };
     if (startDate !== null && endDate !== null) {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'property:' + property.property + ';' + 'propertyType:' + property.propertyType + ';' + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'property:' + property.property + ';' + 'propertyType:' + property.propertyType + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
         requestParams.typename = propertyOwnerLayerTemp;
     } else {
         requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'property:' + property.property + ';' + 'propertyType:' + property.propertyType;
         requestParams.typename = propertyOwnerLayer;
     }
     return axios.get(geoserverOwsUrl, { params: requestParams});
+};
+
+export const getToponym = (toponymTxt, geoserverOwsUrl) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: request,
+        outputFormat: outputFormat
+    };
+    if (toponymTxt !== null) {
+        requestParams.viewparams = 'toponym:' + toponymTxt;
+    }
+    requestParams.typename = toponymLayer;
+    return axios.get(geoserverOwsUrl,  { params: requestParams});
+};
+
+export const getBuildingByAddress = (cityCode, toponym, addressName, houseNumber, startDate, endDate, geoserverOwsUrl) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: request,
+        outputFormat: outputFormat,
+        srsName: srsName,
+        srs: srs
+    };
+    requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'toponymCode:' + toponym + ';' + 'addressName:' + addressName + ';' + 'houseNumber:' + houseNumber;
+    if (startDate !== null && endDate !== null) {
+        requestParams.viewparams += ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.typename = indirizzoImmLayerTemp;
+    } else {
+        requestParams.typename = indirizzoImmLayer;
+    }
+    return axios.get(geoserverOwsUrl, { params: requestParams });
+};
+
+export const getLandByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: request,
+        outputFormat: outputFormat,
+        srsName: srsName,
+        srs: srs
+    };
+    requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'immobileCode:' + immobileCode;
+    if (startDate !== null && endDate !== null) {
+        requestParams.viewparams += ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.typename = landByCodeLayerTemp;
+    } else {
+        requestParams.typename = landByCodeLayer;
+    }
+    return axios.get(geoserverOwsUrl, { params: requestParams });
+};
+
+export const getBuildingByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: request,
+        outputFormat: outputFormat,
+        srsName: srsName,
+        srs: srs
+    };
+    requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'immobileCode:' + immobileCode;
+    if (startDate !== null && endDate !== null) {
+        requestParams.viewparams += ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.typename = buildingByCodeLayerTemp;
+    } else {
+        requestParams.typename = buildingByCodeLayer;
+    }
+    return axios.get(geoserverOwsUrl, { params: requestParams });
 };

@@ -1,5 +1,6 @@
 import {
     CATASTO_OPEN_SELECT_SERVICE,
+    CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE,
     CATASTO_OPEN_LOAD_CITY_DATA,
     CATASTO_OPEN_LOADED_CITY_DATA,
     CATASTO_OPEN_SELECT_CITY,
@@ -50,7 +51,15 @@ import {
     CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED,
     CATASTO_OPEN_START_DATE_SELECTED,
     CATASTO_OPEN_END_DATE_SELECTED,
-    CATASTO_OPEN_SET_MESSAGE_FOR_USER
+    CATASTO_OPEN_SET_MESSAGE_FOR_USER,
+    CATASTO_OPEN_IMMOBILE_SELECT_TOPONIMO,
+    CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
+    CATASTO_OPEN_IMMOBILE_LOADED_TOPONIMO,
+    CATASTO_OPEN_IMMOBILE_SET_ADDRESS,
+    CATASTO_OPEN_IMMOBILE_SET_NCIVICO,
+    CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
+    CATASTO_OPEN_IMMOBILE_SET_CODICE,
+    CATASTO_OPEN_IMMOBILE_SELECT_TYPE
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -78,6 +87,30 @@ export default function(state = {}, action) {
             } : {
                 ...state,
                 selectedService: action?.service,
+                error: false
+            };
+    case CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE:
+        const searchImmTypeChanged = state?.selectedSearchImmType && state.selectedSearchImmType?.id !== action?.serviceImmType?.value;
+        return searchImmTypeChanged ?
+            {
+                ...state,
+                backend: state?.backend,
+                selectedSearchImmType: action?.serviceImmType,
+                layer: state?.layer,
+                selectedCity: null,
+                selectedSection: null,
+                selectedSheet: null,
+                selectedLand: null,
+                selectedBuilding: null,
+                searchResults: null,
+                searchResultType: null,
+                loadedResults: false,
+                selectedToponym: null,
+                selectedImmType: null,
+                hasSubmitedSearch: false
+            } : {
+                ...state,
+                selectedSearchImmType: action?.serviceImmType,
                 error: false
             };
     case CATASTO_OPEN_LOAD_ERROR:
@@ -118,6 +151,9 @@ export default function(state = {}, action) {
             searchResults: null,
             searchResultType: null,
             loadedResults: false,
+            selectedToponym: null,
+            selectedImmType: null,
+            hasSubmitedSearch: false,
             cityChanged
         } : {
             ...state,
@@ -434,7 +470,10 @@ export default function(state = {}, action) {
             selectedBuilding: null,
             searchResults: null,
             searchResultType: null,
-            loadedResults: false
+            loadedResults: false,
+            selectedToponym: null,
+            selectedImmType: null,
+            hasSubmitedSearch: false
         };
     case CATASTO_OPEN_START_DATE_SELECTED:
         return {
@@ -449,7 +488,10 @@ export default function(state = {}, action) {
             selectedBuilding: null,
             searchResults: null,
             searchResultType: null,
-            loadedResults: false
+            loadedResults: false,
+            selectedToponym: null,
+            selectedImmType: null,
+            hasSubmitedSearch: false
         };
     case CATASTO_OPEN_END_DATE_SELECTED:
         return {
@@ -464,7 +506,75 @@ export default function(state = {}, action) {
             selectedBuilding: null,
             searchResults: null,
             searchResultType: null,
-            loadedResults: false
+            loadedResults: false,
+            selectedToponym: null,
+            selectedImmType: null,
+            hasSubmitedSearch: false
+        };
+    case CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO:
+        return {
+            ...state,
+            isLoadingToponym: true
+        };
+    case CATASTO_OPEN_IMMOBILE_LOADED_TOPONIMO:
+        return {
+            ...state,
+            toponyms: action.toponyms,
+            isLoadingToponym: false
+        };
+    case CATASTO_OPEN_IMMOBILE_SELECT_TOPONIMO:
+        return {
+            ...state,
+            selectedToponym: action.toponym
+        };
+    case CATASTO_OPEN_IMMOBILE_SET_ADDRESS:
+        return {
+            ...state,
+            addressNameRawTxt: action.addressTxt,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            hasSubmitedSearch: false
+        };
+    case CATASTO_OPEN_IMMOBILE_SET_NCIVICO:
+        return {
+            ...state,
+            houseNumber: action.houseNumber,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            hasSubmitedSearch: false
+        };
+    case CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH:
+        return {
+            ...state,
+            hasSubmitedSearch: true
+        };
+    case CATASTO_OPEN_IMMOBILE_SELECT_TYPE:
+        return {
+            ...state,
+            selectedImmType: action.immobileType,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            hasSubmitedSearch: false
+        };
+    case CATASTO_OPEN_IMMOBILE_SET_CODICE:
+        return {
+            ...state,
+            immobileCode: action.immobileCode,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            hasSubmitedSearch: false
         };
     default:
         return state;

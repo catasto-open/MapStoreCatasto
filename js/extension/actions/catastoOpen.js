@@ -12,6 +12,7 @@ export const CATASTO_OPEN_DEACTIVATE_PANEL = 'CATASTO_OPEN:DEACTIVATE_PANEL';
 export const CATASTO_OPEN_LOAD_ERROR = 'CATASTO_OPEN:LOAD_ERROR';
 export const CATASTO_OPEN_SET_MESSAGE_FOR_USER = 'CATASTO_OPEN:SET_MESSAGE_FOR_USER';
 export const CATASTO_OPEN_SELECT_SERVICE = 'CATASTO_OPEN:SELECT_SERVICE';
+export const CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE = 'CATASTO_OPEN:SELECT_SEARCH_IMM_TYPE';
 export const CATASTO_OPEN_RESUME_PREVIOUS_SEARCH_RESULTS = 'CATASTO_OPEN:RESUME_PREVIOUS_SEARCH_RESULTS';
 export const CATASTO_OPEN_RELOAD_SEARCH_RESULTS = 'CATASTO_OPEN:UPDATE_RELOAD_RESULTS';
 export const CATASTO_OPEN_RELOADED_SEARCH_RESULTS = 'CATASTO_OPEN:UPDATE_RELOADED_RESULTS';
@@ -62,6 +63,14 @@ export const CATASTO_OPEN_SET_BACKEND = 'CATASTO_OPEN:SET_BACKEND';
 export const CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED = 'CATASTO_OPEN:TEMPORAL_SEARCH_CHECKED';
 export const CATASTO_OPEN_START_DATE_SELECTED = 'CATASTO_OPEN:START_DATE_SELECTED';
 export const CATASTO_OPEN_END_DATE_SELECTED = 'CATASTO_OPEN:END_DATE_SELECTED';
+export const CATASTO_OPEN_IMMOBILE_SELECT_TOPONIMO = 'CATASTO_OPEN:IMMOBILE_SELECT_TOPONIMO';
+export const CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO = 'CATASTO_OPEN:IMMOBILE_LOAD_TOPONIMO';
+export const CATASTO_OPEN_IMMOBILE_LOADED_TOPONIMO = 'CATASTO_OPEN:IMMOBILE_LOADED_TOPONIMO';
+export const CATASTO_OPEN_IMMOBILE_SET_ADDRESS = 'CATASTO_OPEN:IMMOBILE_SET_ADDRESS';
+export const CATASTO_OPEN_IMMOBILE_SET_NCIVICO = 'CATASTO_OPEN:IMMOBILE_SET_NCIVICO';
+export const CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH = 'CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH';
+export const CATASTO_OPEN_IMMOBILE_SELECT_TYPE = 'CATASTO_OPEN:IMMOBILE_SELECT_TYPE';
+export const CATASTO_OPEN_IMMOBILE_SET_CODICE = 'CATASTO_OPEN_IMMOBILE_SET_CODICE';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -132,6 +141,13 @@ export function selectService(service) {
     return {
         type: CATASTO_OPEN_SELECT_SERVICE,
         service
+    };
+}
+
+export function selectSearchImmobileType(serviceImmType) {
+    return {
+        type: CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE,
+        serviceImmType
     };
 }
 
@@ -459,5 +475,62 @@ export function endDateSelected(endDate) {
     return {
         type: CATASTO_OPEN_END_DATE_SELECTED,
         endDate
+    };
+}
+
+export function selectToponym(toponym) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SELECT_TOPONIMO,
+        toponym
+    };
+}
+
+export function loadToponym(toponymTxt) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
+        toponymTxt
+    };
+}
+
+export function loadedToponym(payload) {
+    const toponyms = payload.features.map((item) => (item.properties));
+    return {
+        type: CATASTO_OPEN_IMMOBILE_LOADED_TOPONIMO,
+        toponyms
+    };
+}
+
+export function setAddressTxt(addressTxt) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SET_ADDRESS,
+        addressTxt
+    };
+}
+
+export function setHouseNumber(houseNumber) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SET_NCIVICO,
+        houseNumber
+    };
+}
+
+export function submitSearch(filterType) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
+        filterType
+    };
+}
+
+export function selectImmType(immobileType) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SELECT_TYPE,
+        immobileType
+    };
+}
+
+export function setImmCode(immobileCode) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SET_CODICE,
+        immobileCode
     };
 }

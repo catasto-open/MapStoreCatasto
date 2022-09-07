@@ -6,6 +6,8 @@ import {
     CATASTO_OPEN_DEACTIVATE_PANEL,
     CATASTO_OPEN_SELECT_SERVICE,
     CATASTO_OPEN_SELECT_CITY,
+    CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
+    CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
     CATASTO_OPEN_LOAD_CITY_DATA,
     CATASTO_OPEN_SELECT_SECTION,
@@ -36,6 +38,7 @@ import {
     CATASTO_OPEN_LOAD_LAND_DETAIL_DATA,
     loadError,
     loadCityData,
+    loadedToponym,
     updateSubjectFormLoadedLuogo,
     loadedCityData,
     loadSectionData,
@@ -58,11 +61,12 @@ import {
     loadedLandDetailData,
     loadedPropertyOwnerData
 } from "@js/extension/actions/catastoOpen";
-import {services, fixDateTimeZone, srs} from "@js/extension/utils/catastoOpen";
+import {services, fixDateTimeZone} from "@js/extension/utils/catastoOpen";
 import {
     getBuildingByCityCodeAndSheetNumber,
     getBuildingDetails,
     getCityData,
+    getToponym,
     getTwonData,
     getLandByCityCodeAndSheetNumber,
     getLandDetails,
@@ -71,7 +75,10 @@ import {
     getPropertyBySubject,
     getPropertyOwners,
     getSectionByCityCode,
-    getSheetByCityCode
+    getSheetByCityCode,
+    getBuildingByAddress,
+    getLandByCodiceImm,
+    getBuildingByCodiceImm
 } from "@js/extension/api/geoserver";
 import {addGroup, addLayer, removeNode} from "@mapstore/actions/layers";
 import {zoomToExtent} from "@mapstore/actions/map";
@@ -345,20 +352,11 @@ export default () => ({
                 }
                 const layout = state.maplayout.layout;
                 layout.right = 658;
-                const bbox = {
-                    crs: srs,
-                    bounds: {
-                        minx: Math.min(layer.bbox.bbox[0], layer.bbox.bbox[2]),
-                        miny: Math.min(layer.bbox.bbox[1], layer.bbox.bbox[3]),
-                        maxx: Math.max(layer.bbox.bbox[0], layer.bbox.bbox[2]),
-                        maxy: Math.max(layer.bbox.bbox[1], layer.bbox.bbox[3])
-                    }
-                };
                 return Rx.Observable.of(
                     addGroup(layer.group, undefined, {id: layer.group}),
                     addLayer(layer),
                     updateMapLayout(layout),
-                    zoomToExtent(bbox.bounds, bbox.crs, undefined, null));
+                    zoomToExtent(layer.bbox.bounds, layer.bbox.crs, undefined, null));
             }),
     removeLayerEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_REMOVE_LAYER)
@@ -373,7 +371,7 @@ export default () => ({
             .switchMap(() => {
                 const state = store.getState();
                 const selectedCityCode = state.catastoOpen?.selectedCity?.code;
-                const selectedSheetNumber = state.catastoOpen?.selectedSheet?.number;
+                const selectedSheetNumber = state.catastoOpen?.selectedBuilding?.sheet;
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
@@ -394,7 +392,7 @@ export default () => ({
             .switchMap(() => {
                 const state = store.getState();
                 const selectedCityCode = state.catastoOpen?.selectedCity?.code;
-                const selectedSheetNumber = state.catastoOpen?.selectedSheet?.number;
+                const selectedSheetNumber = state.catastoOpen?.selectedLand?.sheet;
                 const selectedLandNumber = state.catastoOpen?.selectedLand?.number;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
@@ -429,5 +427,55 @@ export default () => ({
         action$.ofType(CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA)
             .switchMap((action) => {
                 return Rx.Observable.of(resultGridLoadRows(action?.propertyOwners));
+            }),
+    loadToponymEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO)
+            .switchMap((action) => {
+                const state = store.getState();
+                const citySearchTxt = action?.toponymTxt ||  null;
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getToponym(citySearchTxt, geoserverOwsUrl))
+                    .switchMap((response) => Rx.Observable.of(loadedToponym(response.data)))
+                    .catch(e => Rx.Observable.of(loadError(e.message)));
+            }),
+    loadImmobileEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH)
+            .switchMap((action) => {
+                const state = store.getState();
+                const backend = backendSelector(state);
+                var geoserverOwsUrl = backend.url;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                const filterType = action.filterType;
+                const cityCode = state?.catastoOpen?.selectedCity?.value;
+                switch (filterType) {
+                case services[0].filters[1].id:
+                    const toponym = state?.catastoOpen?.selectedToponym?.value;
+                    const addressName = state?.catastoOpen?.addressNameRawTxt;
+                    const houseNumber = state?.catastoOpen?.houseNumber;
+                    return Rx.Observable.defer(() => getBuildingByAddress(cityCode, toponym, addressName, houseNumber, startDate, endDate, geoserverOwsUrl))
+                        .switchMap((response) => Rx.Observable.of(loadedBuildingData(response.data)))
+                        .catch(e => Rx.Observable.of(loadError(e.message)));
+                case services[0].filters[2].id:
+                    const immobileCode = state?.catastoOpen?.immobileCode;
+                    const selectedImmType = state?.catastoOpen?.selectedImmType?.value;
+                    switch (selectedImmType) {
+                    case services[0].filters[0].filters[0].id:
+                        return Rx.Observable.defer(() => getLandByCodiceImm(cityCode, immobileCode, startDate, endDate, geoserverOwsUrl))
+                            .switchMap((response) => Rx.Observable.of(loadedLandData(response.data)))
+                            .catch(e => Rx.Observable.of(loadError(e.message)));
+                    case services[0].filters[0].filters[1].id:
+                        return Rx.Observable.defer(() => getBuildingByCodiceImm(cityCode, immobileCode, startDate, endDate, geoserverOwsUrl))
+                            .switchMap((response) => Rx.Observable.of(loadedBuildingData(response.data)))
+                            .catch(e => Rx.Observable.of(loadError(e.message)));
+                    default:
+                        return Rx.Observable.empty();
+                    }
+                default:
+                    return Rx.Observable.empty();
+                }
             })
 });
