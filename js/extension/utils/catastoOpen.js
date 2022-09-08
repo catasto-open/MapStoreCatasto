@@ -11,6 +11,10 @@ export const subjectPropertyLayer = 'CatastoOpenDev:catasto_particelle_soggetto'
 export const landDetailLayer = 'CatastoOpenDev:catasto_dettagli_terreno';
 export const buildingDetailLayer = 'CatastoOpenDev:catasto_dettagli_fabbricato';
 export const propertyOwnerLayer = 'CatastoOpenDev:catasto_titolari_immobile';
+export const toponymLayer = 'CatastoOpenDev:catasto_toponimo';
+export const indirizzoImmLayer = 'CatastoOpenDev:catasto_indrizzo_immobile';
+export const buildingByCodeLayer = 'CatastoOpenDev:catasto_fabbricati_bcodice';
+export const landByCodeLayer = 'CatastoOpenDev:catasto_terreni_bcodice';
 
 export const cityLayerTemp = 'CatastoOpenDev:catasto_comuni_temp';
 export const sectionLayerTemp = 'CatastoOpenDev:catasto_sezioni_temp';
@@ -21,6 +25,9 @@ export const subjectPropertyLayerTemp = 'CatastoOpenDev:catasto_particelle_sogge
 export const landDetailLayerTemp = 'CatastoOpenDev:catasto_dettagli_terreno_temp';
 export const buildingDetailLayerTemp = 'CatastoOpenDev:catasto_dettagli_fabbricato_temp';
 export const propertyOwnerLayerTemp = 'CatastoOpenDev:catasto_titolari_immobile_temp';
+export const indirizzoImmLayerTemp = 'CatastoOpenDev:catasto_indrizzo_immobile_temp';
+export const buildingByCodeLayerTemp = 'CatastoOpenDev:catasto_fabbricati_bcodice_temp';
+export const landByCodeLayerTemp = 'CatastoOpenDev:catasto_terreni_bcodice_temp';
 
 export const naturalSubjectType = 'P';
 export const legalSubjectType = 'G';
@@ -35,12 +42,50 @@ export const services = [
         placeholder: "extension.catastoOpenPanel.services.parcels.placeholder",
         filters: [
             {
-                id: "LANDS",
-                name: "extension.catastoOpenPanel.services.parcels.filters.lands.name"
+                id: "IMMOBILE",
+                placeholder: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobile.placeholder",
+                filters: [
+                    {
+                        id: "LANDS",
+                        name: "extension.catastoOpenPanel.services.parcels.filters.lands.name"
+                    },
+                    {
+                        id: "BUILDINGS",
+                        name: "extension.catastoOpenPanel.services.parcels.filters.buildings.name"
+                    }
+                ]
             },
             {
-                id: "BUILDINGS",
-                name: "extension.catastoOpenPanel.services.parcels.filters.buildings.name"
+                id: "IMMOBILEBYADD",
+                placeholder: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.placeholder",
+                filters: [
+                    {
+                        id: "TOPONYM",
+                        name: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.toponym.name"
+                    },
+                    {
+                        id: "ADDRESS-NAME",
+                        name: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.addressName.name"
+                    },
+                    {
+                        id: "NCIVICO",
+                        name: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.ncivico.name"
+                    }
+                ]
+            },
+            {
+                id: "IMMOBILEBYCODE",
+                placeholder: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.placeholder",
+                filters: [
+                    {
+                        id: "IMMTYPE",
+                        name: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileType.name"
+                    },
+                    {
+                        id: "IMMCODE",
+                        name: "extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileCode.name"
+                    }
+                ]
             }
         ],
         state_identifier: "parcels"
@@ -129,6 +174,7 @@ export const geomFeatureParser = (feature) => {
         number: feature?.properties?.number,
         section: feature?.properties?.section,
         id: feature?.id,
+        sheet: feature?.properties?.sheet,
         feature
     };
 };
@@ -213,42 +259,38 @@ const layerTitle = (layer, layerType) => {
 };
 
 export const geomFeatureToLayer = (geom, layerType) => {
-    let coordinates = geom?.feature?.properties?.extent?.coordinates;
-    coordinates = coordinates && coordinates?.length > 0 ? coordinates[0] : false;
-    let extent = null;
-    if (coordinates) {
-        extent = [
-            coordinates[0][0],
-            coordinates[0][1],
-            coordinates[2][0],
-            coordinates[2][1]
-        ];
-    }
+    const hasbbox = geom?.feature?.bbox?.length === 4 ? true : false;
     let layer = {};
-    layer.layerType = layerType;
-    layer.type = "vector";
-    layer.visibility = true;
-    layer.id = geom.feature.id;
-    layer.hideLoading = true;
-    layer.bbox = {
-        bbox: extent,
-        crs: srs
-    };
-    layer.features = [geom.feature];
-    if (layerType === subjectPropertyLayer) {
-        if (geom?.propertyType === subjectLandPropertyType) {
-            layer.style = layerStyle(landLayer);
-        } else {
-            if (geom?.propertyType === subjectBuildingPropertyType) {
-                layer.style = layerStyle(buildingLayer);
+    if (hasbbox) {
+        layer.layerType = layerType;
+        layer.type = "vector";
+        layer.visibility = true;
+        layer.id = geom.feature.id;
+        layer.hideLoading = true;
+        layer.bbox = {
+            bounds: {
+                minx: geom.feature.bbox[0],
+                miny: geom.feature.bbox[1],
+                maxx: geom.feature.bbox[2],
+                maxy: geom.feature.bbox[3]
+            },
+            crs: srs
+        };
+        layer.features = [geom.feature];
+        if (layerType === subjectPropertyLayer) {
+            if (geom?.propertyType === subjectLandPropertyType) {
+                layer.style = layerStyle(landLayer);
+            } else {
+                if (geom?.propertyType === subjectBuildingPropertyType) {
+                    layer.style = layerStyle(buildingLayer);
+                }
             }
+        } else {
+            layer.style = layerStyle(layerType);
         }
+        layer.group = "CatastoOpen";
+        layer.title = layerTitle(geom, layerType);
     } else {
-        layer.style = layerStyle(layerType);
-    }
-    layer.group = "CatastoOpen";
-    layer.title = layerTitle(geom, layerType);
-    if (!coordinates) {
         layer = undefined;
     }
     return layer;

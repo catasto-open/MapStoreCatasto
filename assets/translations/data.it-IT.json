@@ -46,7 +46,42 @@
                 "zoomTooltip": "Zoom sul fabbricato",
                 "detailTooltip": "Visualizza dettagli fabbricato"
               }
-            }
+          },
+          "filtersTypes": {
+              "immobile": {
+                  "placeholder": "Filtra per immobile"
+              },
+              "immobilebyadd": {
+                  "placeholder": "Filtra per indirizzo",
+                  "filters": {
+                      "toponym": {
+                          "name": "Toponimo",
+                          "placeholder": "VIA, VIALLE, ..."
+                      },
+                      "addressName": {
+                          "name": "Indirizzo",
+                          "placeholder": "Inserisci indirizzo"
+                      },
+                      "ncivico": {
+                          "name": "Numero civico",
+                          "placeholder": "Inserisci numero civico"
+                      }
+                  }
+              },
+              "immobilebycode": {
+                  "placeholder": "Filtra per codice immobiliare",
+                  "filters": {
+                      "immobileType": {
+                          "name": "Tipo Immobile",
+                          "placeholder": "Scegli tipo immobile"
+                      },
+                      "immobileCode": {
+                          "name": "Codice Immobile",
+                          "placeholder": "Inserisci codice immobile"
+                      }
+                  }
+              }
+          }
           },
           "naturalSubjects": {
             "name": "Persone Fisiche",
@@ -159,6 +194,9 @@
           "serviceSelect": {
             "placeholder": "Scegli un'opzione di ricerca"
           }
+        },
+        "typesOfImmobileSearch": {
+            "placeholder": "Scegli un tipo di filtra ricerca"
         },
         "temporalSearch": {
             "label": "Ricerca temporale",

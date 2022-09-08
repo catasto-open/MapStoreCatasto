@@ -4,6 +4,7 @@ export const catastoOpenActiveSelector = (state) => get(state,
     "controls.catastoOpen.active") === "catastoOpen"
     || get(state, "controls.catastoOpen.enabled");
 export const selectedServiceSelector = (state) => get(state, "catastoOpen.selectedService");
+export const selectedSearchImmTypeSelector = (state) => get(state, "catastoOpen.selectedSearchImmType");
 
 export const errorSelector = (state) => get(state, "catastoOpen.error");
 export const messageForUserSelector = (state) => get(state, "catastoOpen.messageForUser");
@@ -55,3 +56,16 @@ export const backendSelector = (state) => get(state, "catastoOpen.backend");
 export const isTemporalSearchCheckedSelector = (state) => get(state, "catastoOpen.isTemporalSearchChecked");
 export const startDateSelector = (state) => get(state, "catastoOpen.startDate");
 export const endDateSelector = (state) => get(state, "catastoOpen.endDate");
+
+export const toponymSelector = (state) => get(state, "catastoOpen.toponyms");
+export const selectedToponymSelector = (state) => get(state, "catastoOpen.selectedToponym");
+export const isLoadingToponymSelector = (state) => get(state, "catastoOpen.isLoadingToponym");
+export const isValidInputOnImmAddressSelector = (state) => {
+    return (state.catastoOpen?.addressNameRawTxt?.length > 0 && state.catastoOpen?.houseNumber?.length > 0);
+};
+export const hasSubmitedSearchSelector = (state) => get(state, "catastoOpen.hasSubmitedSearch");
+export const selectedImmTypeSelector = (state) => get(state, "catastoOpen.selectedImmType");
+export const immobileCodeSelector = (state) => get(state, "catastoOpen.immobileCode");
+export const isValidInputOnImmCodeSelector = (state) => {
+    return state.catastoOpen?.immobileCode?.length > 0;
+};
