@@ -299,7 +299,7 @@
                           "it" : "Ricerca per persone fisiche"
                       },
                       "state_identifier" : "naturalSubjects",
-                      "naturalSubjectColumnsKeys": ["lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth"],
+                      "naturalSubjectColumnsKeys": ["subjects", "lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth","province"],
                       "useTemporalSearch": true
                   },
                   {
@@ -308,7 +308,7 @@
                           "it" : "Ricerca per persone giuridiche"
                       },
                       "state_identifier" : "legalSubjects",
-                      "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"],
+                      "legalSubjectColumnsKeys": ["subjects", "businessName", "vatNumber", "branch", "province"],
                       "useTemporalSearch": true
                   }
               ],
@@ -319,7 +319,7 @@
                    },
                "backend": {
                    "name": "Geoserver",
-                   "url": "http://172.23.0.1:8600/geoserver/"
+                   "url": "http://172.19.0.1:8600/geoserver/"
                }
                 }
             },

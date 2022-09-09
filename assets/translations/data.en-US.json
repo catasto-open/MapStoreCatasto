@@ -114,11 +114,13 @@
               }
             },
             "columns": {
+              "subjectCode": "Subject code",
               "lastName": "Last name",
               "firstName": "First name",
               "fiscalCode": "Fiscal Code",
               "dateOfBirth": "Date of birth",
-              "cityOfBirth": "City of birth"
+              "cityOfBirth": "City of birth",
+              "province": "Province"
             }
           },
           "legalSubjects": {
@@ -139,9 +141,11 @@
               }
             },
             "columns": {
+              "subjectCode": "indentification code",
               "businessName": "Business Name",
               "vatNumber": "Vat Number",
-              "branch": "Branch"
+              "branch": "Branch",
+              "province": "Province"
             }
           }
         },
