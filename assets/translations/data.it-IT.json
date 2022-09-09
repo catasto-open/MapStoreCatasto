@@ -115,11 +115,13 @@
                 }
             },
             "columns": {
+              "subjectCode": "Codice soggetto",
               "lastName": "Cognome",
               "firstName": "Nome",
               "fiscalCode": "Codice Fiscale",
               "dateOfBirth": "Data di nascita",
-              "cityOfBirth": "Comune di nascita"
+              "cityOfBirth": "Comune di nascita",
+              "province": "Provincia"
             }
           },
           "legalSubjects": {
@@ -140,9 +142,11 @@
               }
             },
             "columns": {
+              "subjectCode": "Codice identificativo",
               "businessName": "Ragione Sociale",
               "vatNumber": "Partita IVA",
-              "branch": "Sede"
+              "branch": "Sede",
+              "province": "Provincia"
             }
           }
         },

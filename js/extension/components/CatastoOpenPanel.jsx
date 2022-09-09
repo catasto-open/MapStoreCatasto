@@ -52,6 +52,8 @@ const naturalSubjectColumns = [
             <OverlayTrigger placement="bottom"
                 overlay={<Tooltip><Message msgId="extension.catastoOpenPanel.subjectProperties.detailTooltip"/></Tooltip>}>
                 <Glyphicon glyph="eye-open" /></OverlayTrigger>},
+    { key: "subjects", name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.subjectCode"} />,
+        resizable: true, sortable: true, filterable: true},
     { key: "lastName", name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.lastName"} />,
         resizable: true, sortable: true, filterable: true},
     { key: "firstName", name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.firstName"} />,
@@ -61,6 +63,8 @@ const naturalSubjectColumns = [
     { key: "dateOfBirth", name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.dateOfBirth"} />,
         resizable: true, sortable: true, filterable: true},
     { key: "cityOfBirth", name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.cityOfBirth"} />,
+        resizable: true, sortable: true, filterable: true},
+    { key: "province", name: <Message msgId={"extension.catastoOpenPanel.services.naturalSubjects.columns.province"} />,
         resizable: true, sortable: true, filterable: true}
 ];
 
@@ -71,12 +75,16 @@ const legalSubjectColumns = [
                 overlay={<Tooltip><Message msgId="extension.catastoOpenPanel.subjectProperties.detailTooltip"/></Tooltip>}>
                 <Glyphicon glyph="eye-open" />
             </OverlayTrigger>},
+    { key: "subjects", name: <Message msgId={"extension.catastoOpenPanel.services.legalSubjects.columns.subjectCode"} />,
+        resizable: true, sortable: true, filterable: true},
     { key: "businessName",
         name: <Message msgId={"extension.catastoOpenPanel.services.legalSubjects.columns.businessName"} />,
         resizable: true, sortable: true, filterable: true},
     { key: "vatNumber", name: <Message msgId={"extension.catastoOpenPanel.services.legalSubjects.columns.vatNumber"} />,
         resizable: true, sortable: true, filterable: true},
     { key: "branch", name: <Message msgId={"extension.catastoOpenPanel.services.legalSubjects.columns.branch"} />,
+        resizable: true, sortable: true, filterable: true},
+    { key: "province", name: <Message msgId={"extension.catastoOpenPanel.services.legalSubjects.columns.province"} />,
         resizable: true, sortable: true, filterable: true}
 ];
 
@@ -249,12 +257,12 @@ class CatastoOpenPanel extends React.Component {
             },
             {
                 "state_identifier": "naturalSubjects",
-                "naturalSubjectColumnsKeys": ["lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth"],
+                "naturalSubjectColumnsKeys": ["subjects", "lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth", "province"],
                 "useTemporalSearch": true
             },
             {
                 "state_identifier": "legalSubjects",
-                "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"],
+                "legalSubjectColumnsKeys": ["subjects", "businessName", "vatNumber", "branch", "province"],
                 "useTemporalSearch": true
             }
         ],

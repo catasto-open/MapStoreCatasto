@@ -183,6 +183,7 @@ export const subjectParser = (feature) => {
     const properties = feature?.properties;
     const subjects = properties?.subjects.replaceAll(",", "\\,");
     const subjectType = properties?.subjecttype;
+    const province = properties?.province || null;
     switch (subjectType) {
     case naturalSubjectType:
         const dateOfBirth = properties?.dateofbirth?.replace("Z", "") || '_';
@@ -197,7 +198,8 @@ export const subjectParser = (feature) => {
             cityOfBirth,
             fiscalCode,
             firstName,
-            lastName
+            lastName,
+            province
         };
     case legalSubjectType:
         const businessName = properties?.businessname || null;
@@ -208,7 +210,8 @@ export const subjectParser = (feature) => {
             subjectType,
             businessName,
             vatNumber,
-            branch
+            branch,
+            province
         };
     default:
         return properties;
