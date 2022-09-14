@@ -14,7 +14,9 @@ import {
     buildingLayer,
     buildingByCodeLayer,
     naturalSubjectLayer,
-    naturalSubjectLayerWBday,
+    naturalSubjectLayerWBDay,
+    naturalSubjectLayerWBPlace,
+    naturalSubjectLayerWBoth,
     legalSubjectLayer,
     subjectPropertyLayer,
     landDetailLayer,
@@ -175,11 +177,22 @@ export const getNaturalSubjects = (firstName, lastName, birthDate, birthPlace, f
         return axios.get(geoserverOwsUrl, { params: requestParams});
     }
     if (birthDate !== null && birthPlace !== null) {
-        requestParams.typename = naturalSubjectLayerWBday;
+        requestParams.typename = naturalSubjectLayerWBoth;
         requestParams.viewparams = 'firstName:' + firstName + ';'
             + 'lastName:' + lastName + ';'
             + 'birthDate:' + birthDate + ';'
             + 'birthPlace:' + birthPlace;
+    } else if (birthDate !== null) {
+        requestParams.typename = naturalSubjectLayerWBDay;
+        requestParams.viewparams = 'firstName:' + firstName + ';'
+                + 'lastName:' + lastName + ';'
+                + 'birthDate:' + birthDate;
+    } else if (birthPlace !== null) {
+        requestParams.typename = naturalSubjectLayerWBPlace;
+        requestParams.viewparams = 'firstName:' + firstName + ';'
+                + 'lastName:' + lastName + ';'
+                + 'birthDate:' + birthDate + ';'
+                + 'birthPlace:' + birthPlace;
     } else {
         requestParams.typename = naturalSubjectLayer;
         requestParams.viewparams = 'firstName:' + firstName + ';'
