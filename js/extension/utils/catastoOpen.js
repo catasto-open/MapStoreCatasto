@@ -356,7 +356,44 @@ export const buildingDetailParser = (feature) => {
     const lot = properties?.lot;
     const startDate = properties?.startdate;
     const endDate = properties?.enddate;
-
+    const citycode = properties?.citycode;
+    const sectioncode = properties?.sectioncode;
+    const progressiv = properties?.progressiv;
+    const sheetcode = properties?.sheetcode;
+    const particella = properties?.particella;
+    const province = properties?.province;
+    const numerof = properties?.numero_f;
+    const superficie = properties?.superficie;
+    const rendital = properties?.rendita_l;
+    const lotto = properties?.lotto;
+    const edificio = properties?.edificio;
+    const scala = properties?.scala;
+    const interno1 = properties?.interno_1;
+    const interno2 = properties?.interno_2;
+    const piano1 = properties?.piano_1;
+    const piano2 = properties?.piano_2;
+    const piano3 = properties?.piano_3;
+    const piano4 = properties?.piano_4;
+    const genregist = properties?.gen_regist;
+    const gentipo = properties?.gen_tipo;
+    const gennumero = properties?.gen_numero;
+    const genprogre = properties?.gen_progre;
+    const genanno = properties?.gen_anno;
+    const conregist = properties?.con_regist;
+    const contipo = properties?.con_tipo;
+    const connumero = properties?.con_numero;
+    const conprogre = properties?.con_progre;
+    const conanno = properties?.con_anno;
+    const annotazion = properties?.annotazion;
+    const mutaziniz = properties?.mutaz_iniz;
+    const mutazfine = properties?.mutaz_fine;
+    const protnotif = properties?.prot_notif;
+    const datanotif = properties?.data_notif;
+    const gencausa = properties?.gen_causa;
+    const gendescr = properties?.gen_descr;
+    const concausa = properties?.con_causa;
+    const condescr = properties?.con_descr;
+    const flagclass = properties?.flag_class;
     return {
         property,
         propertyType,
@@ -368,7 +405,45 @@ export const buildingDetailParser = (feature) => {
         rent,
         lot,
         startDate,
-        endDate
+        endDate,
+        citycode,
+        sectioncode,
+        progressiv,
+        sheetcode,
+        particella,
+        province,
+        numerof,
+        superficie,
+        rendital,
+        lotto,
+        edificio,
+        scala,
+        interno1,
+        interno2,
+        piano1,
+        piano2,
+        piano3,
+        piano4,
+        genregist,
+        gentipo,
+        gennumero,
+        genprogre,
+        genanno,
+        conregist,
+        contipo,
+        connumero,
+        conprogre,
+        conanno,
+        annotazion,
+        mutaziniz,
+        mutazfine,
+        protnotif,
+        datanotif,
+        gencausa,
+        gendescr,
+        concausa,
+        condescr,
+        flagclass
     };
 };
 
@@ -378,7 +453,7 @@ export const landDetailParser = (feature) => {
     const propertyType = properties.propertytype;
     const subordinate = (properties?.subordinate === null) ? "_" : properties?.subordinate;
     const quality = properties?.quality;
-    const _class = properties?._class;
+    const _class = properties?.class;
     const hectares = properties?.hectares;
     const are = properties?.are;
     const centiare = properties?.centiare;
@@ -387,7 +462,38 @@ export const landDetailParser = (feature) => {
     const agriculturalRent = properties?.agriculturalRent;
     const startDate = properties?.startdate;
     const endDate = properties?.enddate;
-
+    const citycode = properties?.citycode;
+    const sectioncode = properties?.sectioncode;
+    const progressiv = properties?.progressiv;
+    const province = properties?.province;
+    const sheetcode = properties?.sheetcode;
+    const particella = properties?.particella;
+    const qualita = properties?.qualita;
+    const numerof = properties?.numero_f;
+    const flagredd = properties?.flag_redd;
+    const flagporz = properties?.flag_porz;
+    const flagdeduz = properties?.flag_deduz;
+    const dominicl = properties?.dominic_l;
+    const dominice = properties?.dominic_e;
+    const agrariol = properties?.agrario_l;
+    const agrarioe = properties?.agrario_e;
+    const genregist = properties?.gen_regist;
+    const gentipo = properties?.gen_tipo;
+    const gennumero = properties?.gen_numero;
+    const genprogre = properties?.gen_progre;
+    const genanno = properties?.gen_anno;
+    const conregist = properties?.con_regist;
+    const contipo = properties?.con_tipo;
+    const connumero = properties?.con_numero;
+    const conprogre = properties?.con_progre;
+    const conanno = properties?.con_anno;
+    const annotazion = properties?.annotazion;
+    const mutaziniz = properties?.mutaz_iniz;
+    const mutazfine = properties?.mutaz_fine;
+    const gencausa = properties?.gen_causa;
+    const gendescr = properties?.gen_descr;
+    const concausa = properties?.con_causa;
+    const condescr = properties?.con_descr;
     return {
         property,
         propertyType,
@@ -401,7 +507,39 @@ export const landDetailParser = (feature) => {
         cadastralRent,
         agriculturalRent,
         startDate,
-        endDate
+        endDate,
+        citycode,
+        sectioncode,
+        progressiv,
+        province,
+        sheetcode,
+        particella,
+        qualita,
+        numerof,
+        flagredd,
+        flagporz,
+        flagdeduz,
+        dominicl,
+        dominice,
+        agrariol,
+        agrarioe,
+        genregist,
+        gentipo,
+        gennumero,
+        genprogre,
+        genanno,
+        conregist,
+        contipo,
+        connumero,
+        conprogre,
+        conanno,
+        annotazion,
+        mutaziniz,
+        mutazfine,
+        gencausa,
+        gendescr,
+        concausa,
+        condescr
     };
 };
 

@@ -11,7 +11,8 @@ import {
     errorSelector, loadedResultSelector,
     loadingResultSelector, searchResultSelector, searchResultTypeSelector,
     messageForUserSelector,
-    isTemporalSearchCheckedSelector
+    isTemporalSearchCheckedSelector,
+    selectedImmobileSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
     deactivateCatastoOpenPanel, loadLayer, loadPropertyOwnerData,
@@ -41,7 +42,7 @@ import {
 } from "@js/extension/utils/catastoOpen";
 import OverlayTrigger from "@mapstore/components/misc/OverlayTrigger";
 import Toolbar from "./search/SearchResultGridToolbar";
-
+import DetailImmobile from "@js/extension/components/search/DetailImmobile";
 
 const SmartSearchContainer = connect(searchContainerSelector, searchContainerActions)(SearchContainer);
 const SmartSearchResultGrid = connect(searchResultGridSelector, searchResultGridActions)(SearchResultGrid);
@@ -224,7 +225,8 @@ class CatastoOpenPanel extends React.Component {
         backend: PropTypes.object,
         setBackend: PropTypes.func,
         messageForUser: PropTypes.string,
-        isTemporalSearchChecked: PropTypes.bool
+        isTemporalSearchChecked: PropTypes.bool,
+        selectedImmobile: PropTypes.object
     };
 
     static defaultProps = {
@@ -275,7 +277,8 @@ class CatastoOpenPanel extends React.Component {
             name: "Geoserver",
             url: "http://geoserver:8080/geoserver/"
         },
-        setBackend: () => {}
+        setBackend: () => {},
+        selectedImmobile: null
     };
 
     componentWillReceiveProps(nextProp) {
@@ -382,6 +385,7 @@ class CatastoOpenPanel extends React.Component {
                                 onResumeButton={resume ? this.props.resumePreviousResults : null}
                             />}
                     />
+                    {this.props.searchResultType === propertyOwnerLayer ? <DetailImmobile selectedImmobile={this.props.selectedImmobile}/> : null}
                 </div>;
     };
 
@@ -429,7 +433,8 @@ const catastoOpenSelector = createStructuredSelector({
     loadedResults: loadedResultSelector,
     searchResults: searchResultSelector,
     searchResultType: searchResultTypeSelector,
-    isTemporalSearchChecked: isTemporalSearchCheckedSelector
+    isTemporalSearchChecked: isTemporalSearchCheckedSelector,
+    selectedImmobile: selectedImmobileSelector
 });
 
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,

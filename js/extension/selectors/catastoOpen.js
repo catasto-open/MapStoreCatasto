@@ -69,3 +69,4 @@ export const immobileCodeSelector = (state) => get(state, "catastoOpen.immobileC
 export const isValidInputOnImmCodeSelector = (state) => {
     return state.catastoOpen?.immobileCode?.length > 0;
 };
+export const selectedImmobileSelector = (state) => get(state, "catastoOpen.selectedImmobile");
