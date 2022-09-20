@@ -438,7 +438,8 @@ export default function(state = {}, action) {
         return {
             ...state,
             loadingResults: true,
-            loadedResults: false
+            loadedResults: false,
+            selectedImmobile: action?.property
         };
     case CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA:
         return {
