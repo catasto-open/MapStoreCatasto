@@ -137,7 +137,8 @@ export default () => ({
                 const citySearchTxt = action?.citySearchTxt ||  null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getCityData(citySearchTxt, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedCityData(response.data)))
@@ -175,7 +176,8 @@ export default () => ({
                 const cityCode = (action.cityCode) ? action.cityCode : null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getSectionByCityCode(cityCode, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSectionData(response.data)))
@@ -199,8 +201,10 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const section = state.catastoOpen.selectedSection;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getSheetByCityCode(cityCode, section.value, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSheetData(response.data)))
@@ -230,8 +234,10 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const section = state.catastoOpen.selectedSheet.feature.properties.section;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getLandByCityCodeAndSheetNumber(cityCode, sheetNumber, section, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLandData(response.data)))
@@ -253,8 +259,10 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const section = state.catastoOpen.selectedSheet.feature.properties.section;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getBuildingByCityCodeAndSheetNumber(cityCode, sheetNumber, section, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingData(response.data)))
@@ -324,8 +332,10 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 return Rx.Observable.defer(() => getPropertyBySubject(action?.subject?.subjects, action?.subject?.subjectType, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSubjectPropertyData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
@@ -375,8 +385,10 @@ export default () => ({
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingDetailData(response.data)))
@@ -396,8 +408,10 @@ export default () => ({
                 const selectedLandNumber = state.catastoOpen?.selectedLand?.number;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() =>  getLandDetails(selectedCityCode, selectedSheetNumber, selectedLandNumber, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedLandDetailData(response.data)))
@@ -416,8 +430,10 @@ export default () => ({
                 const property = action?.property;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() =>  getPropertyOwners(property, cityCode, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedPropertyOwnerData(response.data)))
@@ -432,11 +448,11 @@ export default () => ({
         action$.ofType(CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO)
             .switchMap((action) => {
                 const state = store.getState();
-                const citySearchTxt = action?.toponymTxt ||  null;
+                const toponymTxt = action?.toponymTxt ||  null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() => getToponym(citySearchTxt, geoserverOwsUrl))
+                return Rx.Observable.defer(() => getToponym(toponymTxt, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedToponym(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -446,8 +462,10 @@ export default () => ({
                 const state = store.getState();
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
-                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) : null;
-                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) : null;
+                const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 const filterType = action.filterType;
                 const cityCode = state?.catastoOpen?.selectedCity?.value;

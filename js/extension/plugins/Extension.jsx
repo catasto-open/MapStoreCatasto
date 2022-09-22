@@ -25,7 +25,8 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *             "state_identifier" : "parcels",
  *             "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
  *              "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"],
- *              "useTemporalSearch": true
+ *              "useTemporalSearch": true,
+ *              "useHistoricalSearch": true
  *          },
  *          {
  *             "descriptions" : {
@@ -34,7 +35,8 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *             },
  *             "state_identifier" : "naturalSubjects",
  *             "naturalSubjectColumnsKeys": ["lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth"],
- *             "useTemporalSearch": true
+ *             "useTemporalSearch": true,
+ *             "useHistoricalSearch": true
  *          },
  *          {
  *             "descriptions" : {
@@ -43,7 +45,8 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *             },
  *             "state_identifier" : "legalSubjects",
  *             "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"],
- *             "useTemporalSearch": true
+ *             "useTemporalSearch": true,
+ *             "useHistoricalSearch": true
  *          }
  *     ],
  *      "ownerDetails": {

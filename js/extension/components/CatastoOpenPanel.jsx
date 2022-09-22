@@ -145,7 +145,7 @@ const landDetailColumns =  [
     {key: 'selectButton', name: '', frozen: true, width: 35,
         formatter:
             <OverlayTrigger placement="bottom"
-                overlay={<Tooltip><Message msgId="extension.catastoOpenPanel.landDetails.columns.viewerTooltip"/></Tooltip>}>
+                overlay={<Tooltip><Message msgId="extension.catastoOpenPanel.landDetails.columns.viewerTooltipDetail"/></Tooltip>}>
                 <Glyphicon glyph="eye-open" /></OverlayTrigger>},
     { key: 'subordinate', name: <Message msgId={"extension.catastoOpenPanel.landDetails.columns.subordinate"} />,
         resizable: true, sortable: true, filterable: true},
@@ -171,7 +171,7 @@ const buildingDetailColumns = [
     {key: 'selectButton', name: '', frozen: true, width: 35,
         formatter:
             <OverlayTrigger placement="bottom"
-                overlay={<Tooltip><Message msgId="extension.catastoOpenPanel.buildingDetails.columns.viewerTooltip"/></Tooltip>}>
+                overlay={<Tooltip><Message msgId="extension.catastoOpenPanel.buildingDetails.columns.viewerTooltipDetail"/></Tooltip>}>
                 <Glyphicon glyph="eye-open" /></OverlayTrigger>},
     { key: 'subordinate', name: <Message msgId={"extension.catastoOpenPanel.buildingDetails.columns.subordinate"} />,
         resizable: true, sortable: true, filterable: true},
@@ -255,17 +255,20 @@ class CatastoOpenPanel extends React.Component {
                 "state_identifier": "parcels",
                 "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
                 "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"],
-                "useTemporalSearch": true
+                "useTemporalSearch": true,
+                "useHistoricalSearch": true
             },
             {
                 "state_identifier": "naturalSubjects",
                 "naturalSubjectColumnsKeys": ["subjects", "lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth", "province"],
-                "useTemporalSearch": true
+                "useTemporalSearch": true,
+                "useHistoricalSearch": true
             },
             {
                 "state_identifier": "legalSubjects",
                 "legalSubjectColumnsKeys": ["subjects", "businessName", "vatNumber", "branch", "province"],
-                "useTemporalSearch": true
+                "useTemporalSearch": true,
+                "useHistoricalSearch": true
             }
         ],
         ownerDetails: {
@@ -302,7 +305,7 @@ class CatastoOpenPanel extends React.Component {
         const parcelsDef = this.props.filterServices.filter(item => item.state_identifier === "parcels");
         const naturalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "naturalSubjects");
         const legalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "legalSubjects");
-        const isTemporalSearchOnParcel = parcelsDef[0]?.useTemporalSearch === null ? false : parcelsDef[0]?.useTemporalSearch;
+        const isTemporalSearchOnParcel = (parcelsDef[0]?.useTemporalSearch === null || parcelsDef[0]?.useHistoricalSearch === true) ? false : parcelsDef[0]?.useTemporalSearch;
         switch (this.props.searchResultType) {
         case naturalSubjectType:
             columns = naturalSubjectsDef.length === 1 ? naturalSubjectColumns.filter(

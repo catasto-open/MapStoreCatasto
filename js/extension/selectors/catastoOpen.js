@@ -54,6 +54,7 @@ export const selectedBirthPlaceSelector = (state) =>  get(state, "catastoOpen.se
 
 export const backendSelector = (state) => get(state, "catastoOpen.backend");
 export const isTemporalSearchCheckedSelector = (state) => get(state, "catastoOpen.isTemporalSearchChecked");
+export const isHistoricalSearchCheckedSelector = (state) => get(state, "catastoOpen.isHistoricalSearchChecked");
 export const startDateSelector = (state) => get(state, "catastoOpen.startDate");
 export const endDateSelector = (state) => get(state, "catastoOpen.endDate");
 

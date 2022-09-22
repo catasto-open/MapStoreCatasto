@@ -39,6 +39,7 @@ import {
     loadLandDetailData,
     loadBuildingDetailData,
     onChangeTemporalSearchCheckbox,
+    onChangeHistoricalSearchCheckbox,
     startDateSelected,
     endDateSelected,
     setMessageForUser
@@ -72,6 +73,7 @@ import {
     selectedBuildingSelector,
     isLoadingBuildingSelector,
     isTemporalSearchCheckedSelector,
+    isHistoricalSearchCheckedSelector,
     startDateSelector,
     endDateSelector,
     isLoadingTownSelector,
@@ -144,6 +146,8 @@ class SearchContainer extends React.Component {
         filterServices: PropTypes.array,
         isTemporalSearchChecked: PropTypes.bool,
         onChangeTemporalSearchCheckbox: PropTypes.func,
+        isHistoricalSearchChecked: PropTypes.bool,
+        onChangeHistoricalSearchCheckbox: PropTypes.func,
         startDateValue: PropTypes.any,
         startDateValueOnChange: PropTypes.func,
         endDateValue: PropTypes.any,
@@ -189,6 +193,7 @@ class SearchContainer extends React.Component {
         loadSubjects: () => {},
         loadLayer: () => {},
         isTemporalSearchChecked: false,
+        isHistoricalSearchChecked: false,
         onChangeTemporalSearchCheckbox: () => {},
         isLoadingTown: false,
         town: [],
@@ -211,6 +216,9 @@ class SearchContainer extends React.Component {
             }
         } else {
             this.props.setMessageForUser(null);
+            loadCityData();
+        }
+        if (nextProp.isHistoricalSearchChecked) {
             loadCityData();
         }
     }
@@ -252,6 +260,14 @@ class SearchContainer extends React.Component {
                         endDateValueOnChange={this.props.endDateValueOnChange}
                     />
                 </>
+                )}
+                { this.useHistoricalSearch() &&
+                (
+                    <Checkbox
+                        checked={this.props.isHistoricalSearchChecked}
+                        onChange={this.handleHistoricalOnChangeOfCheckBox}>
+                        <Message msgId="extension.catastoOpenPanel.historicalSearch.label"/>
+                    </Checkbox>
                 )}
                 {this.props.selectedService?.value === services[0].id ?
                     <Select
@@ -648,7 +664,10 @@ class SearchContainer extends React.Component {
             const service = services.filter((item) => item.id === this.props.selectedService?.value);
             if (service) {
                 const serviceConfig = this.props.filterServices.filter((item) => service[0].state_identifier === item.state_identifier);
-                return serviceConfig?.length === 1 ? serviceConfig[0].useTemporalSearch : false;
+                if (serviceConfig?.length === 1) {
+                    return serviceConfig[0]?.useHistoricalSearch ? false : serviceConfig[0].useTemporalSearch;
+                }
+                return false;
             }
             return false;
         }
@@ -670,6 +689,22 @@ class SearchContainer extends React.Component {
             return false;
         }
         return true;
+    };
+
+    useHistoricalSearch = () => {
+        if (this.props.selectedService) {
+            const service = services.filter((item) => item.id === this.props.selectedService?.value);
+            if (service) {
+                const serviceConfig = this.props.filterServices.filter((item) => service[0].state_identifier === item.state_identifier);
+                return serviceConfig?.length === 1 ? serviceConfig[0]?.useHistoricalSearch : false;
+            }
+            return false;
+        }
+        return false;
+    };
+
+    handleHistoricalOnChangeOfCheckBox = (event) => {
+        return this.props.onChangeHistoricalSearchCheckbox(event.target.checked);
     };
 }
 
@@ -705,6 +740,7 @@ export const searchContainerActions = {
     loadLandDetails: loadLandDetailData,
     loadBuildingDetails: loadBuildingDetailData,
     onChangeTemporalSearchCheckbox: onChangeTemporalSearchCheckbox,
+    onChangeHistoricalSearchCheckbox: onChangeHistoricalSearchCheckbox,
     startDateValueOnChange: startDateSelected,
     endDateValueOnChange: endDateSelected,
     setMessageForUser: setMessageForUser
@@ -739,6 +775,7 @@ export const searchContainerSelector = createStructuredSelector({
     subjectFormButtonActive: subjectFormButtonActiveSelector,
     subjectForm: subjectFormSelector,
     isTemporalSearchChecked: isTemporalSearchCheckedSelector,
+    isHistoricalSearchChecked: isHistoricalSearchCheckedSelector,
     startDateValue: startDateSelector,
     endDateValue: endDateSelector,
     isLoadingTown: isLoadingTownSelector,
