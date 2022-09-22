@@ -177,6 +177,7 @@
             "cadastralRent": "Cadastral Rent",
             "agriculturalRent": "Agricultural Rent",
             "viewerTooltip": "View Owners",
+            "viewerTooltipDetail": "View Detail",
             "property": "Property",
             "propertyType": "Type of Property",
             "_class": "Class",
@@ -227,6 +228,7 @@
             "rent": "Rent",
             "lot": "Lot",
             "viewerTooltip": "View Owners",
+            "viewerTooltipDetail": "View Detail",
             "property": "Property",
             "propertyType": "Type of Property",
             "_class": "Class",
@@ -285,6 +287,9 @@
             "label": "Temporal search",
             "startDateLabel": "From",
             "endDateLabel": "To"
+        },
+        "historicalSearch" : {
+            "label": "Historical Search"
         },
         "extraColumns" : {
             "startDate": "Start date",

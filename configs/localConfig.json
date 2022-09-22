@@ -291,7 +291,7 @@
                       "state_identifier" : "parcels",
                       "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
                       "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"],
-                      "useTemporalSearch": true
+                      "useHistoricalSearch": true
                   },
                   {
                       "descriptions" : {
@@ -300,7 +300,7 @@
                       },
                       "state_identifier" : "naturalSubjects",
                       "naturalSubjectColumnsKeys": ["subjects", "lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth","province"],
-                      "useTemporalSearch": true
+                      "useHistoricalSearch": true
                   },
                   {
                       "descriptions" : {
@@ -309,7 +309,7 @@
                       },
                       "state_identifier" : "legalSubjects",
                       "legalSubjectColumnsKeys": ["subjects", "businessName", "vatNumber", "branch", "province"],
-                      "useTemporalSearch": true
+                      "useHistoricalSearch": true
                   }
               ],
                "ownerDetails": {
@@ -319,7 +319,7 @@
                    },
                "backend": {
                    "name": "Geoserver",
-                   "url": "http://172.19.0.1:8600/geoserver/"
+                   "url": "http://172.20.0.1:8600/geoserver/"
                }
                 }
             },

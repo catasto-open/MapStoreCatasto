@@ -178,6 +178,7 @@
             "cadastralRent": "Reddito Dominicale",
             "agriculturalRent": "Reddito Agrario",
             "viewerTooltip": "Visualizza titolari",
+            "viewerTooltipDetail": "Visualizza Dettagli",
             "property": "Immobile",
             "propertyType": "Tipo Immobile",
             "_class": "Classe",
@@ -228,6 +229,7 @@
             "rent": "Rendita",
             "lot": "Partita",
             "viewerTooltip": "Visualizza titolari",
+            "viewerTooltipDetail": "Visualizza Dettagli",
             "property": "Immobile",
             "propertyType": "Tipo Immobile",
             "_class": "Classe",
@@ -286,6 +288,9 @@
             "label": "Ricerca temporale",
             "startDateLabel": "Dal",
             "endDateLabel": "al"
+        },
+        "historicalSearch" : {
+            "label": "Ricerca Storica"
         },
         "extraColumns" : {
             "startDate": "Data inizio",

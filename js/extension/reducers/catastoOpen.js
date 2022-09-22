@@ -49,6 +49,7 @@ import {
     CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA,
     CATASTO_OPEN_SET_BACKEND,
     CATASTO_OPEN_TEMPORAL_SEARCH_CHECKED,
+    CATASTO_OPEN_HISTORICAL_SEARCH_CHECKED,
     CATASTO_OPEN_START_DATE_SELECTED,
     CATASTO_OPEN_END_DATE_SELECTED,
     CATASTO_OPEN_SET_MESSAGE_FOR_USER,
@@ -462,6 +463,24 @@ export default function(state = {}, action) {
             isTemporalSearchChecked: action.isTemporalSearchChecked,
             startDate: null,
             endDate: null,
+            subjectForm: null,
+            selectedSubjectFilter: null,
+            selectedCity: null,
+            selectedSection: null,
+            selectedSheet: null,
+            selectedLand: null,
+            selectedBuilding: null,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            selectedToponym: null,
+            selectedImmType: null,
+            hasSubmitedSearch: false
+        };
+    case CATASTO_OPEN_HISTORICAL_SEARCH_CHECKED:
+        return {
+            ...state,
+            isHistoricalSearchChecked: action.isHistoricalSearchChecked,
             subjectForm: null,
             selectedSubjectFilter: null,
             selectedCity: null,
