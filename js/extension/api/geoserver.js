@@ -238,7 +238,7 @@ export const getPropertyBySubject = (subjects, subjectType, startDate, endDate, 
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getLandDetails = (cityCode, citySheet, landNumber, startDate, endDate, geoserverOwsUrl) => {
+export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, startDate, endDate, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -246,16 +246,16 @@ export const getLandDetails = (cityCode, citySheet, landNumber, startDate, endDa
         outputFormat: outputFormat
     };
     if (startDate !== null && endDate !== null) {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'sectionCode:' + sectionCode + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
         requestParams.typename = landDetailLayerTemp;
     } else {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'sectionCode:' + sectionCode;
         requestParams.typename = landDetailLayer;
     }
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getBuildingDetails = (cityCode, citySheet, buildingNumber, startDate, endDate, geoserverOwsUrl) => {
+export const getBuildingDetails = (cityCode, citySheet, buildingNumber, sectionCode, startDate, endDate, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -263,10 +263,10 @@ export const getBuildingDetails = (cityCode, citySheet, buildingNumber, startDat
         outputFormat: outputFormat
     };
     if (startDate !== null && endDate !== null) {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'sectionCode:' + sectionCode + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
         requestParams.typename = buildingDetailLayerTemp;
     } else {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'sectionCode:' + sectionCode;
         requestParams.typename = buildingDetailLayer;
     }
     return axios.get(geoserverOwsUrl, { params: requestParams});
