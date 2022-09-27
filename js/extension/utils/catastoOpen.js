@@ -318,6 +318,7 @@ export const subjectPropertyParser = (feature) => {
     const lot = properties?.lot;
     const propertyType = properties?.propertytype;
     const extent = properties?.extent;
+    const immobile = properties?.immobile;
     const startDate = properties?.startdate;
     const endDate = properties?.enddate;
 
@@ -338,6 +339,7 @@ export const subjectPropertyParser = (feature) => {
         propertyType,
         feature,
         extent,
+        immobile,
         startDate,
         endDate
     };
@@ -468,7 +470,6 @@ export const landDetailParser = (feature) => {
     const province = properties?.province;
     const sheetcode = properties?.sheetcode;
     const particella = properties?.particella;
-    const qualita = properties?.qualita;
     const numerof = properties?.numero_f;
     const flagredd = properties?.flag_redd;
     const flagporz = properties?.flag_porz;
@@ -514,7 +515,6 @@ export const landDetailParser = (feature) => {
         province,
         sheetcode,
         particella,
-        qualita,
         numerof,
         flagredd,
         flagporz,

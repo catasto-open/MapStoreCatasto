@@ -114,6 +114,9 @@ const subjectPropertyColumns = [
                     </OverlayTrigger> : null;
         }
     },
+    { key: 'immobile',
+        name: <Message msgId={"extension.catastoOpenPanel.subjectProperties.columns.immobileCode"} />,
+        resizable: true, sortable: true, filterable: true},
     { key: 'city',
         name: <Message msgId={"extension.catastoOpenPanel.services.parcels.filters.cities.name"} />,
         resizable: true, sortable: true, filterable: true},
@@ -272,7 +275,7 @@ class CatastoOpenPanel extends React.Component {
             }
         ],
         ownerDetails: {
-            subjectPropertyColumnsKeys: ["city", "section", "sheet", "number", "subordinate", "right", "part", "classification", "_class", "consistency", "income", "lot"],
+            subjectPropertyColumnsKeys: ["immobile", "city", "section", "sheet", "number", "subordinate", "right", "part", "classification", "_class", "consistency", "income", "lot"],
             propertyOwnerColumnsKeys: ["nominative", "fiscalCode", "city", "right", "part"],
             showDate: true
         },
