@@ -357,7 +357,7 @@ class CatastoOpenPanel extends React.Component {
             break;
         case propertyOwnerLayer:
             columns = this.props.ownerDetails.subjectPropertyColumnsKeys?.length !== 0 ? propertyOwnerColumns.filter(
-                item => (item.key === "selectButton" || this.props.ownerDetails.subjectPropertyColumnsKeys.includes(item.key))
+                item => (item.key === "selectButton" || this.props.ownerDetails.propertyOwnerColumnsKeys.includes(item.key))
             ) : propertyOwnerColumns;
             if (this.props.isTemporalSearchChecked === true && this.props.ownerDetails.showDate === true) {
                 columns = [...columns, ...this.props.extraColumns];
