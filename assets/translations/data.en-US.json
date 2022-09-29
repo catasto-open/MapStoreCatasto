@@ -161,7 +161,8 @@
             "class": "Class",
             "consistency": "Consistency",
             "income": "Income",
-            "lot": "Lot"
+            "lot": "Lot",
+            "immobileCode": "Property"
           }
         },
         "landDetails": {
