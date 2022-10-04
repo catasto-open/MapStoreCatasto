@@ -59,9 +59,17 @@ import {
     reloadedSearchResults,
     loadedBuildingDetailData,
     loadedLandDetailData,
-    loadedPropertyOwnerData
+    loadedPropertyOwnerData,
+    setPrintPathWParams
 } from "@js/extension/actions/catastoOpen";
-import {services, fixDateTimeZone} from "@js/extension/utils/catastoOpen";
+import {
+    services,
+    fixDateTimeZone,
+    printPathImmobile,
+    printPathVisura,
+    printPathLegalSubject,
+    printPathNaturalSubject
+} from "@js/extension/utils/catastoOpen";
 import {
     getBuildingByCityCodeAndSheetNumber,
     getBuildingDetails,
@@ -83,7 +91,7 @@ import {
 import {addGroup, addLayer, removeNode} from "@mapstore/actions/layers";
 import {zoomToExtent} from "@mapstore/actions/map";
 import {resultGridLoadRows} from "@js/extension/actions/resultGrid";
-import {backendSelector} from "@js/extension/selectors/catastoOpen";
+import {backendSelector, printEndPointSelector} from "@js/extension/selectors/catastoOpen";
 /**
  * Epics for CATASTO-OPEN PLUGIN
  * @name epics.catastoOpen
@@ -294,10 +302,30 @@ export default () => ({
                 const birthDate = naturalSubject?.birthDate ? "\'" + fixDateTimeZone(naturalSubject.birthDate).toISOString().slice(0, 10) + "\'" : null;
                 const birthPlace = state.catastoOpen?.selectedBirthPlace ? state.catastoOpen.selectedBirthPlace.value : null;
                 const backend = backendSelector(state);
+                const endPoint = printEndPointSelector(state);
+                const printURL = endPoint.endsWith('/') ? new URL(`${endPoint}${printPathNaturalSubject}`) : new URL(`${endPoint}/${printPathNaturalSubject}`);
+                if (subjectCode !== null) {
+                    printURL.searchParams.set("codicesoggetto", subjectCode);
+                }
+                if (fiscalCode !== null) {
+                    printURL.searchParams.set("codicefiscale", naturalSubject.fiscalCode);
+                }
+                if (firstName !== null) {
+                    printURL.searchParams.set("nome", naturalSubject.firstName.trim());
+                }
+                if (lastName !== null) {
+                    printURL.searchParams.set("cognome", naturalSubject.lastName.trim());
+                }
+                if (birthDate !== null) {
+                    printURL.searchParams.set("datadinascita", fixDateTimeZone(naturalSubject.birthDate).toISOString().slice(0, 10));
+                }
+                if (birthPlace !== null) {
+                    printURL.searchParams.set("comunenascita", birthPlace);
+                }
                 let geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getNaturalSubjects(firstName, lastName, birthDate, birthPlace, fiscalCode, subjectCode, geoserverOwsUrl))
-                    .switchMap((response) => Rx.Observable.of(loadedNaturalSubjectData(response.data)))
+                    .switchMap((response) => Rx.Observable.of(loadedNaturalSubjectData(response.data), setPrintPathWParams(printURL.toString())))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
     loadedNaturalSubjectDataEpic: (action$) =>
@@ -316,8 +344,19 @@ export default () => ({
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                const endPoint = printEndPointSelector(state);
+                const printURL = endPoint.endsWith('/') ? new URL(`${endPoint}${printPathLegalSubject}`) : new URL(`${endPoint}/${printPathLegalSubject}`);
+                if (identificationCode !== null) {
+                    printURL.searchParams.set("codicesoggetto", identificationCode);
+                }
+                if (vatNumber !== null) {
+                    printURL.searchParams.set("partitaiva", legalSubject.vatNumber);
+                }
+                if (businessName !== null) {
+                    printURL.searchParams.set("denominazione", legalSubject.businessName.trim());
+                }
                 return Rx.Observable.defer(() => getLegalSubjects(vatNumber, businessName, identificationCode, geoserverOwsUrl))
-                    .switchMap((response) => Rx.Observable.of(loadedLegalSubjectData(response.data)))
+                    .switchMap((response) => Rx.Observable.of(loadedLegalSubjectData(response.data), setPrintPathWParams(printURL.toString())))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
     loadedLegalSubjectDataEpic: (action$) =>
@@ -336,8 +375,12 @@ export default () => ({
                     state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
                     state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
+                const endPoint = printEndPointSelector(state);
+                const printURL = endPoint.endsWith('/') ? new URL(`${endPoint}${printPathImmobile}`) : new URL(`${endPoint}/${printPathImmobile}`);
+                printURL.searchParams.set("codicesoggetto", action?.subject?.subjects);
+                printURL.searchParams.set("flagricercastorica", state?.catastoOpen.isHistoricalSearchChecked ? true : false);
                 return Rx.Observable.defer(() => getPropertyBySubject(action?.subject?.subjects, action?.subject?.subjectType, startDate, endDate, geoserverOwsUrl))
-                    .switchMap((response) => Rx.Observable.of(loadedSubjectPropertyData(response.data)))
+                    .switchMap((response) => Rx.Observable.of(loadedSubjectPropertyData(response.data), setPrintPathWParams(printURL.toString())))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
     loadedSubjectPropertyDataEpic: (action$) =>
@@ -437,8 +480,13 @@ export default () => ({
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
                     state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                const endPoint = printEndPointSelector(state);
+                const printURL = endPoint.endsWith('/') ? new URL(`${endPoint}${printPathVisura}`) : new URL(`${endPoint}/${printPathVisura}`);
+                printURL.searchParams.set("codiceimmobile", action?.property.property);
+                printURL.searchParams.set("tipoimmobile", action?.property.propertyType);
+                printURL.searchParams.set("flagricercastorica", state?.catastoOpen.isTemporalSearchChecked ? true : false);
                 return Rx.Observable.defer(() =>  getPropertyOwners(property, cityCode, startDate, endDate, geoserverOwsUrl))
-                    .switchMap((response) => Rx.Observable.of(loadedPropertyOwnerData(response.data)))
+                    .switchMap((response) => Rx.Observable.of(loadedPropertyOwnerData(response.data), setPrintPathWParams(printURL.toString())))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
     loadedPropertyOwnerDataEpic: (action$) =>

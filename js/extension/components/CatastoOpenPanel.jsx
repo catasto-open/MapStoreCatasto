@@ -12,13 +12,16 @@ import {
     loadingResultSelector, searchResultSelector, searchResultTypeSelector,
     messageForUserSelector,
     isTemporalSearchCheckedSelector,
-    selectedImmobileSelector
+    selectedImmobileSelector,
+    doweHavePrintSelector,
+    printPathSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
     deactivateCatastoOpenPanel, loadLayer, loadPropertyOwnerData,
     loadSubjectPropertyData,
     resumePreviousSearchResults,
-    setBackend
+    setBackend,
+    setPrintEndPoint
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -229,7 +232,11 @@ class CatastoOpenPanel extends React.Component {
         setBackend: PropTypes.func,
         messageForUser: PropTypes.string,
         isTemporalSearchChecked: PropTypes.bool,
-        selectedImmobile: PropTypes.object
+        selectedImmobile: PropTypes.object,
+        printEndPointURL: PropTypes.string,
+        setPrintEndPoint: PropTypes.func,
+        doweHavePrint: PropTypes.bool,
+        printPath: PropTypes.string
     };
 
     static defaultProps = {
@@ -284,13 +291,19 @@ class CatastoOpenPanel extends React.Component {
             url: "http://geoserver:8080/geoserver/"
         },
         setBackend: () => {},
-        selectedImmobile: null
+        selectedImmobile: null,
+        printEndPointURL: "",
+        setPrintEndPoint: () => {},
+        printPath: ""
     };
 
     componentWillReceiveProps(nextProp) {
         if (nextProp.active !== this.props.active) {
             this.props.setBackend(
                 this.props.backend
+            );
+            this.props.setPrintEndPoint(
+                this.props.printEndPointURL
             );
         }
     }
@@ -309,6 +322,8 @@ class CatastoOpenPanel extends React.Component {
         const naturalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "naturalSubjects");
         const legalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "legalSubjects");
         const isTemporalSearchOnParcel = (parcelsDef[0]?.useTemporalSearch === null || parcelsDef[0]?.useHistoricalSearch === true) ? false : parcelsDef[0]?.useTemporalSearch;
+        let print = false;
+        let printTipId = "extension.catastoOpenPanel.printBtn.label";
         switch (this.props.searchResultType) {
         case naturalSubjectType:
             columns = naturalSubjectsDef.length === 1 ? naturalSubjectColumns.filter(
@@ -316,6 +331,7 @@ class CatastoOpenPanel extends React.Component {
             ) : naturalSubjectColumns;
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.naturalSubjects.name";
+            print = this.props.doweHavePrint;
             break;
         case legalSubjectType:
             columns = legalSubjectsDef.length === 1 ? legalSubjectColumns.filter(
@@ -323,6 +339,7 @@ class CatastoOpenPanel extends React.Component {
             ) : legalSubjectColumns;
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.legalSubjects.name";
+            print = this.props.doweHavePrint;
             break;
         case subjectPropertyLayer:
             columns = this.props.ownerDetails.subjectPropertyColumnsKeys?.length !== 0 ? subjectPropertyColumns.filter(
@@ -334,6 +351,7 @@ class CatastoOpenPanel extends React.Component {
             addLayerOnSelect = true;
             resume = true;
             title = "extension.catastoOpenPanel.subjectProperties.name";
+            print = this.props.doweHavePrint;
             break;
         case buildingDetailLayer:
             columns = parcelsDef.length === 1 ? buildingDetailColumns.filter(
@@ -364,6 +382,7 @@ class CatastoOpenPanel extends React.Component {
             }
             title = "extension.catastoOpenPanel.owners";
             resume = true;
+            print = this.props.doweHavePrint;
             break;
         default:
             break;
@@ -389,6 +408,9 @@ class CatastoOpenPanel extends React.Component {
                                 resumeButtonActive={resume}
                                 resumeButtonTooltipId={"extension.catastoOpenPanel.resumePreviousResults"}
                                 onResumeButton={resume ? this.props.resumePreviousResults : null}
+                                showPrintBtn={print}
+                                printTipId={printTipId}
+                                printPath={this.props.printPath}
                             />}
                     />
                     {this.props.searchResultType === propertyOwnerLayer ? <DetailImmobile selectedImmobile={this.props.selectedImmobile}/> : null}
@@ -440,7 +462,9 @@ const catastoOpenSelector = createStructuredSelector({
     searchResults: searchResultSelector,
     searchResultType: searchResultTypeSelector,
     isTemporalSearchChecked: isTemporalSearchCheckedSelector,
-    selectedImmobile: selectedImmobileSelector
+    selectedImmobile: selectedImmobileSelector,
+    doweHavePrint: doweHavePrintSelector,
+    printPath: printPathSelector
 });
 
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,
@@ -450,7 +474,8 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         resumePreviousResults: resumePreviousSearchResults,
         loadLayer: loadLayer,
         loadPropertyOwners: loadPropertyOwnerData,
-        setBackend: setBackend
+        setBackend: setBackend,
+        setPrintEndPoint: setPrintEndPoint
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;

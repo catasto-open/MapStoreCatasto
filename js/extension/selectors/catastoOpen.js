@@ -71,3 +71,7 @@ export const isValidInputOnImmCodeSelector = (state) => {
     return state.catastoOpen?.immobileCode?.length > 0;
 };
 export const selectedImmobileSelector = (state) => get(state, "catastoOpen.selectedImmobile");
+
+export const doweHavePrintSelector = (state) => get(state, "catastoOpen.doweHavePrint");
+export const printEndPointSelector = (state) => get(state, "catastoOpen.printEndPoint");
+export const printPathSelector = (state) => get(state, "catastoOpen.printPath");

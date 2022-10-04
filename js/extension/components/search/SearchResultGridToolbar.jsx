@@ -17,13 +17,17 @@ class Toolbar extends React.Component {
         children: PropTypes.any,
         resumeButtonActive: PropTypes.bool,
         onResumeButton: PropTypes.func,
-        resumeButtonTooltipId: PropTypes.string
+        resumeButtonTooltipId: PropTypes.string,
+        showPrintBtn: PropTypes.bool,
+        printTipId: PropTypes.string,
+        printPath: PropTypes.string
     };
 
     static defaultProps = {
         title: "",
         enableAddRow: true,
-        resumeButtonActive: false
+        resumeButtonActive: false,
+        showPrintBtn: false
     };
 
     renderToggleFilterButton = () => {
@@ -54,15 +58,33 @@ class Toolbar extends React.Component {
         return null;
     };
 
+    renderPrintButton = () => {
+        if (this.props.showPrintBtn) {
+            return (
+                <Button
+                    href={this.props.printPath}
+                    tooltipId={this.props.printTipId}
+                    tooltipPosition={"top"}
+                    onClick={() => {}}
+                    target="_blank"
+                >
+                    <Glyphicon glyph={"print"}/>
+                </Button>
+            );
+        }
+        return null;
+    };
+
     render() {
         return (
             <div className="react-grid-Toolbar">
                 <div className="tools" style={{"float": "left"}}>
                     {this.renderResumeButton()}
                     {this.renderToggleFilterButton()}
+                    {this.renderPrintButton()}
                     {this.props.children}
                 </div>
-                <div className={"panel-title"} style={{marginLeft: 60, paddingLeft: 30}}>
+                <div className={"panel-title text-center"}>
                     <Message msgId={this.props.title}/>
                 </div>
             </div>);

@@ -57,7 +57,8 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *      "backend": {
  *          "name": "Geoserver",
  *          "url": "http://172.21.0.1:8600/geoserver/"
- *      }
+ *      },
+ *      "printEndPointURL" : "http://localhost:5000/api/v1"
  *    }
  * }
  */
