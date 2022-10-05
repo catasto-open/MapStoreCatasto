@@ -573,3 +573,8 @@ export const tomorrow = () => {
     let currentDate = new Date();
     return new Date(currentDate.setDate(currentDate.getDate() + 1));
 };
+
+export const printPathNaturalSubject = "catasto/stampa/ricerca/persone_fisiche";
+export const printPathLegalSubject = "catasto/stampa/ricerca/persone_giuridiche";
+export const printPathImmobile = "catasto/stampa/ricerca/immobili";
+export const printPathVisura = "catasto/stampa/visura";

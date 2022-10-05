@@ -60,7 +60,9 @@ import {
     CATASTO_OPEN_IMMOBILE_SET_NCIVICO,
     CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
     CATASTO_OPEN_IMMOBILE_SET_CODICE,
-    CATASTO_OPEN_IMMOBILE_SELECT_TYPE
+    CATASTO_OPEN_IMMOBILE_SELECT_TYPE,
+    CATASTO_OPEN_SET_PRINT_ENDPOINT,
+    CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -83,6 +85,8 @@ export default function(state = {}, action) {
         return serviceChanged ?
             {
                 backend: state?.backend,
+                printEndPoint: state?.printEndPoint,
+                doweHavePrint: state?.doweHavePrint,
                 selectedService: action?.service,
                 layer: state?.layer
             } : {
@@ -96,6 +100,8 @@ export default function(state = {}, action) {
             {
                 ...state,
                 backend: state?.backend,
+                printEndPoint: state?.printEndPoint,
+                doweHavePrint: state?.doweHavePrint,
                 selectedSearchImmType: action?.serviceImmType,
                 layer: state?.layer,
                 selectedCity: null,
@@ -117,6 +123,8 @@ export default function(state = {}, action) {
     case CATASTO_OPEN_LOAD_ERROR:
         return {
             backend: state?.backend,
+            printEndPoint: state?.printEndPoint,
+            doweHavePrint: state?.doweHavePrint,
             error: true
         };
     case CATASTO_OPEN_SET_MESSAGE_FOR_USER:
@@ -595,6 +603,18 @@ export default function(state = {}, action) {
             searchResultType: null,
             loadedResults: false,
             hasSubmitedSearch: false
+        };
+    case CATASTO_OPEN_SET_PRINT_ENDPOINT:
+        const doweHavePrint = action.printEndPoint !== "" ? true : false;
+        return {
+            ...state,
+            printEndPoint: action.printEndPoint,
+            doweHavePrint
+        };
+    case CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS:
+        return {
+            ...state,
+            printPath: action.printPath
         };
     default:
         return state;

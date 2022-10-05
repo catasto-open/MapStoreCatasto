@@ -296,8 +296,11 @@
             "startDate": "Start date",
             "endDate": "End date"
         },
-        "dateInputError": "The range of date inserted is not correct."
-      }
+        "dateInputError": "The range of date inserted is not correct.",
+        "printBtn" : {
+            "label" : "Print"
+        }
+       }
     }
   }
 }

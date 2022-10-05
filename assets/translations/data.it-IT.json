@@ -297,8 +297,11 @@
             "startDate": "Data inizio",
             "endDate": "Data fine"
         },
-        "dateInputError": "L'intervallo di date inserite non è corretto."
-      }
+        "dateInputError": "L'intervallo di date inserite non è corretto.",
+        "printBtn" : {
+            "label" : "Stampa"
+        }
+    }
     }
   }
 }
