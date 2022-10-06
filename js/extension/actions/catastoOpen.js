@@ -67,7 +67,9 @@ export const CATASTO_OPEN_END_DATE_SELECTED = 'CATASTO_OPEN:END_DATE_SELECTED';
 export const CATASTO_OPEN_IMMOBILE_SELECT_TOPONIMO = 'CATASTO_OPEN:IMMOBILE_SELECT_TOPONIMO';
 export const CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO = 'CATASTO_OPEN:IMMOBILE_LOAD_TOPONIMO';
 export const CATASTO_OPEN_IMMOBILE_LOADED_TOPONIMO = 'CATASTO_OPEN:IMMOBILE_LOADED_TOPONIMO';
-export const CATASTO_OPEN_IMMOBILE_SET_ADDRESS = 'CATASTO_OPEN:IMMOBILE_SET_ADDRESS';
+export const CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS = 'CATASTO_OPEN:IMMOBILE_LOAD_ADDRESS';
+export const CATASTO_OPEN_IMMOBILE_LOADED_ADDRESS = 'CATASTO_OPEN:IMMOBILE_LOADED_ADDRESS';
+export const CATASTO_OPEN_IMMOBILE_SELECT_ADDRESS = 'CATASTO_OPEN:IMMOBILE_SELECT_ADDRESS';
 export const CATASTO_OPEN_IMMOBILE_SET_NCIVICO = 'CATASTO_OPEN:IMMOBILE_SET_NCIVICO';
 export const CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH = 'CATASTO_OPEN:IMMOBILE_SUBMIT_SEARCH';
 export const CATASTO_OPEN_IMMOBILE_SELECT_TYPE = 'CATASTO_OPEN:IMMOBILE_SELECT_TYPE';
@@ -510,10 +512,25 @@ export function loadedToponym(payload) {
     };
 }
 
-export function setAddressTxt(addressTxt) {
+export function loadAddress(addressTxt) {
     return {
-        type: CATASTO_OPEN_IMMOBILE_SET_ADDRESS,
+        type: CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS,
         addressTxt
+    };
+}
+
+export function loadedAddress(payload) {
+    const addresses = payload.features.map((item) => (item.properties));
+    return {
+        type: CATASTO_OPEN_IMMOBILE_LOADED_ADDRESS,
+        addresses
+    };
+}
+
+export function selectAddress(address) {
+    return {
+        type: CATASTO_OPEN_IMMOBILE_SELECT_ADDRESS,
+        address
     };
 }
 

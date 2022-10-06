@@ -61,8 +61,12 @@ export const endDateSelector = (state) => get(state, "catastoOpen.endDate");
 export const toponymSelector = (state) => get(state, "catastoOpen.toponyms");
 export const selectedToponymSelector = (state) => get(state, "catastoOpen.selectedToponym");
 export const isLoadingToponymSelector = (state) => get(state, "catastoOpen.isLoadingToponym");
+export const addressesSelector = (state) => get(state, "catastoOpen.addresses");
+export const selectedAddressSelector = (state) => get(state, "catastoOpen.selectedAddress");
+export const isLoadingAddressSelector = (state) => get(state, "catastoOpen.isLoadingAddress");
+
 export const isValidInputOnImmAddressSelector = (state) => {
-    return (state.catastoOpen?.addressNameRawTxt?.length > 0 && state.catastoOpen?.houseNumber?.length > 0);
+    return (state.catastoOpen?.houseNumber?.length > 0);
 };
 export const hasSubmitedSearchSelector = (state) => get(state, "catastoOpen.hasSubmitedSearch");
 export const selectedImmTypeSelector = (state) => get(state, "catastoOpen.selectedImmType");

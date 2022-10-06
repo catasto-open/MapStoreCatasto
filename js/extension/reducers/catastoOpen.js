@@ -56,7 +56,9 @@ import {
     CATASTO_OPEN_IMMOBILE_SELECT_TOPONIMO,
     CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
     CATASTO_OPEN_IMMOBILE_LOADED_TOPONIMO,
-    CATASTO_OPEN_IMMOBILE_SET_ADDRESS,
+    CATASTO_OPEN_IMMOBILE_SELECT_ADDRESS,
+    CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS,
+    CATASTO_OPEN_IMMOBILE_LOADED_ADDRESS,
     CATASTO_OPEN_IMMOBILE_SET_NCIVICO,
     CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
     CATASTO_OPEN_IMMOBILE_SET_CODICE,
@@ -105,6 +107,7 @@ export default function(state = {}, action) {
                 selectedSearchImmType: action?.serviceImmType,
                 layer: state?.layer,
                 selectedCity: null,
+                isLoadingCities: true,
                 selectedSection: null,
                 selectedSheet: null,
                 selectedLand: null,
@@ -555,16 +558,21 @@ export default function(state = {}, action) {
             ...state,
             selectedToponym: action.toponym
         };
-    case CATASTO_OPEN_IMMOBILE_SET_ADDRESS:
+    case CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS:
         return {
             ...state,
-            addressNameRawTxt: action.addressTxt,
-            selectedLand: null,
-            selectedBuilding: null,
-            searchResults: null,
-            searchResultType: null,
-            loadedResults: false,
-            hasSubmitedSearch: false
+            isLoadingAddress: true
+        };
+    case CATASTO_OPEN_IMMOBILE_LOADED_ADDRESS:
+        return {
+            ...state,
+            addresses: action.addresses,
+            isLoadingAddress: false
+        };
+    case CATASTO_OPEN_IMMOBILE_SELECT_ADDRESS:
+        return {
+            ...state,
+            selectedAddress: action.address
         };
     case CATASTO_OPEN_IMMOBILE_SET_NCIVICO:
         return {
