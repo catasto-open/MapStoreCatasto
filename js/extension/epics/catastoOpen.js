@@ -429,6 +429,7 @@ export default () => ({
                 const selectedCityCode = state.catastoOpen?.selectedCity?.code;
                 const selectedSheetNumber = state.catastoOpen?.selectedBuilding?.sheet;
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
+                const immobileCode = state?.catastoOpen?.immobileCode ? state.catastoOpen.immobileCode : null;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
@@ -436,7 +437,7 @@ export default () => ({
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
                     state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, startDate, endDate, geoserverOwsUrl))
+                return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, immobileCode, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingDetailData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
