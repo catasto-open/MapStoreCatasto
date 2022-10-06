@@ -12,7 +12,8 @@ import {
     selectCity,
     loadToponym,
     selectToponym,
-    setAddressTxt,
+    loadAddress,
+    selectAddress,
     setHouseNumber,
     submitSearch,
     selectImmType,
@@ -51,6 +52,9 @@ import {
     toponymSelector,
     isLoadingToponymSelector,
     selectedToponymSelector,
+    addressesSelector,
+    isLoadingAddressSelector,
+    selectedAddressSelector,
     isValidInputOnImmAddressSelector,
     hasSubmitedSearchSelector,
     selectedImmTypeSelector,
@@ -100,7 +104,11 @@ class SearchContainer extends React.Component {
         onSelectToponym: PropTypes.func,
         toponyms: PropTypes.array,
         selectedToponym: PropTypes.object,
-        onChangeAddressTxt: PropTypes.func,
+        loadAddress: PropTypes.func,
+        isLoadingAddress: PropTypes.bool,
+        onSelectAddress: PropTypes.func,
+        addresses: PropTypes.array,
+        selectedAddress: PropTypes.object,
         onChangeHouseNumber: PropTypes.func,
         isValidInputOnImmAddress: PropTypes.bool,
         isValidInputOnImmCode: PropTypes.bool,
@@ -165,6 +173,9 @@ class SearchContainer extends React.Component {
         toponyms: [],
         selectedToponym: null,
         isLoadingToponym: false,
+        addresses: [],
+        selectedAddress: null,
+        isLoadingAddress: false,
         isValidInputOnImmAddress: false,
         hasSubmitedSearch: false,
         selectedImmType: null,
@@ -375,11 +386,16 @@ class SearchContainer extends React.Component {
                         active={!!this.props.selectedToponym}
                         style={style}
                         title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.addressName.name"}
+                        isSelect
+                        isLoading={this.props.isLoadingAddress}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.addressName.placeholder"}
-                        onFormChange={this.props.onChangeAddressTxt}
+                        options={this.addressOptions(this.props.addresses)}
+                        onInputChange={this.props.loadAddress}
+                        onSelect={this.props.onSelectAddress}
+                        value={this.props.selectedAddress}
                     />
                     <FormCol
-                        active={!!this.props.selectedToponym}
+                        active={!!this.props.selectedAddress}
                         style={style}
                         title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.ncivico.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.ncivico.placeholder"}
@@ -582,6 +598,13 @@ class SearchContainer extends React.Component {
         })) : {};
     };
 
+    addressOptions = (addresses) => {
+        return addresses ? addresses.map((t) => ({
+            value: t.indirizzo,
+            label: t.indirizzo
+        })) : {};
+    };
+
     sectionOptions = () => {
         const sections = this.props.sections;
         sections.find(s => s.value === '_') === undefined && sections.length > 1 ? this.props.sections.push({
@@ -715,7 +738,8 @@ export const searchContainerActions = {
     loadCities: loadCityData,
     loadToponym: loadToponym,
     onSelectToponym: selectToponym,
-    onChangeAddressTxt: setAddressTxt,
+    loadAddress: loadAddress,
+    onSelectAddress: selectAddress,
     onChangeHouseNumber: setHouseNumber,
     onSubmitSearch: submitSearch,
     onSelectImmType: selectImmType,
@@ -754,6 +778,9 @@ export const searchContainerSelector = createStructuredSelector({
     toponyms: toponymSelector,
     isLoadingToponym: isLoadingToponymSelector,
     selectedToponym: selectedToponymSelector,
+    addresses: addressesSelector,
+    isLoadingAddress: isLoadingAddressSelector,
+    selectedAddress: selectedAddressSelector,
     isValidInputOnImmAddress: isValidInputOnImmAddressSelector,
     hasSubmitedSearch: hasSubmitedSearchSelector,
     selectedImmType: selectedImmTypeSelector,

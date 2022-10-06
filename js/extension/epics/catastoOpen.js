@@ -7,6 +7,7 @@ import {
     CATASTO_OPEN_SELECT_SERVICE,
     CATASTO_OPEN_SELECT_CITY,
     CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
+    CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS,
     CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
     CATASTO_OPEN_LOAD_CITY_DATA,
@@ -39,6 +40,7 @@ import {
     loadError,
     loadCityData,
     loadedToponym,
+    loadedAddress,
     updateSubjectFormLoadedLuogo,
     loadedCityData,
     loadSectionData,
@@ -75,6 +77,7 @@ import {
     getBuildingDetails,
     getCityData,
     getToponym,
+    getAddress,
     getTwonData,
     getLandByCityCodeAndSheetNumber,
     getLandDetails,
@@ -426,7 +429,6 @@ export default () => ({
                 const selectedCityCode = state.catastoOpen?.selectedCity?.code;
                 const selectedSheetNumber = state.catastoOpen?.selectedBuilding?.sheet;
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
-                const selectedBuildingSectionCode = state.catastoOpen?.selectedBuilding?.section;
                 const backend = backendSelector(state);
                 var geoserverOwsUrl = backend.url;
                 const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
@@ -434,7 +436,7 @@ export default () => ({
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
                     state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, selectedBuildingSectionCode, startDate, endDate, geoserverOwsUrl))
+                return Rx.Observable.defer(() =>  getBuildingDetails(selectedCityCode, selectedSheetNumber, selectedBuildingNumber, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedBuildingDetailData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
@@ -506,6 +508,19 @@ export default () => ({
                     .switchMap((response) => Rx.Observable.of(loadedToponym(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
+    loadAddressEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS)
+            .switchMap((action) => {
+                const state = store.getState();
+                const backend = backendSelector(state);
+                const addressTxt = action?.addressTxt || " ";
+                const toponymNumber = state?.catastoOpen?.selectedToponym ? state.catastoOpen.selectedToponym.value : 0;
+                var geoserverOwsUrl = backend.url;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getAddress(addressTxt, toponymNumber, geoserverOwsUrl))
+                    .switchMap((response) => Rx.Observable.of(loadedAddress(response.data)))
+                    .catch(e => Rx.Observable.of(loadError(e.message)));
+            }),
     loadImmobileEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH)
             .switchMap((action) => {
@@ -522,7 +537,7 @@ export default () => ({
                 switch (filterType) {
                 case services[0].filters[1].id:
                     const toponym = state?.catastoOpen?.selectedToponym?.value;
-                    const addressName = state?.catastoOpen?.addressNameRawTxt;
+                    const addressName = state?.catastoOpen?.selectedAddress?.value;
                     const houseNumber = state?.catastoOpen?.houseNumber;
                     return Rx.Observable.defer(() => getBuildingByAddress(cityCode, toponym, addressName, houseNumber, startDate, endDate, geoserverOwsUrl))
                         .switchMap((response) => Rx.Observable.of(loadedBuildingData(response.data)))

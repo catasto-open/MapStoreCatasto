@@ -14,7 +14,8 @@ export const landDetailLayer = 'CatastoOpenDev:catasto_dettagli_terreno';
 export const buildingDetailLayer = 'CatastoOpenDev:catasto_dettagli_fabbricato';
 export const propertyOwnerLayer = 'CatastoOpenDev:catasto_titolari_immobile';
 export const toponymLayer = 'CatastoOpenDev:catasto_toponimo';
-export const indirizzoImmLayer = 'CatastoOpenDev:catasto_indrizzo_immobile';
+export const addressLayer = 'CatastoOpenDev:catasto_indirizzo_btop';
+export const indirizzoImmLayer = 'CatastoOpenDev:catasto_indirizzo_immobile';
 export const buildingByCodeLayer = 'CatastoOpenDev:catasto_fabbricati_bcodice';
 export const landByCodeLayer = 'CatastoOpenDev:catasto_terreni_bcodice';
 

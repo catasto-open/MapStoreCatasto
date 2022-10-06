@@ -3,6 +3,7 @@ import axios from "axios";
 import {
     cityLayer,
     toponymLayer,
+    addressLayer,
     indirizzoImmLayer,
     townLayer,
     sectionLayer,
@@ -255,7 +256,7 @@ export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, sta
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getBuildingDetails = (cityCode, citySheet, buildingNumber, sectionCode, startDate, endDate, geoserverOwsUrl) => {
+export const getBuildingDetails = (cityCode, citySheet, buildingNumber, startDate, endDate, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
@@ -263,10 +264,10 @@ export const getBuildingDetails = (cityCode, citySheet, buildingNumber, sectionC
         outputFormat: outputFormat
     };
     if (startDate !== null && endDate !== null) {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'sectionCode:' + sectionCode + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
         requestParams.typename = buildingDetailLayerTemp;
     } else {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'sectionCode:' + sectionCode;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber;
         requestParams.typename = buildingDetailLayer;
     }
     return axios.get(geoserverOwsUrl, { params: requestParams});
@@ -302,6 +303,18 @@ export const getToponym = (toponymTxt, geoserverOwsUrl) => {
     }
     requestParams.typename = toponymLayer;
     return axios.get(geoserverOwsUrl,  { params: requestParams});
+};
+
+export const getAddress = (addressTxt, toponymNumber, geoserverOwsUrl) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: request,
+        outputFormat: outputFormat,
+        typename: addressLayer
+    };
+    requestParams.viewparams = 'address:' + addressTxt + ';' + 'toponimo:' + toponymNumber;
+    return axios.get(geoserverOwsUrl, {params: requestParams});
 };
 
 export const getBuildingByAddress = (cityCode, toponym, addressName, houseNumber, startDate, endDate, geoserverOwsUrl) => {
