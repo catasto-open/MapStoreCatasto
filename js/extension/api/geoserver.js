@@ -34,7 +34,9 @@ import {
     landDetailLayerTemp,
     buildingDetailLayerTemp,
     propertyOwnerLayerTemp,
-    indirizzoImmLayerTemp
+    indirizzoImmLayerTemp,
+    buildingDetailByImmLayer,
+    buildingDetailByImmLayerTemp
 } from "@js/extension/utils/catastoOpen";
 
 const service = 'WFS';
@@ -256,19 +258,29 @@ export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, sta
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };
 
-export const getBuildingDetails = (cityCode, citySheet, buildingNumber, startDate, endDate, geoserverOwsUrl) => {
+export const getBuildingDetails = (cityCode, citySheet, buildingNumber, immobileCode, startDate, endDate, geoserverOwsUrl) => {
     const requestParams = {
         service: service,
         version: version,
         request: request,
         outputFormat: outputFormat
     };
-    if (startDate !== null && endDate !== null) {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
-        requestParams.typename = buildingDetailLayerTemp;
+    if (immobileCode === null) {
+        if (startDate !== null && endDate !== null) {
+            requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+            requestParams.typename = buildingDetailLayerTemp;
+        } else {
+            requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber;
+            requestParams.typename = buildingDetailLayer;
+        }
     } else {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber;
-        requestParams.typename = buildingDetailLayer;
+        if (startDate !== null && endDate !== null) {
+            requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'immobileCode:' + immobileCode  + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+            requestParams.typename = buildingDetailByImmLayerTemp;
+        } else {
+            requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'buildingNumber:' + buildingNumber + ';' + 'immobileCode:' + immobileCode;
+            requestParams.typename = buildingDetailByImmLayer;
+        }
     }
     return axios.get(geoserverOwsUrl, { params: requestParams});
 };

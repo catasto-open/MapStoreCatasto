@@ -18,6 +18,7 @@ export const addressLayer = 'CatastoOpenDev:catasto_indirizzo_btop';
 export const indirizzoImmLayer = 'CatastoOpenDev:catasto_indirizzo_immobile';
 export const buildingByCodeLayer = 'CatastoOpenDev:catasto_fabbricati_bcodice';
 export const landByCodeLayer = 'CatastoOpenDev:catasto_terreni_bcodice';
+export const buildingDetailByImmLayer = 'CatastoOpenDev:catasto_dettagli_fabbricato_byimm';
 
 export const cityLayerTemp = 'CatastoOpenDev:catasto_comuni_temp';
 export const sectionLayerTemp = 'CatastoOpenDev:catasto_sezioni_temp';
@@ -31,6 +32,7 @@ export const propertyOwnerLayerTemp = 'CatastoOpenDev:catasto_titolari_immobile_
 export const indirizzoImmLayerTemp = 'CatastoOpenDev:catasto_indrizzo_immobile_temp';
 export const buildingByCodeLayerTemp = 'CatastoOpenDev:catasto_fabbricati_bcodice_temp';
 export const landByCodeLayerTemp = 'CatastoOpenDev:catasto_terreni_bcodice_temp';
+export const buildingDetailByImmLayerTemp = 'CatastoOpenDev:catasto_dettagli_fabbricato_byimm_temp';
 
 export const naturalSubjectType = 'P';
 export const legalSubjectType = 'G';
