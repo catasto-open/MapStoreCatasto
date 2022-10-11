@@ -284,6 +284,7 @@ export default function(state = {}, action) {
             ...state,
             selectedSubjectFilter: action?.filter,
             subjectForm: null,
+            selectedBirthPlace: null,
             searchResults: subjectFilterChanged ? [] : state.searchResults,
             loadedResults: subjectFilterChanged ? false : state.loadedResults
         } : {...state,
