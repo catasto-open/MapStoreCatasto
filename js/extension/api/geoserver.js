@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from '@mapstore/libs/ajax';
 
 import {
     cityLayer,
