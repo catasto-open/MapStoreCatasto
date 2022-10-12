@@ -511,7 +511,7 @@ export default () => ({
                     const printURL = endPoint.endsWith('/') ? new URL(`${endPoint}${printPathVisura}`) : new URL(`${endPoint}/${printPathVisura}`);
                     printURL.searchParams.set("codiceimmobile", action?.property.property);
                     printURL.searchParams.set("tipoimmobile", action?.property.propertyType);
-                    printURL.searchParams.set("flagricercastorica", state?.catastoOpen.isTemporalSearchChecked ? true : false);
+                    printURL.searchParams.set("flagricercastorica", state?.catastoOpen.isHistoricalSearchChecked ? true : false);
                     return Rx.Observable.defer(() =>  getPropertyOwners(property, cityCode, startDate, endDate, geoserverOwsUrl))
                         .switchMap((response) => Rx.Observable.of(loadedPropertyOwnerData(response.data), setPrintPathWParams(printURL.toString())))
                         .catch(e => Rx.Observable.of(loadError(e.message)));
