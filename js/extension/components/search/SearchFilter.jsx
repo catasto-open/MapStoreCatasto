@@ -28,7 +28,8 @@ class SearchFilter extends React.Component {
         zoomTooltip: PropTypes.string,
         detailTooltip: PropTypes.string,
         onZoom: PropTypes.func,
-        onDetailClick: PropTypes.func
+        onDetailClick: PropTypes.func,
+        showNoResult: PropTypes.bool
     };
 
     static defaultProps = {
@@ -39,7 +40,8 @@ class SearchFilter extends React.Component {
         zoomActive: false,
         detailActive: false,
         onChange: () => {},
-        onZoom: () => {}
+        onZoom: () => {},
+        showNoResult: false
     };
 
     render() {
@@ -51,7 +53,7 @@ class SearchFilter extends React.Component {
                             <Message msgId={this.props.title}/>
                         </Col>
                         <Col xs={this.props.zoomActive ? 4 : 6}>
-                            {this.props.options?.length > 0 || this.props.isLoading ?
+                            {this.props.showNoResult ?
                                 <Select
                                     style={this.props.selectStyle}
                                     clearable={this.props.clearable}
@@ -63,7 +65,21 @@ class SearchFilter extends React.Component {
                                     onInputChange={this.props.onInputChange}
                                     onChange={this.props.onChange}
                                     value={this.props.value}>
-                                </Select> : <Message msgId={this.props.noResultsText}/>}
+                                </Select> :
+                                this.props.options?.length > 0 || this.props.isLoading ?
+                                    <Select
+                                        style={this.props.selectStyle}
+                                        clearable={this.props.clearable}
+                                        searchable={this.props.searchable}
+                                        isLoading={this.props.isLoading}
+                                        placeholder={<Message msgId={this.props.placeholder}/>}
+                                        noResultsText={<Message msgId={this.props.noResultsText}/>}
+                                        options={this.props.options}
+                                        onInputChange={this.props.onInputChange}
+                                        onChange={this.props.onChange}
+                                        value={this.props.value}>
+                                    </Select> : <Message msgId={this.props.noResultsText}/>
+                            }
                         </Col>
                         {this.props.zoomActive ?
                             <Col xs={2}>

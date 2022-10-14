@@ -510,6 +510,7 @@ class SearchContainer extends React.Component {
                     title={"extension.catastoOpenPanel.services.parcels.filters.cities.name"}
                     placeholder={"extension.catastoOpenPanel.services.parcels.filters.cities.placeholder"}
                     noResultsText={"extension.catastoOpenPanel.services.parcels.filters.cities.noResultsText"}
+                    showNoResult
                 />
                 {this.props.selectedService?.value === services[0].id && this.renderSwitchImmobile()}
             </div>
