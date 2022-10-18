@@ -59,12 +59,13 @@ export const getCityData = (city, endDate, geoserverOwsUrl) => {
             requestParams.viewparams = 'city:' + city;
             requestParams.typename = cityLayer;
         }
-    }
-    if (endDate !== null) {
-        requestParams.viewparams = 'endDate:' + endDate;
-        requestParams.typename = cityLayerTemp;
     } else {
-        requestParams.typename = cityLayer;
+        if (endDate !== null) {
+            requestParams.viewparams = 'endDate:' + endDate;
+            requestParams.typename = cityLayerTemp;
+        } else {
+            requestParams.typename = cityLayer;
+        }
     }
     return axios.get(geoserverOwsUrl,  { params: requestParams});
 };
@@ -325,7 +326,11 @@ export const getAddress = (addressTxt, toponymNumber, geoserverOwsUrl) => {
         outputFormat: outputFormat,
         typename: addressLayer
     };
-    requestParams.viewparams = 'address:' + addressTxt + ';' + 'toponimo:' + toponymNumber;
+    if (addressTxt !== null || addressTxt !== '') {
+        requestParams.viewparams = 'address:' + addressTxt + ';' + 'toponimo:' + toponymNumber;
+    } else {
+        requestParams.viewparams = 'toponimo:' + toponymNumber;
+    }
     return axios.get(geoserverOwsUrl, {params: requestParams});
 };
 

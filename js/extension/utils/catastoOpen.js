@@ -162,15 +162,15 @@ export const services = [
 export const cityParser = (feature) => {
     const properties = feature.properties;
     return {
-        code: properties.code,
-        name: properties.name
+        code: properties?.code,
+        name: properties?.name
     };
 };
 
 export const sectionParser = (feature) => {
-    const properties = feature.properties;
+    const properties = feature?.properties;
     return {
-        name: properties.name
+        name: properties?.name
     };
 };
 

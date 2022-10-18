@@ -82,7 +82,9 @@ import {
     endDateSelector,
     isLoadingTownSelector,
     townSelector,
-    selectedBirthPlaceSelector
+    selectedBirthPlaceSelector,
+    fixedComuniSelector,
+    doweHaveFixedComuniSelector
 } from "@js/extension/selectors/catastoOpen";
 import SearchForm from "@js/extension/components/search/SearchForm";
 import SearchHistory from '@js/extension/components/search/SearchHistory';
@@ -163,7 +165,9 @@ class SearchContainer extends React.Component {
         setMessageForUser: PropTypes.func,
         isLoadingTown: PropTypes.bool,
         town: PropTypes.array,
-        selectedBirthPlace: PropTypes.object
+        selectedBirthPlace: PropTypes.object,
+        fixedComuni: PropTypes.object,
+        doweHaveFixedComuni: PropTypes.bool
     };
 
     static defaultProps = {
@@ -208,7 +212,9 @@ class SearchContainer extends React.Component {
         onChangeTemporalSearchCheckbox: () => {},
         isLoadingTown: false,
         town: [],
-        selectedBirthPlace: {}
+        selectedBirthPlace: {},
+        fixedComuni: null,
+        doweHaveFixedComuni: false
     };
 
     componentWillReceiveProps(nextProp) {
@@ -450,6 +456,7 @@ class SearchContainer extends React.Component {
                         activeButton={this.props.isValidInputOnImmCode}
                         onSubmitForm={() => this.props.onSubmitSearch(this.props.selectedSearchImmType.value)}
                         buttonTxt={"extension.catastoOpenPanel.searchButton"}
+                        typeInput={"number"}
                     />
                     <SearchFilter
                         buttonStyle={style}
@@ -502,7 +509,7 @@ class SearchContainer extends React.Component {
                 <SearchFilter
                     active={this.doWeHaveDatesValid() && this.props.selectedService?.value === services[0].id}
                     clearable={!this.props.selectedSection}
-                    isLoading={this.props.isLoadingCities}
+                    isLoading={this.props.doweHaveFixedComuni ? false : this.props.isLoadingCities}
                     options={this.cityOptions()}
                     onChange={(val) => this.props.onSelectCity(val && val.value ? val : null)}
                     value={this.props.selectedCity}
@@ -510,6 +517,7 @@ class SearchContainer extends React.Component {
                     title={"extension.catastoOpenPanel.services.parcels.filters.cities.name"}
                     placeholder={"extension.catastoOpenPanel.services.parcels.filters.cities.placeholder"}
                     noResultsText={"extension.catastoOpenPanel.services.parcels.filters.cities.noResultsText"}
+                    showNoResult
                 />
                 {this.props.selectedService?.value === services[0].id && this.renderSwitchImmobile()}
             </div>
@@ -582,13 +590,21 @@ class SearchContainer extends React.Component {
     }
 
     cityOptions = () => {
-        return this.props.cities.map((c) => (
-            {
-                value: c.code,
-                label: c.name,
-                code: c.code
-            }
-        ));
+        return this.props.doweHaveFixedComuni ?
+            [
+                {
+                    value: this.props.fixedComuni?.codice,
+                    label: this.props.fixedComuni?.comuni,
+                    code: this.props.fixedComuni?.codice
+                }
+            ]
+            : this.props.cities.map((c) => (
+                {
+                    value: c.code,
+                    label: c.name,
+                    code: c.code
+                }
+            ));
     };
 
     toponymOptions = (toponyms) => {
@@ -807,7 +823,9 @@ export const searchContainerSelector = createStructuredSelector({
     endDateValue: endDateSelector,
     isLoadingTown: isLoadingTownSelector,
     town: townSelector,
-    selectedBirthPlace: selectedBirthPlaceSelector
+    selectedBirthPlace: selectedBirthPlaceSelector,
+    fixedComuni: fixedComuniSelector,
+    doweHaveFixedComuni: doweHaveFixedComuniSelector
 });
 
 export default SearchContainer;

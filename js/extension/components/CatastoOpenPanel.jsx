@@ -21,7 +21,8 @@ import {
     loadSubjectPropertyData,
     resumePreviousSearchResults,
     setBackend,
-    setPrintEndPoint
+    setPrintEndPoint,
+    setFixedComuni
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -236,7 +237,9 @@ class CatastoOpenPanel extends React.Component {
         printEndPointURL: PropTypes.string,
         setPrintEndPoint: PropTypes.func,
         doweHavePrint: PropTypes.bool,
-        printPath: PropTypes.string
+        printPath: PropTypes.string,
+        fixedComuni: PropTypes.object,
+        setFixedComuni: PropTypes.func
     };
 
     static defaultProps = {
@@ -294,7 +297,9 @@ class CatastoOpenPanel extends React.Component {
         selectedImmobile: null,
         printEndPointURL: "",
         setPrintEndPoint: () => {},
-        printPath: ""
+        printPath: "",
+        fixedComuni: null,
+        setFixedComuni: () => {}
     };
 
     componentWillReceiveProps(nextProp) {
@@ -304,6 +309,9 @@ class CatastoOpenPanel extends React.Component {
             );
             this.props.setPrintEndPoint(
                 this.props.printEndPointURL
+            );
+            this.props.setFixedComuni(
+                this.props.fixedComuni
             );
         }
     }
@@ -475,7 +483,8 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         loadLayer: loadLayer,
         loadPropertyOwners: loadPropertyOwnerData,
         setBackend: setBackend,
-        setPrintEndPoint: setPrintEndPoint
+        setPrintEndPoint: setPrintEndPoint,
+        setFixedComuni: setFixedComuni
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;

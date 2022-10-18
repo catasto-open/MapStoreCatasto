@@ -76,6 +76,7 @@ export const CATASTO_OPEN_IMMOBILE_SELECT_TYPE = 'CATASTO_OPEN:IMMOBILE_SELECT_T
 export const CATASTO_OPEN_IMMOBILE_SET_CODICE = 'CATASTO_OPEN:IMMOBILE_SET_CODICE';
 export const CATASTO_OPEN_SET_PRINT_ENDPOINT = 'CATASTO_OPEN:SET_PRINT_ENDPOINT';
 export const CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS = 'CATASTO_OPEN:SET_PRINT_PATH_W_PARAMS';
+export const CATASTO_OPEN_SET_FIXED_COMUNI = 'CATASTO_OPEN:SET_FIXED_COMUNI';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -573,5 +574,12 @@ export function setPrintPathWParams(printPath) {
     return {
         type: CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS,
         printPath
+    };
+}
+
+export function setFixedComuni(fixedComuni) {
+    return {
+        type: CATASTO_OPEN_SET_FIXED_COMUNI,
+        fixedComuni
     };
 }

@@ -321,7 +321,11 @@
                    "name": "Geoserver",
                    "url": "http://172.18.0.1:8600/geoserver/"
                },
-               "printEndPointURL" : "http://localhost:5000/siscat/api/v1"
+               "printEndPointURL" : "http://localhost:5000/siscat/api/v1",
+               "fixedComuni" : {
+                   "comuni": "ROMA",
+                   "codice": "H501"
+               }
                 }
             },
           {
