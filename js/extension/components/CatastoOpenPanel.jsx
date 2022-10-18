@@ -6,6 +6,7 @@ import Message from '@mapstore/components/I18N/Message';
 import DockPanel from '@mapstore/components/misc/panels/DockPanel';
 import { createStructuredSelector } from 'reselect';
 import { Alert, Glyphicon, Tooltip} from 'react-bootstrap';
+import '@js/extension/assets/style.css';
 import {
     catastoOpenActiveSelector,
     errorSelector, loadedResultSelector,
