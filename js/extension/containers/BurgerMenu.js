@@ -6,10 +6,11 @@ import {activateCatastoOpenPanel} from "@js/extension/actions/catastoOpen";
 const burgerMenuContainer = {
     BurgerMenu: {
         name: 'CatastoOpen',
-        position: 6,
+        position: 1,
         text: <Message msgId="extension.catastoOpenPanel.title"/>,
         icon: <Glyphicon glyph="book"/>,
-        action: activateCatastoOpenPanel.bind(null)
+        action: activateCatastoOpenPanel.bind(null),
+        doNotHide: true
     }
 };
 

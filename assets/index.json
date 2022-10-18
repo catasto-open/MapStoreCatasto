@@ -1,10 +1,14 @@
 {
+  "id": "1334a184dea8418d80ca4079b7c011d1",
+  "version": "1.0.0",
+  "title": "Cadastral search plugins",
+  "description": "Cadastral search plugins",
   "plugins": [
     {
       "name": "CatastoOpen",
       "dependencies": [
         "BurgerMenu"
-      ]
+    ]
     }
   ]
 }

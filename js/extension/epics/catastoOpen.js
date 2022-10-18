@@ -219,13 +219,13 @@ export default () => ({
                 const cityCode = action?.cityCode || null;
                 const backend = backendSelector(state);
                 let geoserverOwsUrl = backend.url;
-                const section = state.catastoOpen.selectedSection;
+                const section = state.catastoOpen?.selectedSection || null;
                 const startDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.startDate ? fixDateTimeZone(state.catastoOpen.startDate).toISOString().slice(0, 10) :
                     state?.catastoOpen.isHistoricalSearchChecked ? "0001-01-01" : null;
                 const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
                     state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
-                return Rx.Observable.defer(() => getSheetByCityCode(cityCode, section.value, startDate, endDate, geoserverOwsUrl))
+                return Rx.Observable.defer(() => getSheetByCityCode(cityCode, section?.value, startDate, endDate, geoserverOwsUrl))
                     .switchMap((response) => Rx.Observable.of(loadedSheetData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),

@@ -79,3 +79,7 @@ export const selectedImmobileSelector = (state) => get(state, "catastoOpen.selec
 export const doweHavePrintSelector = (state) => get(state, "catastoOpen.doweHavePrint");
 export const printEndPointSelector = (state) => get(state, "catastoOpen.printEndPoint");
 export const printPathSelector = (state) => get(state, "catastoOpen.printPath");
+export const doweHaveFixedComuniSelector = (state) => {
+    return state.catastoOpen?.fixedComuni ? true : false;
+};
+export const fixedComuniSelector = (state) => get(state, "catastoOpen.fixedComuni");

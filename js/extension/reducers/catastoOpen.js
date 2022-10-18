@@ -64,7 +64,8 @@ import {
     CATASTO_OPEN_IMMOBILE_SET_CODICE,
     CATASTO_OPEN_IMMOBILE_SELECT_TYPE,
     CATASTO_OPEN_SET_PRINT_ENDPOINT,
-    CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS
+    CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS,
+    CATASTO_OPEN_SET_FIXED_COMUNI
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -87,6 +88,7 @@ export default function(state = {}, action) {
         return serviceChanged ?
             {
                 backend: state?.backend,
+                fixedComuni: state?.fixedComuni,
                 printEndPoint: state?.printEndPoint,
                 doweHavePrint: state?.doweHavePrint,
                 selectedService: action?.service,
@@ -102,6 +104,7 @@ export default function(state = {}, action) {
             {
                 ...state,
                 backend: state?.backend,
+                fixedComuni: state?.fixedComuni,
                 printEndPoint: state?.printEndPoint,
                 doweHavePrint: state?.doweHavePrint,
                 selectedSearchImmType: action?.serviceImmType,
@@ -126,6 +129,7 @@ export default function(state = {}, action) {
     case CATASTO_OPEN_LOAD_ERROR:
         return {
             backend: state?.backend,
+            fixedComuni: state?.fixedComuni,
             printEndPoint: state?.printEndPoint,
             doweHavePrint: state?.doweHavePrint,
             error: true
@@ -624,6 +628,11 @@ export default function(state = {}, action) {
         return {
             ...state,
             printPath: action.printPath
+        };
+    case CATASTO_OPEN_SET_FIXED_COMUNI:
+        return {
+            ...state,
+            fixedComuni: action.fixedComuni
         };
     default:
         return state;

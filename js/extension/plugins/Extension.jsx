@@ -11,7 +11,9 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  * @class CatastoOpen
  * @prop {array} cfg.filterServices, if given, defines list of services and corresponding columns
  * @prop {object} cfg.ownerDetails, if given, defines list of columns for the two type of owners
- * @prop {object} cgf.backend, if given, defines the endpoint of geoserver
+ * @prop {object} cfg.backend, if given, defines the endpoint of geoserver
+ * @prop {string} cfg.printEndPointURL, if given, the stampa visura is presented
+ * @prop {object} cfg.fixedComuni, if given, used for the comune, notice the key of the object
  * @example the following is the default config
  * {
  *   "name" : "CatastoOpen",
@@ -58,7 +60,11 @@ import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
  *          "name": "Geoserver",
  *          "url": "http://172.21.0.1:8600/geoserver/"
  *      },
- *      "printEndPointURL" : "http://localhost:5000/api/v1"
+ *      "printEndPointURL" : "http://localhost:5000/api/v1",
+ *      "fixedComuni" : {
+ *          "comuni": "ROMA",
+ *          "codice": "H501"
+ *          }
  *    }
  * }
  */
