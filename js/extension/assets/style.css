@@ -1,3 +1,10 @@
 .search-result-grid-loader{
     text-align: -webkit-center;
 }
+/*
+!important is needed because the library we used
+use inline style which cannot be overridden unless
+we use !important*/
+#cadastral-search-root {
+    position: static!important;
+}
