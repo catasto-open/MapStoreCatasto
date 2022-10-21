@@ -48,6 +48,7 @@ import {
 import OverlayTrigger from "@mapstore/components/misc/OverlayTrigger";
 import Toolbar from "./search/SearchResultGridToolbar";
 import DetailImmobile from "@js/extension/components/search/DetailImmobile";
+import {rowSelector} from "@js/extension/selectors/resultGrid";
 
 const SmartSearchContainer = connect(searchContainerSelector, searchContainerActions)(SearchContainer);
 const SmartSearchResultGrid = connect(searchResultGridSelector, searchResultGridActions)(SearchResultGrid);
@@ -240,7 +241,8 @@ class CatastoOpenPanel extends React.Component {
         doweHavePrint: PropTypes.bool,
         printPath: PropTypes.string,
         fixedComuni: PropTypes.object,
-        setFixedComuni: PropTypes.func
+        setFixedComuni: PropTypes.func,
+        rowResult: PropTypes.array
     };
 
     static defaultProps = {
@@ -333,6 +335,7 @@ class CatastoOpenPanel extends React.Component {
         const isTemporalSearchOnParcel = (parcelsDef[0]?.useTemporalSearch === null || parcelsDef[0]?.useHistoricalSearch === true) ? false : parcelsDef[0]?.useTemporalSearch;
         let print = false;
         let printTipId = "extension.catastoOpenPanel.printBtn.label";
+        let extending = false;
         switch (this.props.searchResultType) {
         case naturalSubjectType:
             columns = naturalSubjectsDef.length === 1 ? naturalSubjectColumns.filter(
@@ -341,6 +344,7 @@ class CatastoOpenPanel extends React.Component {
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.naturalSubjects.name";
             print = this.props.doweHavePrint;
+            extending = true;
             break;
         case legalSubjectType:
             columns = legalSubjectsDef.length === 1 ? legalSubjectColumns.filter(
@@ -349,6 +353,7 @@ class CatastoOpenPanel extends React.Component {
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.legalSubjects.name";
             print = this.props.doweHavePrint;
+            extending = true;
             break;
         case subjectPropertyLayer:
             columns = this.props.ownerDetails.subjectPropertyColumnsKeys?.length !== 0 ? subjectPropertyColumns.filter(
@@ -371,6 +376,7 @@ class CatastoOpenPanel extends React.Component {
             }
             title = "extension.catastoOpenPanel.buildingDetails.name";
             loadPropertyOwnerOnSelect = true;
+            extending = true;
             break;
         case landDetailLayer:
             columns = parcelsDef.length === 1 ? landDetailColumns.filter(
@@ -381,6 +387,7 @@ class CatastoOpenPanel extends React.Component {
             }
             title = "extension.catastoOpenPanel.landDetails.name";
             loadPropertyOwnerOnSelect = true;
+            extending = true;
             break;
         case propertyOwnerLayer:
             columns = this.props.ownerDetails.propertyOwnerColumnsKeys?.length !== 0 ? propertyOwnerColumns.filter(
@@ -420,6 +427,9 @@ class CatastoOpenPanel extends React.Component {
                                 showPrintBtn={print}
                                 printTipId={printTipId}
                                 printPath={this.props.printPath}
+                                showExtendBtn={extending}
+                                columns={columns}
+                                rows={this.props.rowResult}
                             />}
                     />
                     {this.props.searchResultType === propertyOwnerLayer ? <DetailImmobile selectedImmobile={this.props.selectedImmobile}/> : null}
@@ -473,7 +483,8 @@ const catastoOpenSelector = createStructuredSelector({
     isTemporalSearchChecked: isTemporalSearchCheckedSelector,
     selectedImmobile: selectedImmobileSelector,
     doweHavePrint: doweHavePrintSelector,
-    printPath: printPathSelector
+    printPath: printPathSelector,
+    rowResult: rowSelector
 });
 
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,
