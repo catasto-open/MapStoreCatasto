@@ -4,6 +4,7 @@ import ButtonB from '@mapstore/components/misc/Button';
 import tooltip from '@mapstore/components/misc/enhancers/tooltip';
 import { Glyphicon } from 'react-bootstrap';
 import Message from "@mapstore/components/I18N/Message";
+import ModalSearchResultGrid from '@js/extension/components/search/ModalSearchResultGrid';
 
 const Button = tooltip(ButtonB);
 
@@ -20,14 +21,20 @@ class Toolbar extends React.Component {
         resumeButtonTooltipId: PropTypes.string,
         showPrintBtn: PropTypes.bool,
         printTipId: PropTypes.string,
-        printPath: PropTypes.string
+        printPath: PropTypes.string,
+        showExtendBtn: PropTypes.bool,
+        columns: PropTypes.array,
+        rows: PropTypes.array
     };
 
     static defaultProps = {
         title: "",
         enableAddRow: true,
         resumeButtonActive: false,
-        showPrintBtn: false
+        showPrintBtn: false,
+        showExtendBtn: false,
+        columns: [],
+        rows: []
     };
 
     renderToggleFilterButton = () => {
@@ -75,12 +82,25 @@ class Toolbar extends React.Component {
         return null;
     };
 
+    renderExtendButton = () => {
+        if (this.props.showExtendBtn) {
+            return (
+                <ModalSearchResultGrid
+                    id={this.props.title}
+                    columns={this.props.columns}
+                    rows={this.props.rows}
+                />);
+        }
+        return null;
+    };
+
     render() {
         return (
             <div className="react-grid-Toolbar">
                 <div className="tools" style={{"float": "left"}}>
                     {this.renderResumeButton()}
                     {this.renderToggleFilterButton()}
+                    {this.renderExtendButton()}
                     {this.renderPrintButton()}
                     {this.props.children}
                 </div>
