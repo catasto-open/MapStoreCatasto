@@ -366,6 +366,7 @@ class CatastoOpenPanel extends React.Component {
             resume = true;
             title = "extension.catastoOpenPanel.subjectProperties.name";
             print = this.props.doweHavePrint;
+            extending = true;
             break;
         case buildingDetailLayer:
             columns = parcelsDef.length === 1 ? buildingDetailColumns.filter(
