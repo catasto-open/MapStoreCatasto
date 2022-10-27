@@ -5,6 +5,7 @@ import {
     CATASTO_OPEN_ACTIVATE_PANEL,
     CATASTO_OPEN_DEACTIVATE_PANEL,
     CATASTO_OPEN_SELECT_SERVICE,
+    CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE,
     CATASTO_OPEN_SELECT_CITY,
     CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
     CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS,
@@ -43,6 +44,7 @@ import {
     loadedAddress,
     updateSubjectFormLoadedLuogo,
     loadedCityData,
+    selectSection,
     loadSectionData,
     loadedSectionData,
     loadSheetData,
@@ -97,7 +99,9 @@ import {resultGridLoadRows} from "@js/extension/actions/resultGrid";
 import {
     backendSelector,
     printEndPointSelector,
-    doweHavePrintSelector
+    doweHavePrintSelector,
+    doweHaveFixedComuniSelector,
+    fixedComuniSelector
 } from "@js/extension/selectors/catastoOpen";
 /**
  * Epics for CATASTO-OPEN PLUGIN
@@ -207,7 +211,9 @@ export default () => ({
             .switchMap(() => {
                 const state = store.getState();
                 const sectionChanged = state.catastoOpen?.sectionChanged;
-                const cityCode = state.catastoOpen.selectedCity.code;
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen.selectedCity.code;
                 return sectionChanged ?
                     Rx.Observable.of(...([removeLayerFromMap(), loadSheetData(cityCode)])) :
                     Rx.Observable.of(...([loadSheetData(cityCode)]));
@@ -233,7 +239,9 @@ export default () => ({
         action$.ofType(CATASTO_OPEN_SELECT_SHEET)
             .switchMap(() => {
                 const state = store.getState();
-                const cityCode = state.catastoOpen?.selectedCity?.code;
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
                 const sheetNumber = state.catastoOpen?.selectedSheet?.number;
                 const sheetChanged = state.catastoOpen?.sheetChanged;
                 return sheetChanged ? Rx.Observable.of(
@@ -452,7 +460,9 @@ export default () => ({
         action$.ofType(CATASTO_OPEN_LOAD_BUILDING_DETAIL_DATA)
             .switchMap(() => {
                 const state = store.getState();
-                const selectedCityCode = state.catastoOpen?.selectedCity?.code;
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const selectedCityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
                 const selectedSheetNumber = state.catastoOpen?.selectedBuilding?.sheet;
                 const selectedBuildingNumber = state.catastoOpen?.selectedBuilding?.number;
                 const immobileCode = state?.catastoOpen?.immobileCode ? state.catastoOpen.immobileCode : null;
@@ -476,7 +486,9 @@ export default () => ({
         action$.ofType(CATASTO_OPEN_LOAD_LAND_DETAIL_DATA)
             .switchMap(() => {
                 const state = store.getState();
-                const selectedCityCode = state.catastoOpen?.selectedCity?.code;
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const selectedCityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
                 const selectedSheetNumber = state.catastoOpen?.selectedLand?.sheet;
                 const selectedLandNumber = state.catastoOpen?.selectedLand?.number;
                 const selectedLandSectionCode = state.catastoOpen?.selectedLand?.section;
@@ -500,7 +512,9 @@ export default () => ({
         action$.ofType(CATASTO_OPEN_LOAD_PROPERTY_OWNER_DATA)
             .switchMap((action) => {
                 const state = store.getState();
-                const cityCode = state.catastoOpen?.selectedCity?.code;
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
                 const property = action?.property;
                 const backend = backendSelector(state);
                 let geoserverOwsUrl = backend.url;
@@ -572,7 +586,9 @@ export default () => ({
                     state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 const filterType = action.filterType;
-                const cityCode = state?.catastoOpen?.selectedCity?.value;
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
                 switch (filterType) {
                 case services[0].filters[1].id:
                     const toponym = state?.catastoOpen?.selectedToponym?.value;
@@ -599,5 +615,28 @@ export default () => ({
                 default:
                     return Rx.Observable.empty();
                 }
+            }),
+    loadSectionDataEpicTwin: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE)
+            .switchMap((action) => {
+                const state = store.getState();
+                const DoWeNeedToLoadSection = action.serviceImmType.value === services[0].filters[0].id;
+                if (!DoWeNeedToLoadSection) {
+                    return Rx.Observable.empty();
+                }
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                if (!doweHaveFixedComuni) {
+                    return Rx.Observable.empty();
+                }
+                const fixedComuni = fixedComuniSelector(state);
+                const backend = backendSelector(state);
+                let geoserverOwsUrl = backend.url;
+                const endDate = state?.catastoOpen.isTemporalSearchChecked && state?.catastoOpen.endDate ? state.catastoOpen.endDate.toISOString().slice(0, 10) :
+                    state?.catastoOpen.isHistoricalSearchChecked ? new Date().toISOString().slice(0, 10) : null;
+                geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
+                return Rx.Observable.defer(() => getSectionByCityCode(fixedComuni.codice, endDate, geoserverOwsUrl))
+                    .switchMap((response) => Rx.Observable.of(loadedSectionData(response.data), selectSection({value: "_", label: "TUTTE LE SEZIONE", name: "_"})))
+                    .catch(e => Rx.Observable.of(loadError(e.message)));
+
             })
 });
