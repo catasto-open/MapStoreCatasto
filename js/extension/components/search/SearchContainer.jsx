@@ -626,7 +626,7 @@ class SearchContainer extends React.Component {
         const sections = this.props.sections;
         sections.find(s => s.value === '_') === undefined && sections.length > 1 ? this.props.sections.push({
             value: "_",
-            label: "TUTTE LE SEZIONE",
+            label: "TUTTE LE SEZIONI",
             name: "_"
         }) : null;
         return sections.map((s) => (
