@@ -49,7 +49,7 @@
           },
           "filtersTypes": {
               "immobile": {
-                  "placeholder": "Filtra per immobile"
+                  "placeholder": "Filtra per dati catastali"
               },
               "immobilebyadd": {
                   "placeholder": "Filtra per indirizzo",
@@ -69,7 +69,7 @@
                   }
               },
               "immobilebycode": {
-                  "placeholder": "Filtra per codice immobiliare",
+                  "placeholder": "Filtra per codice immobile",
                   "filters": {
                       "immobileType": {
                           "name": "Tipo Immobile",
@@ -89,7 +89,7 @@
             "filters": {
               "firstAndLastName": {
                 "name": "Nome e Cognome",
-                "placeholder": "Filtra per nome e cognome",
+                "placeholder": "Filtra per dati anagrafici",
                 "filters": {
                   "firstName": {
                     "name": "Nome"
@@ -138,7 +138,7 @@
               },
               "identificationCode": {
                   "name": "Codice Identificativo",
-                  "placeholder": "Filtra per codice identificativo"
+                  "placeholder": "Filtra per codice soggetto"
               }
             },
             "columns": {
@@ -167,7 +167,7 @@
           }
         },
         "landDetails": {
-          "name": "Dettagli Terreno",
+          "name": "Dettaglio Terreni",
           "columns":{
             "subordinate": "Subalterno",
             "quality": "Qualità",
@@ -220,7 +220,7 @@
           }
         },
         "buildingDetails": {
-          "name": "Dettagli Fabbricato",
+          "name": "Dettaglio Fabbricati",
           "columns":{
             "subordinate": "Subalterno",
             "censusZone": "Zona Censuaria",
