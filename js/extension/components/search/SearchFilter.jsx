@@ -29,7 +29,8 @@ class SearchFilter extends React.Component {
         detailTooltip: PropTypes.string,
         onZoom: PropTypes.func,
         onDetailClick: PropTypes.func,
-        showNoResult: PropTypes.bool
+        showNoResult: PropTypes.bool,
+        isDisabled: PropTypes.bool
     };
 
     static defaultProps = {
@@ -41,7 +42,8 @@ class SearchFilter extends React.Component {
         detailActive: false,
         onChange: () => {},
         onZoom: () => {},
-        showNoResult: false
+        showNoResult: false,
+        isDisabled: false
     };
 
     render() {
@@ -53,20 +55,12 @@ class SearchFilter extends React.Component {
                             <Message msgId={this.props.title}/>
                         </Col>
                         <Col xs={this.props.zoomActive ? 4 : 6}>
-                            {this.props.showNoResult ?
+                            {this.props.isDisabled ?
                                 <Select
-                                    style={this.props.selectStyle}
-                                    clearable={this.props.clearable}
-                                    searchable={this.props.searchable}
-                                    isLoading={this.props.isLoading}
-                                    placeholder={<Message msgId={this.props.placeholder}/>}
-                                    noResultsText={<Message msgId={this.props.noResultsText}/>}
-                                    options={this.props.options}
-                                    onInputChange={this.props.onInputChange}
-                                    onChange={this.props.onChange}
-                                    value={this.props.value}>
-                                </Select> :
-                                this.props.options?.length > 0 || this.props.isLoading ?
+                                    value={this.props.options[0]}
+                                    disabled />
+                                :
+                                this.props.showNoResult ?
                                     <Select
                                         style={this.props.selectStyle}
                                         clearable={this.props.clearable}
@@ -78,7 +72,20 @@ class SearchFilter extends React.Component {
                                         onInputChange={this.props.onInputChange}
                                         onChange={this.props.onChange}
                                         value={this.props.value}>
-                                    </Select> : <Message msgId={this.props.noResultsText}/>
+                                    </Select> :
+                                    this.props.options?.length > 0 || this.props.isLoading ?
+                                        <Select
+                                            style={this.props.selectStyle}
+                                            clearable={this.props.clearable}
+                                            searchable={this.props.searchable}
+                                            isLoading={this.props.isLoading}
+                                            placeholder={<Message msgId={this.props.placeholder}/>}
+                                            noResultsText={<Message msgId={this.props.noResultsText}/>}
+                                            options={this.props.options}
+                                            onInputChange={this.props.onInputChange}
+                                            onChange={this.props.onChange}
+                                            value={this.props.value}>
+                                        </Select> : <Message msgId={this.props.noResultsText}/>
                             }
                         </Col>
                         {this.props.zoomActive ?

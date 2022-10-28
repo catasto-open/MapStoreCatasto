@@ -308,7 +308,7 @@ class SearchContainer extends React.Component {
             return (
                 <>
                     <SearchFilter
-                        active={!!this.props.selectedCity}
+                        active={!!this.props.selectedCity || this.props.doweHaveFixedComuni}
                         clearable={!this.props.selectedSheet}
                         isLoading={this.props.isLoadingSections}
                         options={this.sectionOptions()}
@@ -377,7 +377,7 @@ class SearchContainer extends React.Component {
             return (
                 <>
                     <FormCol
-                        active={!!this.props.selectedCity}
+                        active={!!this.props.selectedCity || this.props.doweHaveFixedComuni}
                         style={style}
                         title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebyadd.filters.toponym.name"}
                         isSelect
@@ -436,7 +436,7 @@ class SearchContainer extends React.Component {
             return (
                 <>
                     <FormCol
-                        active={!!this.props.selectedCity}
+                        active={!!this.props.selectedCity || this.props.doweHaveFixedComuni}
                         style={style}
                         title={"extension.catastoOpenPanel.services.parcels.filtersTypes.immobilebycode.filters.immobileType.name"}
                         isSelect
@@ -518,6 +518,7 @@ class SearchContainer extends React.Component {
                     placeholder={"extension.catastoOpenPanel.services.parcels.filters.cities.placeholder"}
                     noResultsText={"extension.catastoOpenPanel.services.parcels.filters.cities.noResultsText"}
                     showNoResult
+                    isDisabled={this.props.doweHaveFixedComuni}
                 />
                 {this.props.selectedService?.value === services[0].id && this.renderSwitchImmobile()}
             </div>
@@ -625,13 +626,13 @@ class SearchContainer extends React.Component {
         const sections = this.props.sections;
         sections.find(s => s.value === '_') === undefined && sections.length > 1 ? this.props.sections.push({
             value: "_",
-            label: "_",
+            label: "TUTTE LE SEZIONE",
             name: "_"
         }) : null;
         return sections.map((s) => (
             {
                 value: s.name,
-                label: s.name,
+                label: s.label ? s.label : s.name,
                 code: s.name
             }
         ));
