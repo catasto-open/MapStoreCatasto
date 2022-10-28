@@ -65,17 +65,34 @@ class Toolbar extends React.Component {
         return null;
     };
 
-    renderPrintButton = () => {
+    renderPrintButtonPDF = () => {
         if (this.props.showPrintBtn) {
             return (
                 <Button
-                    href={this.props.printPath}
+                    href={`${this.props.printPath}&format=pdf`}
                     tooltipId={this.props.printTipId}
                     tooltipPosition={"top"}
                     onClick={() => {}}
                     target="_blank"
                 >
-                    <Glyphicon glyph={"print"}/>
+                    <Glyphicon glyph={"print"}/> pdf
+                </Button>
+            );
+        }
+        return null;
+    };
+
+    renderPrintButtonCSV = () => {
+        if (this.props.showPrintBtn) {
+            return (
+                <Button
+                    href={`${this.props.printPath}&format=csv`}
+                    tooltipId={this.props.printTipId}
+                    tooltipPosition={"top"}
+                    onClick={() => {}}
+                    target="_blank"
+                >
+                    <Glyphicon glyph={"print"}/> csv
                 </Button>
             );
         }
@@ -101,7 +118,8 @@ class Toolbar extends React.Component {
                     {this.renderResumeButton()}
                     {this.renderToggleFilterButton()}
                     {this.renderExtendButton()}
-                    {this.renderPrintButton()}
+                    {this.renderPrintButtonPDF()}
+                    {this.renderPrintButtonCSV()}
                     {this.props.children}
                 </div>
                 <div className={"panel-title text-center"}>
