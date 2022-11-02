@@ -54,10 +54,10 @@ const ModalSearchResultGrid = props => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {props.rows.map((c) => (
-                                        <tr>
+                                    {props.rows.map((c, index) => (
+                                        <tr key={index}>
                                             {filteredColumns.map((r) => (
-                                                <td>
+                                                <td key={r.key}>
                                                     {c[r.key]}
                                                 </td>
                                             ))}
