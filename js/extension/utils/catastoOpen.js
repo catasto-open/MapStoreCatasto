@@ -22,7 +22,7 @@ export const buildingDetailByImmLayer = 'CatastoOpenDev:catasto_dettagli_fabbric
 
 export const cityLayerTemp = 'CatastoOpenDev:catasto_comuni_temp';
 export const sectionLayerTemp = 'CatastoOpenDev:catasto_sezioni_temp';
-export const sheetLayerTemp = 'CatastoOpenDev:catasto_fogli_temp';
+// export const sheetLayerTemp = 'CatastoOpenDev:catasto_fogli_temp';
 export const landLayerTemp = 'CatastoOpenDev:catasto_terreni_temp';
 export const buildingLayerTemp = 'CatastoOpenDev:catasto_fabbricati_temp';
 export const subjectPropertyLayerTemp = 'CatastoOpenDev:catasto_particelle_soggetto_temp';
