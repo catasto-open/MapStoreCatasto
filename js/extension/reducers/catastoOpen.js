@@ -593,7 +593,9 @@ export default function(state = {}, action) {
     case CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH:
         return {
             ...state,
-            hasSubmitedSearch: true
+            hasSubmitedSearch: true,
+            isLoadingLands: true,
+            isLoadingBuildings: true
         };
     case CATASTO_OPEN_IMMOBILE_SELECT_TYPE:
         return {
