@@ -19,7 +19,8 @@ class Toolbar extends React.Component {
         resumeButtonActive: PropTypes.bool,
         onResumeButton: PropTypes.func,
         resumeButtonTooltipId: PropTypes.string,
-        showPrintBtn: PropTypes.bool,
+        showPrintBtnPdf: PropTypes.bool,
+        showPrintBtnCsv: PropTypes.bool,
         printTipId: PropTypes.string,
         printPath: PropTypes.string,
         showExtendBtn: PropTypes.bool,
@@ -31,7 +32,8 @@ class Toolbar extends React.Component {
         title: "",
         enableAddRow: true,
         resumeButtonActive: false,
-        showPrintBtn: false,
+        showPrintBtnPdf: false,
+        showPrintBtnCsv: false,
         showExtendBtn: false,
         columns: [],
         rows: []
@@ -66,7 +68,7 @@ class Toolbar extends React.Component {
     };
 
     renderPrintButtonPDF = () => {
-        if (this.props.showPrintBtn) {
+        if (this.props.showPrintBtnPdf) {
             return (
                 <Button
                     href={`${this.props.printPath}&format=pdf`}
@@ -83,7 +85,7 @@ class Toolbar extends React.Component {
     };
 
     renderPrintButtonCSV = () => {
-        if (this.props.showPrintBtn) {
+        if (this.props.showPrintBtnCsv) {
             return (
                 <Button
                     href={`${this.props.printPath}&format=csv`}

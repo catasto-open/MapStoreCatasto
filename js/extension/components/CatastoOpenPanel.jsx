@@ -333,7 +333,8 @@ class CatastoOpenPanel extends React.Component {
         const naturalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "naturalSubjects");
         const legalSubjectsDef = this.props.filterServices.filter(item => item.state_identifier === "legalSubjects");
         const isTemporalSearchOnParcel = (parcelsDef[0]?.useTemporalSearch === null || parcelsDef[0]?.useHistoricalSearch === true) ? false : parcelsDef[0]?.useTemporalSearch;
-        let print = false;
+        let printPdf = false;
+        let printCsv = false;
         let printTipId = "extension.catastoOpenPanel.printBtn.label";
         let extending = false;
         switch (this.props.searchResultType) {
@@ -343,7 +344,8 @@ class CatastoOpenPanel extends React.Component {
             ) : naturalSubjectColumns;
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.naturalSubjects.name";
-            print = this.props.doweHavePrint;
+            printPdf = this.props.doweHavePrint;
+            printCsv = this.props.doweHavePrint;
             extending = true;
             break;
         case legalSubjectType:
@@ -352,7 +354,8 @@ class CatastoOpenPanel extends React.Component {
             ) : legalSubjectColumns;
             loadSubjectOnSelect = true;
             title = "extension.catastoOpenPanel.services.legalSubjects.name";
-            print = this.props.doweHavePrint;
+            printPdf = this.props.doweHavePrint;
+            printCsv = this.props.doweHavePrint;
             extending = true;
             break;
         case subjectPropertyLayer:
@@ -365,7 +368,8 @@ class CatastoOpenPanel extends React.Component {
             addLayerOnSelect = true;
             resume = true;
             title = "extension.catastoOpenPanel.subjectProperties.name";
-            print = this.props.doweHavePrint;
+            printPdf = this.props.doweHavePrint;
+            printCsv = this.props.doweHavePrint;
             extending = true;
             break;
         case buildingDetailLayer:
@@ -399,7 +403,7 @@ class CatastoOpenPanel extends React.Component {
             }
             title = "extension.catastoOpenPanel.owners";
             resume = true;
-            print = this.props.doweHavePrint;
+            printPdf = this.props.doweHavePrint;
             break;
         default:
             break;
@@ -425,7 +429,8 @@ class CatastoOpenPanel extends React.Component {
                                 resumeButtonActive={resume}
                                 resumeButtonTooltipId={"extension.catastoOpenPanel.resumePreviousResults"}
                                 onResumeButton={resume ? this.props.resumePreviousResults : null}
-                                showPrintBtn={print}
+                                showPrintBtnPdf={printPdf}
+                                showPrintBtnCsv={printCsv}
                                 printTipId={printTipId}
                                 printPath={this.props.printPath}
                                 showExtendBtn={extending}
