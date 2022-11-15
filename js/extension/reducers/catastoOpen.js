@@ -65,7 +65,10 @@ import {
     CATASTO_OPEN_IMMOBILE_SELECT_TYPE,
     CATASTO_OPEN_SET_PRINT_ENDPOINT,
     CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS,
-    CATASTO_OPEN_SET_FIXED_COMUNI
+    CATASTO_OPEN_SET_FIXED_COMUNI,
+    CATASTO_OPEN_START_DOWNLOAD_VISURA,
+    CATASTO_OPEN_END_DOWNLOAD_VISURA,
+    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -73,7 +76,9 @@ import {
     legalSubjectType,
     naturalSubjectType,
     propertyOwnerLayer,
-    subjectPropertyLayer
+    subjectPropertyLayer,
+    printPathLegalSubject,
+    printPathNaturalSubject
 } from "@js/extension/utils/catastoOpen";
 
 export default function(state = {}, action) {
@@ -409,7 +414,8 @@ export default function(state = {}, action) {
             searchResults: state.previousSearchResults,
             searchResultType: state.previousSearchResultType,
             previousSearchResults: null,
-            previousSearchResultType: null
+            previousSearchResultType: null,
+            printObj: state?.previousPrintObj
         };
     case CATASTO_OPEN_RELOAD_SEARCH_RESULTS:
         return {
@@ -627,15 +633,54 @@ export default function(state = {}, action) {
             doweHavePrint
         };
     case CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS:
+        if (action?.printObj.pathName === printPathLegalSubject || action?.printObj.pathName === printPathNaturalSubject) {
+            return {
+                ...state,
+                printObj: action.printObj,
+                previousPrintObj: action.printObj
+            };
+        }
         return {
             ...state,
-            printPath: action.printPath
+            printObj: action.printObj
         };
     case CATASTO_OPEN_SET_FIXED_COMUNI:
         return {
             ...state,
             fixedComuni: action.fixedComuni
         };
+    case CATASTO_OPEN_START_DOWNLOAD_VISURA:
+        return action.fileType === "pdf" ?
+            {
+                ...state,
+                isStartedDownloadVisuraPdf: true
+            } :
+            {
+                ...state,
+                isStartedDownloadVisuraCsv: true
+            };
+    case CATASTO_OPEN_END_DOWNLOAD_VISURA:
+        return action.fileType === "pdf" ?
+            {
+                ...state,
+                isStartedDownloadVisuraPdf: false
+            } :
+            {
+                ...state,
+                isStartedDownloadVisuraCsv: false
+            };
+    case CATASTO_OPEN_ERROR_DOWNLOAD_VISURA:
+        return action.fileType === "pdf" ?
+            {
+                ...state,
+                errorDownloadMsg: action.errorMsg,
+                isStartedDownloadVisuraPdf: false
+            } :
+            {
+                ...state,
+                errorDownloadMsg: action.errorMsg,
+                isStartedDownloadVisuraPdf: false
+            };
     default:
         return state;
     }

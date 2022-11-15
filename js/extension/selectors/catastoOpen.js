@@ -76,10 +76,15 @@ export const isValidInputOnImmCodeSelector = (state) => {
 };
 export const selectedImmobileSelector = (state) => get(state, "catastoOpen.selectedImmobile");
 
-export const doweHavePrintSelector = (state) => get(state, "catastoOpen.doweHavePrint");
-export const printEndPointSelector = (state) => get(state, "catastoOpen.printEndPoint");
-export const printPathSelector = (state) => get(state, "catastoOpen.printPath");
 export const doweHaveFixedComuniSelector = (state) => {
     return state.catastoOpen?.fixedComuni ? true : false;
 };
 export const fixedComuniSelector = (state) => get(state, "catastoOpen.fixedComuni");
+
+export const doweHavePrintSelector = (state) => get(state, "catastoOpen.doweHavePrint");
+export const printEndPointSelector = (state) => get(state, "catastoOpen.printEndPoint");
+export const printObjSelector = (state) => get(state, "catastoOpen.printObj");
+export const isStartedDownloadVisuraPdfSelector = (state) => get(state, "catastoOpen.isStartedDownloadVisuraPdf");
+export const isStartedDownloadVisuraCsvSelector = (state) => get(state, "catastoOpen.isStartedDownloadVisuraCsv");
+export const alreadyShownErrorDownloadMsgSelector = (state) => get(state, "catastoOpen.alreadyShownErrorDownloadMsg");
+export const errorDownloadMsgSelector = (state) => get(state, "catastoOpen.errorDownloadMsg");

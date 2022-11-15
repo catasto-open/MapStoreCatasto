@@ -77,6 +77,9 @@ export const CATASTO_OPEN_IMMOBILE_SET_CODICE = 'CATASTO_OPEN:IMMOBILE_SET_CODIC
 export const CATASTO_OPEN_SET_PRINT_ENDPOINT = 'CATASTO_OPEN:SET_PRINT_ENDPOINT';
 export const CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS = 'CATASTO_OPEN:SET_PRINT_PATH_W_PARAMS';
 export const CATASTO_OPEN_SET_FIXED_COMUNI = 'CATASTO_OPEN:SET_FIXED_COMUNI';
+export const CATASTO_OPEN_START_DOWNLOAD_VISURA = 'CATASTO_OPEN:START_DOWNLOAD_VISURA';
+export const CATASTO_OPEN_END_DOWNLOAD_VISURA = 'CATASTO_OPEN:END_DOWNLOAD_VISURA';
+export const CATASTO_OPEN_ERROR_DOWNLOAD_VISURA = 'CATASTO_OPEN:ERROR_DOWNLOAD_VISURA';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -570,10 +573,10 @@ export function setPrintEndPoint(printEndPoint) {
     };
 }
 
-export function setPrintPathWParams(printPath) {
+export function setPrintPathWParams(printObj) {
     return {
         type: CATASTO_OPEN_SET_PRINT_PATH_W_PARAMS,
-        printPath
+        printObj
     };
 }
 
@@ -581,5 +584,28 @@ export function setFixedComuni(fixedComuni) {
     return {
         type: CATASTO_OPEN_SET_FIXED_COMUNI,
         fixedComuni
+    };
+}
+
+export function startDownloadVisura(fileType) {
+    return {
+        type: CATASTO_OPEN_START_DOWNLOAD_VISURA,
+        fileType
+    };
+}
+
+export function endDownloadVisura(fileType, blob) {
+    return {
+        type: CATASTO_OPEN_END_DOWNLOAD_VISURA,
+        fileType,
+        blob
+    };
+}
+
+export function errorDownloadVisura(fileType, errorMsg) {
+    return {
+        type: CATASTO_OPEN_ERROR_DOWNLOAD_VISURA,
+        fileType,
+        errorMsg
     };
 }

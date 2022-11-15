@@ -5,6 +5,7 @@ import tooltip from '@mapstore/components/misc/enhancers/tooltip';
 import { Glyphicon } from 'react-bootstrap';
 import Message from "@mapstore/components/I18N/Message";
 import ModalSearchResultGrid from '@js/extension/components/search/ModalSearchResultGrid';
+import InlineSpinner from '@mapstore/components/misc/spinners/InlineSpinner/InlineSpinner';
 
 const Button = tooltip(ButtonB);
 
@@ -22,10 +23,13 @@ class Toolbar extends React.Component {
         showPrintBtnPdf: PropTypes.bool,
         showPrintBtnCsv: PropTypes.bool,
         printTipId: PropTypes.string,
-        printPath: PropTypes.string,
         showExtendBtn: PropTypes.bool,
         columns: PropTypes.array,
-        rows: PropTypes.array
+        rows: PropTypes.array,
+        onClickDownloadVisura: PropTypes.func,
+        isStartedDownloadVisuraCsv: PropTypes.bool,
+        isStartedDownloadVisuraPdf: PropTypes.bool,
+        errorDownloadMsg: PropTypes.object
     };
 
     static defaultProps = {
@@ -36,7 +40,10 @@ class Toolbar extends React.Component {
         showPrintBtnCsv: false,
         showExtendBtn: false,
         columns: [],
-        rows: []
+        rows: [],
+        isStartedDownloadVisuraCsv: false,
+        isStartedDownloadVisuraPdf: false,
+        errorDownloadMsg: null
     };
 
     renderToggleFilterButton = () => {
@@ -71,13 +78,11 @@ class Toolbar extends React.Component {
         if (this.props.showPrintBtnPdf) {
             return (
                 <Button
-                    href={`${this.props.printPath}&format=pdf`}
                     tooltipId={this.props.printTipId}
                     tooltipPosition={"top"}
-                    onClick={() => {}}
-                    target="_blank"
+                    onClick={() => this.props.onClickDownloadVisura("pdf")}
                 >
-                    <Glyphicon glyph={"print"}/> pdf
+                    {this.props.isStartedDownloadVisuraPdf ? <InlineSpinner loading/> : <><Glyphicon glyph={"print"}/> pdf</>}
                 </Button>
             );
         }
@@ -88,11 +93,9 @@ class Toolbar extends React.Component {
         if (this.props.showPrintBtnCsv) {
             return (
                 <Button
-                    href={`${this.props.printPath}&format=csv`}
                     tooltipId={this.props.printTipId}
                     tooltipPosition={"top"}
-                    onClick={() => {}}
-                    target="_blank"
+                    onClick={() => this.props.onClickDownloadVisura("csv")}
                 >
                     <Glyphicon glyph={"print"}/> csv
                 </Button>
