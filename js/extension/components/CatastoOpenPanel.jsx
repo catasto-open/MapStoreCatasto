@@ -15,7 +15,10 @@ import {
     isTemporalSearchCheckedSelector,
     selectedImmobileSelector,
     doweHavePrintSelector,
-    printPathSelector
+    printObjSelector,
+    isStartedDownloadVisuraPdfSelector,
+    isStartedDownloadVisuraCsvSelector,
+    errorDownloadMsgSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
     deactivateCatastoOpenPanel, loadLayer, loadPropertyOwnerData,
@@ -23,7 +26,8 @@ import {
     resumePreviousSearchResults,
     setBackend,
     setPrintEndPoint,
-    setFixedComuni
+    setFixedComuni,
+    startDownloadVisura
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -239,10 +243,14 @@ class CatastoOpenPanel extends React.Component {
         printEndPointURL: PropTypes.string,
         setPrintEndPoint: PropTypes.func,
         doweHavePrint: PropTypes.bool,
-        printPath: PropTypes.string,
+        printObj: PropTypes.object,
         fixedComuni: PropTypes.object,
         setFixedComuni: PropTypes.func,
-        rowResult: PropTypes.array
+        rowResult: PropTypes.array,
+        onClickDownloadVisura: PropTypes.func,
+        isStartedDownloadVisuraPdf: PropTypes.bool,
+        isStartedDownloadVisuraCsv: PropTypes.bool,
+        errorDownloadMsg: PropTypes.object
     };
 
     static defaultProps = {
@@ -302,7 +310,8 @@ class CatastoOpenPanel extends React.Component {
         setPrintEndPoint: () => {},
         printPath: "",
         fixedComuni: null,
-        setFixedComuni: () => {}
+        setFixedComuni: () => {},
+        onClickDownloadVisura: () => {}
     };
 
     componentWillReceiveProps(nextProp) {
@@ -432,10 +441,13 @@ class CatastoOpenPanel extends React.Component {
                                 showPrintBtnPdf={printPdf}
                                 showPrintBtnCsv={printCsv}
                                 printTipId={printTipId}
-                                printPath={this.props.printPath}
                                 showExtendBtn={extending}
                                 columns={columns}
                                 rows={this.props.rowResult}
+                                onClickDownloadVisura={this.props.onClickDownloadVisura}
+                                isStartedDownloadVisuraPdf={this.props.isStartedDownloadVisuraPdf}
+                                isStartedDownloadVisuraCsv={this.props.isStartedDownloadVisuraCsv}
+                                errorDownloadMsg={this.props.errorDownloadMsg}
                             />}
                     />
                     {this.props.searchResultType === propertyOwnerLayer ? <DetailImmobile selectedImmobile={this.props.selectedImmobile}/> : null}
@@ -489,8 +501,11 @@ const catastoOpenSelector = createStructuredSelector({
     isTemporalSearchChecked: isTemporalSearchCheckedSelector,
     selectedImmobile: selectedImmobileSelector,
     doweHavePrint: doweHavePrintSelector,
-    printPath: printPathSelector,
-    rowResult: rowSelector
+    printObj: printObjSelector,
+    rowResult: rowSelector,
+    isStartedDownloadVisuraPdf: isStartedDownloadVisuraPdfSelector,
+    isStartedDownloadVisuraCsv: isStartedDownloadVisuraCsvSelector,
+    errorDownloadMsg: errorDownloadMsgSelector
 });
 
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,
@@ -502,7 +517,8 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         loadPropertyOwners: loadPropertyOwnerData,
         setBackend: setBackend,
         setPrintEndPoint: setPrintEndPoint,
-        setFixedComuni: setFixedComuni
+        setFixedComuni: setFixedComuni,
+        onClickDownloadVisura: startDownloadVisura
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;

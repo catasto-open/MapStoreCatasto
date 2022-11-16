@@ -43,7 +43,7 @@ const version = '1.0.0';
 const request = 'GetFeature';
 const outputFormat = 'application/json';
 
-export const getCityData = (city, endDate, geoserverOwsUrl) => {
+export const getCityData = (city, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -66,10 +66,11 @@ export const getCityData = (city, endDate, geoserverOwsUrl) => {
             requestParams.typename = cityLayer;
         }
     }
-    return axios.get(geoserverOwsUrl,  { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl,  { params: requestParams})
+        : axios.get(geoserverOwsUrl,  { params: requestParams, headers: headers});
 };
 
-export const getTwonData = (city, geoserverOwsUrl) => {
+export const getTwonData = (city, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -80,10 +81,11 @@ export const getTwonData = (city, geoserverOwsUrl) => {
     if (city !== null) {
         requestParams.viewparams = 'city:' + city;
     }
-    return axios.get(geoserverOwsUrl, {params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, {params: requestParams})
+        : axios.get(geoserverOwsUrl, {params: requestParams, headers: headers});
 };
 
-export const getSectionByCityCode = (cityCode, endDate, geoserverOwsUrl)  => {
+export const getSectionByCityCode = (cityCode, endDate, geoserverOwsUrl, headers)  => {
     const requestParams = {
         service: service,
         version: version,
@@ -106,10 +108,11 @@ export const getSectionByCityCode = (cityCode, endDate, geoserverOwsUrl)  => {
             requestParams.typename = sectionLayer;
         }
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getSheetByCityCode = (cityCode, section, geoserverOwsUrl)  => {
+export const getSheetByCityCode = (cityCode, section, geoserverOwsUrl, headers)  => {
     const requestParams = {
         service: service,
         version: version,
@@ -120,10 +123,11 @@ export const getSheetByCityCode = (cityCode, section, geoserverOwsUrl)  => {
     };
     requestParams.viewparams = 'sectionCode:' + section + ';' + 'cityCode:' + cityCode;
     requestParams.typename = sheetLayer;
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getLandByCityCodeAndSheetNumber = (cityCode, sheetNumber, sectionCode, startDate, endDate, geoserverOwsUrl) => {
+export const getLandByCityCodeAndSheetNumber = (cityCode, sheetNumber, sectionCode, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -139,10 +143,11 @@ export const getLandByCityCodeAndSheetNumber = (cityCode, sheetNumber, sectionCo
         requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + sheetNumber + ';' + 'sectionCode:' + sectionCode;
         requestParams.typename = landLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber, sectionCode, startDate, endDate, geoserverOwsUrl) => {
+export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber, sectionCode, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -159,10 +164,11 @@ export const getBuildingByCityCodeAndSheetNumber = (cityCode, sheetNumber, secti
         requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + sheetNumber + ';' + 'sectionCode:' + sectionCode;
         requestParams.typename = buildingLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getNaturalSubjects = (firstName, lastName, birthDate, birthPlace, fiscalCode, subjectCode, geoserverOwsUrl) => {
+export const getNaturalSubjects = (firstName, lastName, birthDate, birthPlace, fiscalCode, subjectCode, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -172,7 +178,8 @@ export const getNaturalSubjects = (firstName, lastName, birthDate, birthPlace, f
     if (subjectCode !== null) {
         requestParams.typename = naturalSubjectLayer;
         requestParams.viewparams = 'subjectCode:' + subjectCode;
-        return axios.get(geoserverOwsUrl, { params: requestParams});
+        return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+            : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
     }
     if (birthDate !== null && birthPlace !== null) {
         requestParams.typename = naturalSubjectLayerWBoth;
@@ -197,10 +204,11 @@ export const getNaturalSubjects = (firstName, lastName, birthDate, birthPlace, f
             + 'lastName:' + lastName + ';'
             + 'fiscalCode:' + fiscalCode;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getLegalSubjects = (vatNumber, businessName, identificationCode, geoserverOwsUrl) => {
+export const getLegalSubjects = (vatNumber, businessName, identificationCode, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -210,14 +218,16 @@ export const getLegalSubjects = (vatNumber, businessName, identificationCode, ge
     };
     if (identificationCode !== null) {
         requestParams.viewparams = 'subjectCode:' + identificationCode;
-        return axios.get(geoserverOwsUrl, { params: requestParams});
+        return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+            : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
     }
     requestParams.viewparams = 'vatNumber:' + vatNumber + ';'
         + 'businessName:' + businessName + ';';
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getPropertyBySubject = (subjects, subjectType, startDate, endDate, geoserverOwsUrl) => {
+export const getPropertyBySubject = (subjects, subjectType, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -233,10 +243,11 @@ export const getPropertyBySubject = (subjects, subjectType, startDate, endDate, 
         requestParams.viewparams = 'subjects:' + subjects + ';' + 'subjectType:' + subjectType;
         requestParams.typename = subjectPropertyLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, startDate, endDate, geoserverOwsUrl) => {
+export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -250,10 +261,11 @@ export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, sta
         requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'sectionCode:' + sectionCode;
         requestParams.typename = landDetailLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getBuildingDetails = (cityCode, citySheet, buildingNumber, immobileCode, startDate, endDate, geoserverOwsUrl) => {
+export const getBuildingDetails = (cityCode, citySheet, buildingNumber, immobileCode, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -277,10 +289,11 @@ export const getBuildingDetails = (cityCode, citySheet, buildingNumber, immobile
             requestParams.typename = buildingDetailByImmLayer;
         }
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getPropertyOwners = (property, cityCode, startDate, endDate, geoserverOwsUrl) => {
+export const getPropertyOwners = (property, cityCode, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -295,10 +308,11 @@ export const getPropertyOwners = (property, cityCode, startDate, endDate, geoser
         requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'property:' + property.property + ';' + 'propertyType:' + property.propertyType;
         requestParams.typename = propertyOwnerLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams})
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers});
 };
 
-export const getToponym = (toponymTxt, geoserverOwsUrl) => {
+export const getToponym = (toponymTxt, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -309,10 +323,11 @@ export const getToponym = (toponymTxt, geoserverOwsUrl) => {
         requestParams.viewparams = 'toponym:' + toponymTxt;
     }
     requestParams.typename = toponymLayer;
-    return axios.get(geoserverOwsUrl,  { params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl,  { params: requestParams})
+        : axios.get(geoserverOwsUrl,  { params: requestParams, headers: headers});
 };
 
-export const getAddress = (addressTxt, toponymNumber, cityCode, geoserverOwsUrl) => {
+export const getAddress = (addressTxt, toponymNumber, cityCode, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -325,10 +340,11 @@ export const getAddress = (addressTxt, toponymNumber, cityCode, geoserverOwsUrl)
     } else {
         requestParams.viewparams = 'toponimo:' + toponymNumber + ';' + 'cityCode:' + cityCode;
     }
-    return axios.get(geoserverOwsUrl, {params: requestParams});
+    return headers === null ? axios.get(geoserverOwsUrl, {params: requestParams})
+        : axios.get(geoserverOwsUrl, {params: requestParams, headers: headers});
 };
 
-export const getBuildingByAddress = (cityCode, toponym, addressName, houseNumber, startDate, endDate, geoserverOwsUrl) => {
+export const getBuildingByAddress = (cityCode, toponym, addressName, houseNumber, startDate, endDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -344,10 +360,11 @@ export const getBuildingByAddress = (cityCode, toponym, addressName, houseNumber
     } else {
         requestParams.typename = indirizzoImmLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams });
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
 };
 
-export const getLandByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl) => {
+export const getLandByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -363,10 +380,11 @@ export const getLandByCodiceImm = (cityCode, immobileCode, endDate, startDate, g
     } else {
         requestParams.typename = landByCodeLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams });
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
 };
 
-export const getBuildingByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl) => {
+export const getBuildingByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl, headers) => {
     const requestParams = {
         service: service,
         version: version,
@@ -382,5 +400,6 @@ export const getBuildingByCodiceImm = (cityCode, immobileCode, endDate, startDat
     } else {
         requestParams.typename = buildingByCodeLayer;
     }
-    return axios.get(geoserverOwsUrl, { params: requestParams });
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
 };
