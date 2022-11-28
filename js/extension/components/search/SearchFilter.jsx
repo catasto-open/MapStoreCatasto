@@ -54,7 +54,7 @@ class SearchFilter extends React.Component {
                         <Col xs={6}>
                             <Message msgId={this.props.title}/>
                         </Col>
-                        <Col xs={this.props.zoomActive ? 4 : 6}>
+                        <Col xs={this.props.zoomActive ? 3 : 6}>
                             {this.props.isDisabled ?
                                 <Select
                                     value={this.props.options[0]}
@@ -89,7 +89,7 @@ class SearchFilter extends React.Component {
                             }
                         </Col>
                         {this.props.zoomActive ?
-                            <Col xs={2}>
+                            <Col xs={3} style={{display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button
                                     style={this.props.buttonStyle}
                                     tooltipPosition={"bottom"}

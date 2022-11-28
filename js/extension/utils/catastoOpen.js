@@ -296,7 +296,6 @@ export const geomFeatureToLayer = (geom, layerType) => {
         } else {
             layer.style = layerStyle(layerType);
         }
-        layer.group = "CatastoOpen";
         layer.title = layerTitle(geom, layerType);
     } else {
         layer = undefined;
