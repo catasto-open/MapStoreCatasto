@@ -92,10 +92,10 @@
                 "placeholder": "Filtra per dati anagrafici",
                 "filters": {
                   "firstName": {
-                    "name": "Nome"
+                    "name": "Nome*"
                   },
                   "lastName": {
-                    "name": "Cognome"
+                    "name": "Cognome*"
                   },
                   "birthDate": {
                     "name": "Data di nascita"
