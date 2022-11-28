@@ -97,7 +97,7 @@ import {
     getLandByCodiceImm,
     getBuildingByCodiceImm
 } from "@js/extension/api/geoserver";
-import {addGroup, addLayer, removeNode} from "@mapstore/actions/layers";
+import {removeLayer, addLayer} from "@mapstore/actions/layers";
 import {zoomToExtent} from "@mapstore/actions/map";
 import {resultGridLoadRows} from "@js/extension/actions/resultGrid";
 import {
@@ -481,7 +481,6 @@ export default () => ({
                 const layout = state.maplayout.layout;
                 layout.right = 658;
                 return Rx.Observable.of(
-                    addGroup(layer.group, undefined, {id: layer.group}),
                     addLayer(layer),
                     updateMapLayout(layout),
                     zoomToExtent(layer.bbox.bounds, layer.bbox.crs, undefined, null));
@@ -492,7 +491,7 @@ export default () => ({
                 const state = store.getState();
                 const layer = state?.catastoOpen?.layer;
                 return Rx.Observable.of(...([
-                    removeNode(layer?.group, "groups")]));
+                    removeLayer(layer.id)]));
             }),
     loadBuildingDetailDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_BUILDING_DETAIL_DATA)
