@@ -491,7 +491,7 @@ export default () => ({
                 const state = store.getState();
                 const layer = state?.catastoOpen?.layer;
                 return Rx.Observable.of(...([
-                    removeLayer(layer.id)]));
+                    removeLayer(layer?.id)]));
             }),
     loadBuildingDetailDataEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_LOAD_BUILDING_DETAIL_DATA)
