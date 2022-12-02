@@ -1,0 +1,32 @@
+name: Release Package
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:12.18.4-alpine3.12
+      volumes:
+        - ${{ github.workspace }}:/catasto
+    steps:
+      - name: Checkout to the repo
+        uses: actions/checkout@v1
+        with:
+          submodules: recursive
+      - name: Install deps
+        run: npm install
+      - name: Check lint
+        run: npm run lint
+      - name: Build pkg
+        run: npm run ext:build
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/CatastoOpen.zip
