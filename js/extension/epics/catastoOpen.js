@@ -450,7 +450,8 @@ export default () => ({
                         action?.subject?.subjects, action?.subject?.subjectType,
                         startDate,
                         endDate,
-                        geoserverOwsUrl))
+                        geoserverOwsUrl,
+                        headers))
                         .switchMap((response) => Rx.Observable.of(loadedSubjectPropertyData(response.data), setPrintPathWParams(printObj)))
                         .catch(e => Rx.Observable.of(loadError(e.message)));
                 }
