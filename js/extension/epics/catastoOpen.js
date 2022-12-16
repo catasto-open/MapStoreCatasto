@@ -437,7 +437,7 @@ export default () => ({
                 if (dowe) {
                     const endPoint = printEndPointSelector(state);
                     let printObj = {
-                        header: headers,
+                        headers: headers,
                         pathName: printPathImmobile,
                         url: endPoint.endsWith('/') ? `${endPoint}${printPathImmobile}` : `${endPoint}/${printPathImmobile}`,
                         filename: "listaimmobili"
