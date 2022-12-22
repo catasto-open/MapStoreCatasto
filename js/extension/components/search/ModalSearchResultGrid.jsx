@@ -18,7 +18,7 @@ const ModalSearchResultGrid = props => {
     const handleShow = () => {
         setShow(true);
     };
-    const filteredColumns = props.columns.filter((item) => (item.key !== "selectButton"));
+    const filteredColumns = props.columns.filter((item) => (item.key !== "selectButton" && item.key !== "propertyType" && item.key !== "printButton"));
     return (
         <>
             <Button

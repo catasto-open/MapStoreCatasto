@@ -80,6 +80,10 @@ export const CATASTO_OPEN_SET_FIXED_COMUNI = 'CATASTO_OPEN:SET_FIXED_COMUNI';
 export const CATASTO_OPEN_START_DOWNLOAD_VISURA = 'CATASTO_OPEN:START_DOWNLOAD_VISURA';
 export const CATASTO_OPEN_END_DOWNLOAD_VISURA = 'CATASTO_OPEN:END_DOWNLOAD_VISURA';
 export const CATASTO_OPEN_ERROR_DOWNLOAD_VISURA = 'CATASTO_OPEN:ERROR_DOWNLOAD_VISURA';
+export const CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:START_DOWNLOAD_VISURA_IM_SINGOLA';
+export const CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:END_DOWNLOAD_VISURA_IM_SINGOLA';
+export const CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:ERROR_DOWNLOAD_VISURA_IM_SINGOLA';
+export const CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA = 'CATASTO_OPEN:WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -607,5 +611,33 @@ export function errorDownloadVisura(fileType, errorMsg) {
         type: CATASTO_OPEN_ERROR_DOWNLOAD_VISURA,
         fileType,
         errorMsg
+    };
+}
+
+export function startDownloadVisuraImSingola(immobile, propertyType) {
+    return {
+        type: CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA,
+        immobile,
+        propertyType
+    };
+}
+
+export function endDownloadVisuraImSingole(blob) {
+    return {
+        type: CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA,
+        blob
+    };
+}
+
+export function errorDownloadVisuraImSingole(errorMsg) {
+    return {
+        type: CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA,
+        errorMsg
+    };
+}
+
+export function weAreDoneDownloadingVisuraImSingola() {
+    return {
+        type: CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA
     };
 }
