@@ -88,3 +88,4 @@ export const isStartedDownloadVisuraPdfSelector = (state) => get(state, "catasto
 export const isStartedDownloadVisuraCsvSelector = (state) => get(state, "catastoOpen.isStartedDownloadVisuraCsv");
 export const alreadyShownErrorDownloadMsgSelector = (state) => get(state, "catastoOpen.alreadyShownErrorDownloadMsg");
 export const errorDownloadMsgSelector = (state) => get(state, "catastoOpen.errorDownloadMsg");
+export const isStartedDownloadVisuraImSingolaSelector = (state) => get(state, "catastoOpen.startDownloadVisuraImSingola");

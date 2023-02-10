@@ -40,6 +40,8 @@ import {
     CATASTO_OPEN_LOAD_LAND_DETAIL_DATA,
     CATASTO_OPEN_START_DOWNLOAD_VISURA,
     CATASTO_OPEN_END_DOWNLOAD_VISURA,
+    CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA,
+    CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA,
     loadError,
     loadCityData,
     loadedToponym,
@@ -68,7 +70,10 @@ import {
     loadedPropertyOwnerData,
     setPrintPathWParams,
     endDownloadVisura,
-    errorDownloadVisura
+    errorDownloadVisura,
+    endDownloadVisuraImSingole,
+    errorDownloadVisuraImSingole,
+    weAreDoneDownloadingVisuraImSingola
 } from "@js/extension/actions/catastoOpen";
 import {
     services,
@@ -437,7 +442,7 @@ export default () => ({
                 if (dowe) {
                     const endPoint = printEndPointSelector(state);
                     let printObj = {
-                        header: headers,
+                        headers: headers,
                         pathName: printPathImmobile,
                         url: endPoint.endsWith('/') ? `${endPoint}${printPathImmobile}` : `${endPoint}/${printPathImmobile}`,
                         filename: "listaimmobili"
@@ -717,5 +722,38 @@ export default () => ({
                 alink.download = filename;
                 alink.click();
                 return Rx.Observable.empty();
+            }),
+    startDownloadVisuraImSingolaEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA)
+            .switchMap((action) => {
+                const state = store.getState();
+                const headers = state?.security?.token ? {Authorization: `Bearer ${state.security.token}` } : null;
+                const endPoint = printEndPointSelector(state);
+                let printObj = {
+                    headers: headers,
+                    pathName: printPathVisura,
+                    url: endPoint.endsWith('/') ? `${endPoint}${printPathVisura}` : `${endPoint}/${printPathVisura}`,
+                    filename: "visura"
+                };
+                let query = {};
+                query.codiceimmobile = action?.immobile;
+                query.tipoimmobile = action?.propertyType === "Fabbricati" ? "F" : "T";
+                query.flagricercastorica = state?.catastoOpen.isHistoricalSearchChecked ? true : false;
+                printObj.query = query;
+                return Rx.Observable.defer(() => getVisuraBlob(printObj, "pdf"))
+                    .switchMap((response) => Rx.Observable.of(endDownloadVisuraImSingole(response.data)))
+                    .catch(e => Rx.Observable.of(errorDownloadVisuraImSingole("pdf", e)));
+            }),
+    endDownloadVisuraImSingoleEpic: (action$) =>
+        action$.ofType(CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA)
+            .switchMap((action) => {
+                const blob = action.blob;
+                const filename = `${new Date().toISOString()}_visura.pdf`;
+                const fileURL = window.URL.createObjectURL(blob);
+                let alink = document.createElement('a');
+                alink.href = fileURL;
+                alink.download = filename;
+                alink.click();
+                return Rx.Observable.of(weAreDoneDownloadingVisuraImSingola());
             })
 });

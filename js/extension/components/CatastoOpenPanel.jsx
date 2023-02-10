@@ -6,6 +6,8 @@ import Message from '@mapstore/components/I18N/Message';
 import DockPanel from '@mapstore/components/misc/panels/DockPanel';
 import { createStructuredSelector } from 'reselect';
 import { Alert, Glyphicon, Tooltip} from 'react-bootstrap';
+import ButtonB from '@mapstore/components/misc/Button';
+import tooltip from '@mapstore/components/misc/enhancers/tooltip';
 import '@js/extension/assets/style.css';
 import {
     catastoOpenActiveSelector,
@@ -18,7 +20,8 @@ import {
     printObjSelector,
     isStartedDownloadVisuraPdfSelector,
     isStartedDownloadVisuraCsvSelector,
-    errorDownloadMsgSelector
+    errorDownloadMsgSelector,
+    isStartedDownloadVisuraImSingolaSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
     deactivateCatastoOpenPanel, loadLayer, loadPropertyOwnerData,
@@ -27,7 +30,8 @@ import {
     setBackend,
     setPrintEndPoint,
     setFixedComuni,
-    startDownloadVisura
+    startDownloadVisura,
+    startDownloadVisuraImSingola
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -53,6 +57,8 @@ import OverlayTrigger from "@mapstore/components/misc/OverlayTrigger";
 import Toolbar from "./search/SearchResultGridToolbar";
 import DetailImmobile from "@js/extension/components/search/DetailImmobile";
 import {rowSelector} from "@js/extension/selectors/resultGrid";
+
+const Button = tooltip(ButtonB);
 
 const SmartSearchContainer = connect(searchContainerSelector, searchContainerActions)(SearchContainer);
 const SmartSearchResultGrid = connect(searchResultGridSelector, searchResultGridActions)(SearchResultGrid);
@@ -250,7 +256,9 @@ class CatastoOpenPanel extends React.Component {
         onClickDownloadVisura: PropTypes.func,
         isStartedDownloadVisuraPdf: PropTypes.bool,
         isStartedDownloadVisuraCsv: PropTypes.bool,
-        errorDownloadMsg: PropTypes.object
+        errorDownloadMsg: PropTypes.object,
+        onClickDownloadVisuraImSingola: PropTypes.func,
+        isStartedDownloadVisuraImSingola: PropTypes.bool
     };
 
     static defaultProps = {
@@ -311,7 +319,8 @@ class CatastoOpenPanel extends React.Component {
         printPath: "",
         fixedComuni: null,
         setFixedComuni: () => {},
-        onClickDownloadVisura: () => {}
+        onClickDownloadVisura: () => {},
+        onClickDownloadVisuraImSingola: () => {}
     };
 
     componentWillReceiveProps(nextProp) {
@@ -369,12 +378,56 @@ class CatastoOpenPanel extends React.Component {
             break;
         case subjectPropertyLayer:
             columns = this.props.ownerDetails.subjectPropertyColumnsKeys?.length !== 0 ? subjectPropertyColumns.filter(
-                item => (item.key === "selectButton" || item.key === "propertyType" || this.props.ownerDetails.subjectPropertyColumnsKeys.includes(item.key))
+                item => (this.props.ownerDetails.subjectPropertyColumnsKeys.includes(item.key))
             ) : subjectPropertyColumns;
             if (this.props.isTemporalSearchChecked === true && this.props.ownerDetails.showDate === true) {
                 columns = [...columns, ...this.props.extraColumns];
             }
-            addLayerOnSelect = true;
+            columns = [
+                {key: 'selectButton', name: '', frozen: true, width: 50,
+                    formatter: ({row} = {}) => {
+                        const coordinates = row?.feature?.geometry?.coordinates;
+                        return coordinates ? (<Button
+                            tooltipId={"extension.catastoOpenPanel.subjectProperties.zoomTooltip"}
+                            tooltipPosition={"bottom"}
+                            onClick={() => this.zoomToProperty(row)}
+                        >
+                            <Glyphicon glyph={"zoom-to"} style={{color: "#333333"}}/>
+                        </Button>) : null;
+                    }
+                },
+                {key: 'propertyType', name: '', frozen: true, width: 35,
+                    formatter: ({value} = {}) => {
+                        return value === subjectLandPropertyType ?
+                            <OverlayTrigger placement="bottom"
+                                overlay={<Tooltip><Message
+                                    msgId="extension.catastoOpenPanel.services.parcels.filters.lands.name"/></Tooltip>}>
+                                <Glyphicon glyph="1-layer"/>
+                            </OverlayTrigger> : value === subjectBuildingPropertyType ?
+                                <OverlayTrigger placement="bottom"
+                                    overlay={<Tooltip><Message
+                                        msgId="extension.catastoOpenPanel.services.parcels.filters.buildings.name"/></Tooltip>}>
+                                    <Glyphicon glyph="home"/>
+                                </OverlayTrigger> : null;
+                    }
+                },
+                {key: 'printButton', name: '', frozen: true, width: 50,
+                    formatter: ({row} = {}) => {
+                        const immobile = row?.immobile;
+                        const propertyType = row?.propertyType;
+                        return immobile ?
+                            (<Button
+                                tooltipId={printTipId}
+                                tooltipPosition={"bottom"}
+                                onClick={() => this.props.onClickDownloadVisuraImSingola(immobile, propertyType)}
+                            >
+                                {this.props.isStartedDownloadVisuraImSingola ? <Glyphicon glyph={"ban-circle"} style={{color: "#333333"}}/> : <Glyphicon glyph={"print"} style={{color: "#333333"}}/>}
+                            </Button>) :
+                            null;
+                    }
+                },
+                ...columns];
+            addLayerOnSelect = false;
             resume = true;
             title = "extension.catastoOpenPanel.subjectProperties.name";
             printPdf = this.props.doweHavePrint;
@@ -505,7 +558,8 @@ const catastoOpenSelector = createStructuredSelector({
     rowResult: rowSelector,
     isStartedDownloadVisuraPdf: isStartedDownloadVisuraPdfSelector,
     isStartedDownloadVisuraCsv: isStartedDownloadVisuraCsvSelector,
-    errorDownloadMsg: errorDownloadMsgSelector
+    errorDownloadMsg: errorDownloadMsgSelector,
+    isStartedDownloadVisuraImSingola: isStartedDownloadVisuraImSingolaSelector
 });
 
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,
@@ -518,7 +572,8 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         setBackend: setBackend,
         setPrintEndPoint: setPrintEndPoint,
         setFixedComuni: setFixedComuni,
-        onClickDownloadVisura: startDownloadVisura
+        onClickDownloadVisura: startDownloadVisura,
+        onClickDownloadVisuraImSingola: startDownloadVisuraImSingola
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;

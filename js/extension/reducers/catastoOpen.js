@@ -68,7 +68,10 @@ import {
     CATASTO_OPEN_SET_FIXED_COMUNI,
     CATASTO_OPEN_START_DOWNLOAD_VISURA,
     CATASTO_OPEN_END_DOWNLOAD_VISURA,
-    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA
+    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA,
+    CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA,
+    CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA,
+    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -681,6 +684,21 @@ export default function(state = {}, action) {
                 errorDownloadMsg: action.errorMsg,
                 isStartedDownloadVisuraPdf: false
             };
+    case CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA:
+        return {
+            ...state,
+            startDownloadVisuraImSingola: true
+        };
+    case CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA:
+        return {
+            ...state,
+            startDownloadVisuraImSingola: false
+        };
+    case CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA:
+        return {
+            ...state,
+            startDownloadVisuraImSingola: false
+        };
     default:
         return state;
     }
