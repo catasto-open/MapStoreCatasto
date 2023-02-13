@@ -88,7 +88,7 @@ import {
 } from "@js/extension/selectors/catastoOpen";
 import SearchForm from "@js/extension/components/search/SearchForm";
 import SearchHistory from '@js/extension/components/search/SearchHistory';
-
+import isNil from 'lodash/isNil';
 
 class SearchContainer extends React.Component {
     static propTypes = {
@@ -345,10 +345,10 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
-                        zoomActive={!!this.props.selectedLand}
+                        zoomActive={!!this.props.selectedLand && !isNil(this.props.selectedLand?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
-                        detailActive
+                        detailActive={!!this.props.selectedLand}
                         onDetailClick={this.props.loadLandDetails}
                         detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.detailTooltip"}
                     />
@@ -364,10 +364,10 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
-                        zoomActive={!!this.props.selectedBuilding}
+                        zoomActive={!!this.props.selectedBuilding && !isNil(this.props.selectedBuilding?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
-                        detailActive
+                        detailActive={!!this.props.selectedBuilding}
                         onDetailClick={this.props.loadBuildingDetails}
                         detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
                     />
@@ -423,10 +423,10 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
-                        zoomActive={!!this.props.selectedBuilding}
+                        zoomActive={!!this.props.selectedBuilding && !isNil(this.props.selectedBuilding?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
-                        detailActive
+                        detailActive={!!this.props.selectedBuilding}
                         onDetailClick={this.props.loadBuildingDetails}
                         detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
                     />
@@ -470,10 +470,10 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
-                        zoomActive={!!this.props.selectedLand}
+                        zoomActive={!!this.props.selectedLand  && !isNil(this.props.selectedLand?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
-                        detailActive
+                        detailActive={!!this.props.selectedLand}
                         onDetailClick={this.props.loadLandDetails}
                         detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.detailTooltip"}
                     />
@@ -489,10 +489,10 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
-                        zoomActive={!!this.props.selectedBuilding}
+                        zoomActive={!!this.props.selectedBuilding  && !isNil(this.props.selectedBuilding?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
-                        detailActive
+                        detailActive={!!this.props.selectedBuilding}
                         onDetailClick={this.props.loadBuildingDetails}
                         detailTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.detailTooltip"}
                     />

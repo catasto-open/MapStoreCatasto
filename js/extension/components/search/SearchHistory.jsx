@@ -30,7 +30,7 @@ class SearchHistory extends React.Component {
                         <DateTimePicker
                             format="DD/MM/YYYY"
                             time={false}
-                            value={this.props.start_date}
+                            value={this.props.startDateValue}
                             placeholder="01/01/0001"
                             onChange={this.props.startDateValueOnChange}
                         />
@@ -42,7 +42,7 @@ class SearchHistory extends React.Component {
                         <DateTimePicker
                             format="DD/MM/YYYY"
                             time={false}
-                            value={this.props.end_data}
+                            value={this.props.endDateValue}
                             placeholder={new Date().toLocaleDateString("en-GB")}
                             onChange={this.props.endDateValueOnChange}
                         />
