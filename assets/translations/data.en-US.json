@@ -4,6 +4,7 @@
     "extension": {
       "number":"Number",
       "catastoOpenPanel": {
+        "nominative": "Nominative",
         "title": "Cadastral Search",
         "searchButton": "Search",
         "noResults": "No results for your search",

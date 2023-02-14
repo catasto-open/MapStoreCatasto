@@ -54,7 +54,7 @@ class SearchFilter extends React.Component {
                         <Col xs={6}>
                             <Message msgId={this.props.title}/>
                         </Col>
-                        <Col xs={this.props.zoomActive ? 3 : 6}>
+                        <Col xs={(this.props.zoomActive || this.props.detailActive) ? 3 : 6}>
                             {this.props.isDisabled ?
                                 <Select
                                     value={this.props.options[0]}
@@ -88,15 +88,17 @@ class SearchFilter extends React.Component {
                                         </Select> : <Message msgId={this.props.noResultsText}/>
                             }
                         </Col>
-                        {this.props.zoomActive ?
+                        {this.props.zoomActive || this.props.detailActive ?
                             <Col xs={3} style={{display: 'flex', justifyContent: 'flex-end'}}>
-                                <Button
-                                    style={this.props.buttonStyle}
-                                    tooltipPosition={"bottom"}
-                                    tooltipId={this.props.zoomTooltip}
-                                    onClick={this.props.onZoom}>
-                                    <Glyphicon glyph={"zoom-to"}/>
-                                </Button>
+                                {this.props.zoomActive ?
+                                    <Button
+                                        style={this.props.buttonStyle}
+                                        tooltipPosition={"bottom"}
+                                        tooltipId={this.props.zoomTooltip}
+                                        onClick={this.props.onZoom}>
+                                        <Glyphicon glyph={"zoom-to"}/>
+                                    </Button> : null
+                                }
                                 {this.props.detailActive ?
                                     (<Button
                                         style={this.props.buttonStyle}

@@ -4,7 +4,7 @@
     "extension": {
       "number":"Numero",
       "catastoOpenPanel": {
-        "nominative": "Nominative",
+        "nominative": "Nominativo",
         "title": "Ricerca Catastale",
         "searchButton": "Cerca",
         "noResults": "Nessun risultato per la tua ricerca",
