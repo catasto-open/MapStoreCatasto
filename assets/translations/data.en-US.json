@@ -8,6 +8,7 @@
         "title": "Cadastral Search",
         "searchButton": "Search",
         "noResults": "No results for your search",
+        "noOwner": "No holder",
         "toggleSearchFilterTooltip": "Filter results",
         "error" : "We are sorry, there was an error in loading the land registry. We ask you to try again.",
         "owners": "Owners",
