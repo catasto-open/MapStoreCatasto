@@ -8,6 +8,7 @@
         "title": "Ricerca Catastale",
         "searchButton": "Cerca",
         "noResults": "Nessun risultato per la tua ricerca",
+        "noOwner": "Nessun proprietario",
         "toggleSearchFilterTooltip": "Filtra i risultati",
         "error" : "Siamo spiacenti, c'è stato un errore nel caricamento del catasto. Ti chiediamo di riprovare.",
         "owners": "Titolari",

@@ -471,40 +471,61 @@ class CatastoOpenPanel extends React.Component {
             break;
         }
         return this.props.loadingResults ? <div className="search-result-grid-loader"><Loader size={176}/></div> :
-            noResults ?
-                <Alert bsStyle="danger" style={{borderRadius: 5}}>
-                    <Message msgId={"extension.catastoOpenPanel.noResults"} />
-                </Alert> :
+            (
                 <div>
-                    <SmartSearchResultGrid
-                        active={this.props.searchResults?.length > 0}
-                        enableFilter
-                        minHeight={minHeight}
-                        columns={columns}
-                        onRowSelect={loadSubjectOnSelect ? this.props.loadSubjectPropertyData :
-                            (addLayerOnSelect ? this.zoomToProperty : (
-                                loadPropertyOwnerOnSelect ? this.props.loadPropertyOwners : () => null))}
-                        toolbar={
-                            <Toolbar
-                                enableFilter
-                                title={title}
-                                resumeButtonActive={resume}
-                                resumeButtonTooltipId={"extension.catastoOpenPanel.resumePreviousResults"}
-                                onResumeButton={resume ? this.props.resumePreviousResults : null}
-                                showPrintBtnPdf={printPdf}
-                                showPrintBtnCsv={printCsv}
-                                printTipId={printTipId}
-                                showExtendBtn={extending}
-                                columns={columns}
-                                rows={this.props.rowResult}
-                                onClickDownloadVisura={this.props.onClickDownloadVisura}
-                                isStartedDownloadVisuraPdf={this.props.isStartedDownloadVisuraPdf}
-                                isStartedDownloadVisuraCsv={this.props.isStartedDownloadVisuraCsv}
-                                errorDownloadMsg={this.props.errorDownloadMsg}
-                            />}
-                    />
+                    { noResults ?
+                        <SmartSearchResultGrid
+                            active
+                            minHeight={minHeight}
+                            columns={columns}
+                            toolbar={
+                                <Toolbar
+                                    enableFilter
+                                    title={"extension.catastoOpenPanel.noOwner"}
+                                    resumeButtonActive={resume}
+                                    resumeButtonTooltipId={"extension.catastoOpenPanel.resumePreviousResults"}
+                                    onResumeButton={resume ? this.props.resumePreviousResults : null}
+                                    showPrintBtnPdf={printPdf}
+                                    showPrintBtnCsv={printCsv}
+                                    printTipId={printTipId}
+                                    showExtendBtn={extending}
+                                    columns={columns}
+                                    rows={this.props.rowResult}
+                                    onClickDownloadVisura={this.props.onClickDownloadVisura}
+                                    isStartedDownloadVisuraPdf={this.props.isStartedDownloadVisuraPdf}
+                                    isStartedDownloadVisuraCsv={this.props.isStartedDownloadVisuraCsv}
+                                    errorDownloadMsg={this.props.errorDownloadMsg}
+                                />}
+                        /> :
+                        <SmartSearchResultGrid
+                            active={this.props.searchResults?.length > 0}
+                            enableFilter
+                            minHeight={minHeight}
+                            columns={columns}
+                            onRowSelect={loadSubjectOnSelect ? this.props.loadSubjectPropertyData :
+                                (addLayerOnSelect ? this.zoomToProperty : (
+                                    loadPropertyOwnerOnSelect ? this.props.loadPropertyOwners : () => null))}
+                            toolbar={
+                                <Toolbar
+                                    enableFilter
+                                    title={title}
+                                    resumeButtonActive={resume}
+                                    resumeButtonTooltipId={"extension.catastoOpenPanel.resumePreviousResults"}
+                                    onResumeButton={resume ? this.props.resumePreviousResults : null}
+                                    showPrintBtnPdf={printPdf}
+                                    showPrintBtnCsv={printCsv}
+                                    printTipId={printTipId}
+                                    showExtendBtn={extending}
+                                    columns={columns}
+                                    rows={this.props.rowResult}
+                                    onClickDownloadVisura={this.props.onClickDownloadVisura}
+                                    isStartedDownloadVisuraPdf={this.props.isStartedDownloadVisuraPdf}
+                                    isStartedDownloadVisuraCsv={this.props.isStartedDownloadVisuraCsv}
+                                    errorDownloadMsg={this.props.errorDownloadMsg}
+                                />}
+                        />}
                     {this.props.searchResultType === propertyOwnerLayer ? <DetailImmobile selectedImmobile={this.props.selectedImmobile}/> : null}
-                </div>;
+                </div>);
     };
 
     render() {
