@@ -255,7 +255,7 @@ export const getLandDetails = (cityCode, citySheet, landNumber, sectionCode, sta
         outputFormat: outputFormat
     };
     if (startDate !== null && endDate !== null) {
-        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'sectionCode:' + sectionCode + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
+        requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'startDate:' + startDate + ';' + 'endDate:' + endDate;
         requestParams.typename = landDetailLayerTemp;
     } else {
         requestParams.viewparams = 'cityCode:' + cityCode + ';' + 'citySheet:' + citySheet + ';' + 'landNumber:' + landNumber + ';' + 'sectionCode:' + sectionCode;
