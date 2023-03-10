@@ -111,7 +111,8 @@ import {
     doweHavePrintSelector,
     doweHaveFixedComuniSelector,
     fixedComuniSelector,
-    printObjSelector
+    printObjSelector,
+    selectedAddressSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
     getVisuraBlob
@@ -614,15 +615,22 @@ export default () => ({
             }),
     loadAddressEpic: (action$, store) =>
         action$.ofType(CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS)
+            .debounceTime(3000)
             .switchMap((action) => {
                 const state = store.getState();
                 const backend = backendSelector(state);
                 const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
                 const fixedComuni = fixedComuniSelector(state);
+                const selectedAddress = selectedAddressSelector(state);
+                if (selectedAddress !== undefined) {
+                    return Rx.Observable.empty();
+                }
                 const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
                 let addressTxt = action?.addressTxt || null;
                 if (addressTxt !== null) {
-                    addressTxt = addressTxt.replace(/[^\w\s]/gi, '');
+                    addressTxt =  addressTxt.replace(/[^a-zA-Z0-9]/g, "");
+                } else {
+                    return Rx.Observable.empty();
                 }
                 const toponymNumber = state?.catastoOpen?.selectedToponym ? state.catastoOpen.selectedToponym.value : 0;
                 let geoserverOwsUrl = backend.url;

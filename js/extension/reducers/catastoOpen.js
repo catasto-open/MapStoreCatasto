@@ -586,7 +586,8 @@ export default function(state = {}, action) {
     case CATASTO_OPEN_IMMOBILE_SELECT_ADDRESS:
         return {
             ...state,
-            selectedAddress: action.address
+            selectedAddress: action.address,
+            isLoadingAddress: false
         };
     case CATASTO_OPEN_IMMOBILE_SET_NCIVICO:
         return {
@@ -597,7 +598,8 @@ export default function(state = {}, action) {
             searchResults: null,
             searchResultType: null,
             loadedResults: false,
-            hasSubmitedSearch: false
+            hasSubmitedSearch: false,
+            isLoadingAddress: false
         };
     case CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH:
         return {
