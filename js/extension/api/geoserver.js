@@ -360,8 +360,8 @@ export const getBuildingByAddress = (cityCode, toponym, addressName, houseNumber
     } else {
         requestParams.typename = indirizzoImmLayer;
     }
-    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
-        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams, timeout: 500000 })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers, timeout: 500000 });
 };
 
 export const getLandByCodiceImm = (cityCode, immobileCode, endDate, startDate, geoserverOwsUrl, headers) => {

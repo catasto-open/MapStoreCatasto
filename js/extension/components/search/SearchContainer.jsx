@@ -617,7 +617,7 @@ class SearchContainer extends React.Component {
 
     addressOptions = (addresses) => {
         return addresses ? addresses.map((t) => ({
-            value: t.indirizzo,
+            value: t.indirizzo.replace(/[^a-zA-Z0-9]/g, ""),
             label: t.indirizzo
         })) : {};
     };
