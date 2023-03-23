@@ -580,3 +580,22 @@ export const printPathNaturalSubject = "catasto/stampa/ricerca/persone_fisiche";
 export const printPathLegalSubject = "catasto/stampa/ricerca/persone_giuridiche";
 export const printPathImmobile = "catasto/stampa/ricerca/immobili";
 export const printPathVisura = "catasto/stampa/visura";
+
+export const compareItems = (a, b) => {
+    const aNumeric = parseInt(a?.subordinate, 10);
+    const bNumeric = parseInt(b?.subordinate, 10);
+    if (isNaN(aNumeric) && isNaN(bNumeric)) {
+        return a?.subordinate.localeCompare(b?.subordinate);
+    } else if (isNaN(aNumeric)) {
+        return 1;
+    } else if (isNaN(bNumeric)) {
+        return -1;
+    } else if (aNumeric < bNumeric) {
+        return -1;
+    } else if (aNumeric > bNumeric) {
+        return 1;
+    }
+    const aNonNumeric = a?.subordinate.replace(aNumeric.toString(), '');
+    const bNonNumeric = b?.subordinate.replace(bNumeric.toString(), '');
+    return aNonNumeric.localeCompare(bNonNumeric);
+};

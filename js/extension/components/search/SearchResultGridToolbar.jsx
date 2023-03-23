@@ -6,6 +6,7 @@ import { Glyphicon } from 'react-bootstrap';
 import Message from "@mapstore/components/I18N/Message";
 import ModalSearchResultGrid from '@js/extension/components/search/ModalSearchResultGrid';
 import InlineSpinner from '@mapstore/components/misc/spinners/InlineSpinner/InlineSpinner';
+import { compareItems } from '@js/extension/utils/catastoOpen';
 
 const Button = tooltip(ButtonB);
 
@@ -110,7 +111,7 @@ class Toolbar extends React.Component {
                 <ModalSearchResultGrid
                     id={this.props.title}
                     columns={this.props.columns}
-                    rows={this.props.rows}
+                    rows={this.props.rows && this.props.rows.sort(compareItems)}
                 />);
         }
         return null;
