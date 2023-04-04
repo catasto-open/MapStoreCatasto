@@ -1,4 +1,7 @@
 import {
+    CATASTO_OPEN_ACTIVATE_PANEL,
+    CATASTO_OPEN_DEACTIVATE_PANEL,
+    CATASTO_OPEN_REDUCED_PANEL,
     CATASTO_OPEN_SELECT_SERVICE,
     CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE,
     CATASTO_OPEN_LOAD_CITY_DATA,
@@ -18,18 +21,9 @@ import {
     CATASTO_OPEN_SELECT_BUILDING,
     CATASTO_OPEN_SELECT_SUBJECT_FILTER,
     CATASTO_OPEN_UPDATE_SUBJECT_FORM_TYPE,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_FIRST_NAME,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LAST_NAME,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_BIRTH_DATE,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_LUOGO,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_FISCAL_CODE,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_SUBJECT_CODE,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_VAT_NUMBER,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_BUSINESS_NAME,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_ID_CODE,
-    CATASTO_OPEN_DEACTIVATE_PANEL,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_TOWN,
     CATASTO_OPEN_LOAD_LEGAL_SUBJECT_DATA,
     CATASTO_OPEN_LOADED_LEGAL_SUBJECT_DATA,
     CATASTO_OPEN_LOAD_NATURAL_SUBJECT_DATA,
@@ -84,12 +78,36 @@ import {
     printPathNaturalSubject
 } from "@js/extension/utils/catastoOpen";
 
-export default function(state = {}, action) {
+export default function(state = {
+    subjectForm:
+        {
+            firstName: '',
+            lastName: '',
+            birthDate: '',
+            birthPlace: null,
+            fiscalCode: '',
+            subjectCode: '',
+            businessName: '',
+            vatNumber: '',
+            identificationCode: ''
+        }
+}, action) {
     switch (action?.type) {
 
+    case CATASTO_OPEN_ACTIVATE_PANEL:
+        return {
+            ...state,
+            reduced: false
+        };
     case CATASTO_OPEN_DEACTIVATE_PANEL:
         return {
-            layer: state?.layer
+            layer: state?.layer,
+            reduced: false
+        };
+    case CATASTO_OPEN_REDUCED_PANEL:
+        return {
+            ...state,
+            reduced: true
         };
     case CATASTO_OPEN_SELECT_SERVICE:
         const serviceChanged = state?.selectedService && state.selectedService?.id !== action?.service?.id;
@@ -295,7 +313,17 @@ export default function(state = {}, action) {
         return subjectFilterChanged ? {
             ...state,
             selectedSubjectFilter: action?.filter,
-            subjectForm: null,
+            subjectForm: {
+                firstName: '',
+                lastName: '',
+                birthDate: '',
+                birthPlace: null,
+                fiscalCode: '',
+                subjectCode: '',
+                businessName: '',
+                vatNumber: '',
+                identificationCode: ''
+            },
             selectedBirthPlace: null,
             searchResults: subjectFilterChanged ? [] : state.searchResults,
             loadedResults: subjectFilterChanged ? false : state.loadedResults
@@ -306,65 +334,28 @@ export default function(state = {}, action) {
         return {
             ...state,
             subjectForm: {
-                type: action?.subjectType,
-                ...state.subjectForm
+                ...state.subjectForm,
+                type: action?.subjectType
             }
         };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_FIRST_NAME:
-        state.subjectForm.firstName = action?.firstName;
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM:
         return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LAST_NAME:
-        state.subjectForm.lastName = action?.lastName;
-        return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_BIRTH_DATE:
-        state.subjectForm.birthDate = action?.birthDate;
-        return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO:
+            ...state,
+            subjectForm: {
+                ...state.subjectForm,
+                [action.payload.field]: action.payload.value
+            }
+        }
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN:
         return {
             ...state,
             isLoadingTown: true
         };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_LUOGO:
+    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOADED_TOWN:
         return {
             ...state,
-            town: action.town,
+            towns: action.towns,
             isLoadingTown: false
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_SELECT_BIRTH_PLACE:
-        return {
-            ...state,
-            selectedBirthPlace: action.selectedBirthPlace
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_FISCAL_CODE:
-        state.subjectForm.fiscalCode = action?.fiscalCode;
-        return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_SUBJECT_CODE:
-        state.subjectForm.subjectCode = action?.subjectCode;
-        return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_VAT_NUMBER:
-        state.subjectForm.vatNumber = action?.vatNumber;
-        return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_BUSINESS_NAME:
-        state.subjectForm.businessName = action?.businessName;
-        return {
-            ...state
-        };
-    case CATASTO_OPEN_UPDATE_SUBJECT_FORM_ID_CODE:
-        state.subjectForm.identificationCode = action?.identificationCode;
-        return {
-            ...state
         };
     case CATASTO_OPEN_LOAD_LEGAL_SUBJECT_DATA:
         return {
@@ -488,7 +479,17 @@ export default function(state = {}, action) {
             isTemporalSearchChecked: action.isTemporalSearchChecked,
             startDate: null,
             endDate: null,
-            subjectForm: null,
+            subjectForm: {
+                firstName: '',
+                lastName: '',
+                birthDate: '',
+                birthPlace: null,
+                fiscalCode: '',
+                subjectCode: '',
+                businessName: '',
+                vatNumber: '',
+                identificationCode: ''
+            },
             selectedSubjectFilter: null,
             selectedCity: null,
             selectedSection: null,
@@ -506,7 +507,17 @@ export default function(state = {}, action) {
         return {
             ...state,
             isHistoricalSearchChecked: action.isHistoricalSearchChecked,
-            subjectForm: null,
+            subjectForm: {
+                firstName: '',
+                lastName: '',
+                birthDate: '',
+                birthPlace: null,
+                fiscalCode: '',
+                subjectCode: '',
+                businessName: '',
+                vatNumber: '',
+                identificationCode: ''
+            },
             selectedSubjectFilter: null,
             selectedCity: null,
             selectedSection: null,
@@ -524,7 +535,17 @@ export default function(state = {}, action) {
         return {
             ...state,
             startDate: action.startDate,
-            subjectForm: null,
+            subjectForm: {
+                firstName: '',
+                lastName: '',
+                birthDate: '',
+                birthPlace: null,
+                fiscalCode: '',
+                subjectCode: '',
+                businessName: '',
+                vatNumber: '',
+                identificationCode: ''
+            },
             selectedSubjectFilter: null,
             selectedCity: null,
             selectedSection: null,
@@ -542,7 +563,17 @@ export default function(state = {}, action) {
         return {
             ...state,
             endDate: action.endDate,
-            subjectForm: null,
+            subjectForm: {
+                firstName: '',
+                lastName: '',
+                birthDate: '',
+                birthPlace: null,
+                fiscalCode: '',
+                subjectCode: '',
+                businessName: '',
+                vatNumber: '',
+                identificationCode: ''
+            },
             selectedSubjectFilter: null,
             selectedCity: null,
             selectedSection: null,

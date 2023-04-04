@@ -9,66 +9,89 @@ import DateTimePicker from '@mapstore/components/misc/datetimepicker/index';
 class SearchForm extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        value: PropTypes.object,
+        control: PropTypes.func,
         controls: PropTypes.array,
         buttonTxt: PropTypes.string,
-        value: PropTypes.object,
-        onChange: PropTypes.func,
         activeButton: PropTypes.bool,
         onSubmitForm: PropTypes.func,
-        updateSubjectFormLoadLuogo: PropTypes.func,
-        updateSubjectFormSelectBithPlace: PropTypes.func,
-        options: PropTypes.array,
-        isLoadingTown: PropTypes.bool,
-        selectedvalue: PropTypes.object
+        loadTown: PropTypes.func,
+        towns: PropTypes.array,
+        isLoadingTown: PropTypes.bool
     };
 
     static defaultProps = {
         active: false,
-        controls: [],
         activeButton: false,
-        onSubmitForm: () => {},
-        updateSubjectFormLoadLuogo: () => {},
-        updateSubjectFormSelectBithPlace: () => {},
-        options: [],
         isLoadingTown: false,
-        selectedvalue: null
+        value: null
     };
 
     renderSwitch = (c) => {
         switch (c.id) {
+        case "FIRST-NAME":
+            return (<FormControl
+                type="text"
+                onChange={e => this.props.control("firstName", e.target.value)}
+                value={this.props.value?.firstName}
+            />);
+        case "LAST-NAME":
+            return (<FormControl
+                type="text"
+                onChange={e => this.props.control("lastName", e.target.value)}
+                value={this.props.value?.lastName}
+            />);
         case "BIRTH-DATE":
             return (<DateTimePicker
                 format="DD/MM/YYYY"
                 time={false}
                 placeholder="DD/MM/YYYY"
-                onChange={c.onChange}
+                onChange={(value) => this.props.control("birthDate", value)}
+                value={this.props.value?.birthDate}
             />);
         case "BIRTH-PLACE":
             return (<Select
                 clearable
                 searchable
-                options={this.props.options}
-                onInputChange={this.props.updateSubjectFormLoadLuogo}
-                onChange={this.props.updateSubjectFormSelectBithPlace}
+                options={this.props.towns}
+                onInputChange={this.props.loadTown}
+                onChange={(value) => this.props.control("birthPlace", value)}
                 isLoading={this.props.isLoadingTown}
-                value={this.props.selectedvalue}
+                value={this.props.value?.birthPlace}
             >
             </Select>);
-        case "IDENTIFICATION-CODE":
+        case "FISCAL-CODE":
             return (<FormControl
-                type="number"
-                onChange={e => c.onChange(e.target.value)}
+                type="text"
+                onChange={e => this.props.control("fiscalCode", e.target.value)}
+                value={this.props.value?.fiscalCode}
             />);
         case "SUBJECT-CODE":
             return (<FormControl
-                type="number"
-                onChange={e => c.onChange(e.target.value)}
+                type="text"
+                onChange={e => this.props.control("subjectCode", e.target.value)}
+                value={this.props.value?.subjectCode}
             />);
-        default:
+        case "VAT-NUMBER":
             return (<FormControl
                 type="text"
-                onChange={e => c.onChange(e.target.value)}
+                onChange={e => this.props.control("vatNumber", e.target.value)}
+                value={this.props.value?.vatNumber}
             />);
+        case "BUSINESS-NAME":
+            return (<FormControl
+                type="text"
+                onChange={e => this.props.control("businessName", e.target.value)}
+                value={this.props.value?.businessName}
+            />);
+        case "IDENTIFICATION-CODE":
+            return (<FormControl
+                type="number"
+                onChange={e => this.props.control("identificationCode",e.target.value)}
+                value={this.props.value?.identificationCode}
+            />);
+        default:
+            return null;
         }
     };
 

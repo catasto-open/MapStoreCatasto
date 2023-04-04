@@ -3,6 +3,8 @@ import {get} from "lodash";
 export const catastoOpenActiveSelector = (state) => get(state,
     "controls.catastoOpen.active") === "catastoOpen"
     || get(state, "controls.catastoOpen.enabled");
+export const catastoOpenisReducedSelector = (state) => get(state, "catastoOpen.reduced");
+
 export const selectedServiceSelector = (state) => get(state, "catastoOpen.selectedService");
 export const selectedSearchImmTypeSelector = (state) => get(state, "catastoOpen.selectedSearchImmType");
 
@@ -49,7 +51,7 @@ export const loadingSubjectPropertySelector = (state) => get(state, "catastoOpen
 export const loadedSubjectPropertySelector = (state) => get(state, "catastoOpen.loadedSubjectProperties");
 export const subjectPropertySelector = (state) => get(state, "catastoOpen.subjectProperties");
 export const isLoadingTownSelector = (state) => get(state, "catastoOpen.isLoadingTown");
-export const townSelector = (state) => get(state, "catastoOpen.town");
+export const townsSelector = (state) => get(state, "catastoOpen.towns");
 export const selectedBirthPlaceSelector = (state) =>  get(state, "catastoOpen.selectedBirthPlace");
 
 export const backendSelector = (state) => get(state, "catastoOpen.backend");
@@ -68,6 +70,7 @@ export const isLoadingAddressSelector = (state) => get(state, "catastoOpen.isLoa
 export const isValidInputOnImmAddressSelector = (state) => {
     return (state.catastoOpen?.houseNumber?.length > 0);
 };
+export const houseNumberSelector = (state) => get(state, "catastoOpen.houseNumber");
 export const hasSubmitedSearchSelector = (state) => get(state, "catastoOpen.hasSubmitedSearch");
 export const selectedImmTypeSelector = (state) => get(state, "catastoOpen.selectedImmType");
 export const immobileCodeSelector = (state) => get(state, "catastoOpen.immobileCode");

@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import ContainerDimensions from 'react-container-dimensions';
 import Message from '@mapstore/components/I18N/Message';
-import DockPanel from '@mapstore/components/misc/panels/DockPanel';
+import DockPanel from '@js/extension/components/misc/panels/DockPanel';
 import { createStructuredSelector } from 'reselect';
 import { Alert, Glyphicon, Tooltip} from 'react-bootstrap';
 import ButtonB from '@mapstore/components/misc/Button';
 import tooltip from '@mapstore/components/misc/enhancers/tooltip';
 import '@js/extension/assets/style.css';
 import {
-    catastoOpenActiveSelector,
+    catastoOpenActiveSelector, catastoOpenisReducedSelector,
     errorSelector, loadedResultSelector,
     loadingResultSelector, searchResultSelector, searchResultTypeSelector,
     messageForUserSelector,
@@ -24,7 +24,10 @@ import {
     isStartedDownloadVisuraImSingolaSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
-    deactivateCatastoOpenPanel, loadLayer, loadPropertyOwnerData,
+    deactivateCatastoOpenPanel,
+    reduceCatastoOpenPanel,
+    loadLayer,
+    loadPropertyOwnerData,
     loadSubjectPropertyData,
     resumePreviousSearchResults,
     setBackend,
@@ -225,6 +228,8 @@ class CatastoOpenPanel extends React.Component {
     static propTypes = {
         id: PropTypes.string,
         active: PropTypes.bool,
+        reduced: PropTypes.bool,
+        onReduce: PropTypes.func,
         closeGlyph: PropTypes.string,
         style: PropTypes.object,
         width: PropTypes.number,
@@ -264,6 +269,8 @@ class CatastoOpenPanel extends React.Component {
     static defaultProps = {
         id: "mapstore-cadastral-search",
         active: false,
+        reduced: false,
+        onReduce: () => {},
         closeGlyph: "1-close",
         width: 660,
         loadError: false,
@@ -534,14 +541,14 @@ class CatastoOpenPanel extends React.Component {
                 style={this.props.style}>
                 <ContainerDimensions>
                     {({ width }) => (<DockPanel
-                        open={this.props.active}
+                        open={this.props.active && !this.props.reduced}
                         size={this.props.width / width > 1 ? width : this.props.width}
                         position="right"
                         bsStyle="primary"
                         title={<Message msgId="extension.catastoOpenPanel.title"/>}
                         onClose={() => this.props.deactivate(this.props)}
-                        glyph="book"
-                        zIndex={1031}>
+                        zIndex={1031}
+                        onReduce={this.props.onReduce}>
                         <SmartSearchContainer filterServices={this.props.filterServices} />
                         {this.props.loadError ?
                             <Alert bsStyle="danger" style={{borderRadius: 5}}>
@@ -566,6 +573,7 @@ class CatastoOpenPanel extends React.Component {
 
 const catastoOpenSelector = createStructuredSelector({
     active: catastoOpenActiveSelector,
+    reduced: catastoOpenisReducedSelector,
     loadError: errorSelector,
     messageForUser: messageForUserSelector,
     loadingResults: loadingResultSelector,
@@ -586,6 +594,7 @@ const catastoOpenSelector = createStructuredSelector({
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,
     {
         deactivate: deactivateCatastoOpenPanel,
+        onReduce: reduceCatastoOpenPanel,
         loadSubjectPropertyData: loadSubjectPropertyData,
         resumePreviousResults: resumePreviousSearchResults,
         loadLayer: loadLayer,

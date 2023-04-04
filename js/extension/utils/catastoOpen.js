@@ -585,7 +585,11 @@ export const compareItems = (a, b) => {
     const aNumeric = parseInt(a?.subordinate, 10);
     const bNumeric = parseInt(b?.subordinate, 10);
     if (isNaN(aNumeric) && isNaN(bNumeric)) {
-        return a?.subordinate.localeCompare(b?.subordinate);
+        try {
+            return a?.subordinate.localeCompare(b?.subordinate);
+        } catch (e) {
+            return 1;
+        }
     } else if (isNaN(aNumeric)) {
         return 1;
     } else if (isNaN(bNumeric)) {

@@ -16,6 +16,7 @@ class FormCol extends React.Component {
         onInputChange: PropTypes.func,
         onSelect: PropTypes.func,
         value: PropTypes.object,
+        valueNotObj: PropTypes.string,
         onFormChange: PropTypes.func,
         typeInput: PropTypes.string,
         showSearchButton: PropTypes.bool,
@@ -59,6 +60,7 @@ class FormCol extends React.Component {
                                 <FormControl
                                     type={this.props.typeInput}
                                     onChange={(e) => this.props.onFormChange(e.target.value)}
+                                    value={this.props.valueNotObj}
                                 />
                             </Form>
                         }
