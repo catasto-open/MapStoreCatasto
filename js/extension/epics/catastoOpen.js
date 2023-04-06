@@ -4,13 +4,14 @@ import {updateMapLayout} from "@mapstore/actions/maplayout";
 import {
     CATASTO_OPEN_ACTIVATE_PANEL,
     CATASTO_OPEN_DEACTIVATE_PANEL,
+    CATASTO_OPEN_REDUCED_PANEL,
     CATASTO_OPEN_SELECT_SERVICE,
     CATASTO_OPEN_SELECT_SEARCH_IMM_TYPE,
     CATASTO_OPEN_SELECT_CITY,
     CATASTO_OPEN_IMMOBILE_LOAD_TOPONIMO,
     CATASTO_OPEN_IMMOBILE_LOAD_ADDRESS,
     CATASTO_OPEN_IMMOBILE_SUBMIT_SEARCH,
-    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO,
+    CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN,
     CATASTO_OPEN_LOAD_CITY_DATA,
     CATASTO_OPEN_SELECT_SECTION,
     CATASTO_OPEN_LOAD_SECTION_DATA,
@@ -46,7 +47,7 @@ import {
     loadCityData,
     loadedToponym,
     loadedAddress,
-    updateSubjectFormLoadedLuogo,
+    updateSubjectFormLoadedTown,
     loadedCityData,
     selectSection,
     loadSectionData,
@@ -142,6 +143,13 @@ export default () => ({
                     setControlProperty('catastoOpen', "enabled", false, false)
                 ]));
             }),
+    reducedCatastoOpenPanelEpic: (action$) =>
+        action$.ofType(CATASTO_OPEN_REDUCED_PANEL)
+            .switchMap(() => {
+                return Rx.Observable.of(...([
+                    setControlProperty('catastoOpen', "enabled", false, false)
+                ]));
+            }),
     selectServiceEpic: (action$) =>
         action$.ofType(CATASTO_OPEN_SELECT_SERVICE)
             .switchMap((action) => {
@@ -182,8 +190,8 @@ export default () => ({
                     .switchMap((response) => Rx.Observable.of(loadedCityData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
-    updateSubjectFormLoadedLuogoEpic: (action$, store) =>
-        action$.ofType(CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_LUOGO)
+    updateSubjectFormLoadedTownEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN)
             .switchMap((action) => {
                 const state = store.getState();
                 const birthPlaceTxt = action?.birthPlaceTxt || null;
@@ -192,7 +200,7 @@ export default () => ({
                 const headers = state?.security?.token ? {Authorization: `Bearer ${state.security.token}` } : null;
                 geoserverOwsUrl += geoserverOwsUrl.endsWith("/") ? "ows/" : "/ows/";
                 return Rx.Observable.defer(() => getTwonData(birthPlaceTxt, geoserverOwsUrl, headers))
-                    .switchMap((response) => Rx.Observable.of(updateSubjectFormLoadedLuogo(response.data)))
+                    .switchMap((response) => Rx.Observable.of(updateSubjectFormLoadedTown(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
     selectCityEpic: (action$, store) =>
@@ -335,7 +343,7 @@ export default () => ({
                 const firstName = naturalSubject?.firstName ? "\'" + naturalSubject.firstName.trim() + "\'" : null;
                 const lastName = naturalSubject?.lastName ?  "\'" + naturalSubject.lastName.replace("'", "`").trim() + "\'" : null;
                 const birthDate = naturalSubject?.birthDate ? "\'" + fixDateTimeZone(naturalSubject.birthDate).toISOString().slice(0, 10) + "\'" : null;
-                const birthPlace = state.catastoOpen?.selectedBirthPlace ? state.catastoOpen.selectedBirthPlace.value : null;
+                const birthPlace = naturalSubject?.birthPlace ? naturalSubject.birthPlace.value : null;
                 const backend = backendSelector(state);
                 let geoserverOwsUrl = backend.url;
                 const headers = state?.security?.token ? {Authorization: `Bearer ${state.security.token}` } : null;

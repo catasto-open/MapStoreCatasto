@@ -23,16 +23,8 @@ import {
     selectSearchImmobileType,
     selectSheet,
     selectSubjectFilter,
-    updateSubjectFormFirstName,
-    updateSubjectFormFiscalCode,
-    updateSubjectFormBirthDate,
-    updateSubjectFormLastName,
-    updateSubjectFormLoadLuogo,
-    updateSubjectFormSelectBithPlace,
-    updateSubjectFormSubjectCode,
-    updateSubjectFormVatNumber,
-    updateSubjectFormBusinessName,
-    updateSubjectFormIdCode,
+    updateSubjectForm,
+    updateSubjectFormLoadTown,
     selectLand,
     selectBuilding,
     loadSubjectData,
@@ -56,8 +48,10 @@ import {
     isLoadingAddressSelector,
     selectedAddressSelector,
     isValidInputOnImmAddressSelector,
+    houseNumberSelector,
     hasSubmitedSearchSelector,
     selectedImmTypeSelector,
+    immobileCodeSelector,
     isValidInputOnImmCodeSelector,
     selectedCitySelector,
     isLoadingCitySelector,
@@ -81,8 +75,7 @@ import {
     startDateSelector,
     endDateSelector,
     isLoadingTownSelector,
-    townSelector,
-    selectedBirthPlaceSelector,
+    townsSelector,
     fixedComuniSelector,
     doweHaveFixedComuniSelector
 } from "@js/extension/selectors/catastoOpen";
@@ -113,7 +106,9 @@ class SearchContainer extends React.Component {
         selectedAddress: PropTypes.object,
         onChangeHouseNumber: PropTypes.func,
         isValidInputOnImmAddress: PropTypes.bool,
+        houseNumber: PropTypes.string,
         isValidInputOnImmCode: PropTypes.bool,
+        immobileCode: PropTypes.number,
         onSubmitSearch: PropTypes.func,
         hasSubmitedSearch: PropTypes.bool,
         onSelectImmType: PropTypes.func,
@@ -139,16 +134,10 @@ class SearchContainer extends React.Component {
         selectedSubjectFilter: PropTypes.object,
         subjectFormButtonActive: PropTypes.bool,
         subjectForm: PropTypes.object,
-        updateSubjectFormFirstName: PropTypes.func,
-        updateSubjectFormLastName: PropTypes.func,
-        updateSubjectFormBirthDate: PropTypes.func,
-        updateSubjectFormLoadLuogo: PropTypes.func,
-        updateSubjectFormSelectBithPlace: PropTypes.func,
-        updateSubjectFormFiscalCode: PropTypes.func,
-        updateSubjectFormSubjectCode: PropTypes.func,
-        updateSubjectFormVatNumber: PropTypes.func,
-        updateSubjectFormBusinessName: PropTypes.func,
-        updateSubjectFormIdCode: PropTypes.func,
+        updateSubjectForm: PropTypes.func,
+        updateSubjectFormLoadTown: PropTypes.func,
+        isLoadingTown: PropTypes.bool,
+        towns: PropTypes.array,
         loadSubjects: PropTypes.func,
         loadLayer: PropTypes.func,
         loadLandDetails: PropTypes.func,
@@ -163,9 +152,6 @@ class SearchContainer extends React.Component {
         endDateValue: PropTypes.any,
         endDateValueOnChange: PropTypes.func,
         setMessageForUser: PropTypes.func,
-        isLoadingTown: PropTypes.bool,
-        town: PropTypes.array,
-        selectedBirthPlace: PropTypes.object,
         fixedComuni: PropTypes.object,
         doweHaveFixedComuni: PropTypes.bool
     };
@@ -181,6 +167,8 @@ class SearchContainer extends React.Component {
         selectedAddress: null,
         isLoadingAddress: false,
         isValidInputOnImmAddress: false,
+        houseNumber: '',
+        immobileCode: '',
         hasSubmitedSearch: false,
         selectedImmType: null,
         selectedCity: null,
@@ -193,16 +181,10 @@ class SearchContainer extends React.Component {
         buildings: [],
         selectedBuilding: null,
         selectedSubjectFilter: null,
-        updateSubjectFormFirstName: () => {},
-        updateSubjectFormLastName: () => {},
-        updateSubjectFormBirthDate: () => {},
-        updateSubjectFormLoadLuogo: () => {},
-        updateSubjectFormSelectBithPlace: () => {},
-        updateSubjectFormFiscalCode: () => {},
-        updateSubjectFormSubjectCode: () => {},
-        updateSubjectFormVatNumber: () => {},
-        updateSubjectFormBusinessName: () => {},
-        updateSubjectFormIdCode: () => {},
+        updateSubjectForm: () => {},
+        updateSubjectFormLoadTown: () => {},
+        isLoadingTown: false,
+        towns: [],
         subjectFormButtonActive: true,
         subjectForm: null,
         loadSubjects: () => {},
@@ -210,9 +192,6 @@ class SearchContainer extends React.Component {
         isTemporalSearchChecked: false,
         isHistoricalSearchChecked: false,
         onChangeTemporalSearchCheckbox: () => {},
-        isLoadingTown: false,
-        town: [],
-        selectedBirthPlace: {},
         fixedComuni: null,
         doweHaveFixedComuni: false
     };
@@ -410,6 +389,7 @@ class SearchContainer extends React.Component {
                         activeButton={this.props.isValidInputOnImmAddress}
                         onSubmitForm={() => this.props.onSubmitSearch(this.props.selectedSearchImmType.value)}
                         buttonTxt={"extension.catastoOpenPanel.searchButton"}
+                        valueNotObj={this.props.houseNumber}
                     />
                     <SearchFilter
                         buttonStyle={style}
@@ -457,6 +437,7 @@ class SearchContainer extends React.Component {
                         onSubmitForm={() => this.props.onSubmitSearch(this.props.selectedSearchImmType.value)}
                         buttonTxt={"extension.catastoOpenPanel.searchButton"}
                         typeInput={"number"}
+                        valueNotObj={this.props.immobileCode}
                     />
                     <SearchFilter
                         buttonStyle={style}
@@ -539,15 +520,15 @@ class SearchContainer extends React.Component {
                         value={this.props.selectedSubjectFilter}/>
                     <SearchForm
                         active={!!this.props.selectedSubjectFilter}
+                        value={this.props.subjectForm}
                         buttonTxt={"extension.catastoOpenPanel.searchButton"}
                         controls={this.subjectFormFilterControls()}
+                        control={this.props.updateSubjectForm}
                         activeButton={this.props.subjectFormButtonActive}
                         onSubmitForm={() => this.props.loadSubjects(this.props.subjectForm)}
-                        updateSubjectFormLoadLuogo={this.props.updateSubjectFormLoadLuogo}
-                        updateSubjectFormSelectBithPlace={this.props.updateSubjectFormSelectBithPlace}
-                        options={this.props.town.map((_) => ({value: _.code, label: _.name}))}
+                        loadTown={this.props.updateSubjectFormLoadTown}
+                        towns={this.props.towns.map((_) => ({value: _.code, label: _.name}))}
                         isLoadingTown={this.props.isLoadingTown}
-                        selectedvalue={this.props.selectedBirthPlace}
                     />
                 </div>);
         }
@@ -666,36 +647,6 @@ class SearchContainer extends React.Component {
     subjectFormFilterControls = () => {
         const subjectFilters = this.subjectFormFilters().filter(f => f.id === this.props.selectedSubjectFilter?.id);
         let controls = subjectFilters[0]?.filters || subjectFilters;
-        controls = controls.map(c => {
-            switch (c.id) {
-            case services[1].filters[0].filters[0].id:
-                c.onChange = this.props.updateSubjectFormFirstName;
-                return c;
-            case services[1].filters[0].filters[1].id:
-                c.onChange = this.props.updateSubjectFormLastName;
-                return c;
-            case services[1].filters[0].filters[2].id:
-                c.onChange = this.props.updateSubjectFormBirthDate;
-                return c;
-            case services[1].filters[1].id:
-                c.onChange = this.props.updateSubjectFormFiscalCode;
-                return c;
-            case services[1].filters[2].id:
-                c.onChange = this.props.updateSubjectFormSubjectCode;
-                return c;
-            case services[2].filters[0].id:
-                c.onChange = this.props.updateSubjectFormVatNumber;
-                return c;
-            case services[2].filters[1].id:
-                c.onChange = this.props.updateSubjectFormBusinessName;
-                return c;
-            case services[2].filters[2].id:
-                c.onChange = this.props.updateSubjectFormIdCode;
-                return c;
-            default:
-                return c;
-            }
-        });
         return controls;
     };
 
@@ -766,16 +717,8 @@ export const searchContainerActions = {
     onSelectLand: selectLand,
     onSelectBuilding: selectBuilding,
     onSelectSubjectFilter: selectSubjectFilter,
-    updateSubjectFormFirstName: updateSubjectFormFirstName,
-    updateSubjectFormLastName: updateSubjectFormLastName,
-    updateSubjectFormBirthDate: updateSubjectFormBirthDate,
-    updateSubjectFormLoadLuogo: updateSubjectFormLoadLuogo,
-    updateSubjectFormSelectBithPlace: updateSubjectFormSelectBithPlace,
-    updateSubjectFormFiscalCode: updateSubjectFormFiscalCode,
-    updateSubjectFormSubjectCode: updateSubjectFormSubjectCode,
-    updateSubjectFormVatNumber: updateSubjectFormVatNumber,
-    updateSubjectFormBusinessName: updateSubjectFormBusinessName,
-    updateSubjectFormIdCode: updateSubjectFormIdCode,
+    updateSubjectForm: updateSubjectForm,
+    updateSubjectFormLoadTown: updateSubjectFormLoadTown,
     loadSubjects: loadSubjectData,
     loadLayer: loadLayer,
     loadLandDetails: loadLandDetailData,
@@ -802,6 +745,8 @@ export const searchContainerSelector = createStructuredSelector({
     hasSubmitedSearch: hasSubmitedSearchSelector,
     selectedImmType: selectedImmTypeSelector,
     isValidInputOnImmCode: isValidInputOnImmCodeSelector,
+    immobileCode: immobileCodeSelector,
+    houseNumber: houseNumberSelector,
     selectedCity: selectedCitySelector,
     isLoadingSections: isLoadingSectionSelector,
     sections: sectionSelector,
@@ -823,8 +768,7 @@ export const searchContainerSelector = createStructuredSelector({
     startDateValue: startDateSelector,
     endDateValue: endDateSelector,
     isLoadingTown: isLoadingTownSelector,
-    town: townSelector,
-    selectedBirthPlace: selectedBirthPlaceSelector,
+    towns: townsSelector,
     fixedComuni: fixedComuniSelector,
     doweHaveFixedComuni: doweHaveFixedComuniSelector
 });
