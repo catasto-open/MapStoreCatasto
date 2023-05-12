@@ -65,7 +65,10 @@ import {
     CATASTO_OPEN_ERROR_DOWNLOAD_VISURA,
     CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA,
     CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA,
-    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA
+    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA,
+    CATASTO_OPEN_SAVE_QUERY_DATA_VISURA_JSON,
+    CATASTO_OPEN_LOADED_DATA_VISURA_JSON,
+    CATASTO_OPEN_CONTROL_DISPLAY_DATA_VISURA_JSON
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -345,7 +348,7 @@ export default function(state = {
                 ...state.subjectForm,
                 [action.payload.field]: action.payload.value
             }
-        }
+        };
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN:
         return {
             ...state,
@@ -731,6 +734,21 @@ export default function(state = {
         return {
             ...state,
             startDownloadVisuraImSingola: false
+        };
+    case CATASTO_OPEN_SAVE_QUERY_DATA_VISURA_JSON:
+        return {
+            ...state,
+            queryObj: action?.queryObj
+        };
+    case CATASTO_OPEN_LOADED_DATA_VISURA_JSON:
+        return {
+            ...state,
+            visuraJson: action?.payload
+        };
+    case CATASTO_OPEN_CONTROL_DISPLAY_DATA_VISURA_JSON:
+        return {
+            ...state,
+            showModalJson: action?.show
         };
     default:
         return state;

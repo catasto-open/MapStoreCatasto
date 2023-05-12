@@ -13,3 +13,16 @@ export const getVisuraBlob = (printObj, fileType) => {
         }
     );
 };
+
+
+export const getVisuraJSON = (printObj) => {
+    const url = printObj.url;
+    let params = printObj.query;
+    return axios.get(
+        url,
+        {
+            params: params,
+            headers: {...printObj.headers, 'content-type': 'application/json'}
+        }
+    );
+};

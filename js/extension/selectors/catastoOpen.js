@@ -92,3 +92,7 @@ export const isStartedDownloadVisuraCsvSelector = (state) => get(state, "catasto
 export const alreadyShownErrorDownloadMsgSelector = (state) => get(state, "catastoOpen.alreadyShownErrorDownloadMsg");
 export const errorDownloadMsgSelector = (state) => get(state, "catastoOpen.errorDownloadMsg");
 export const isStartedDownloadVisuraImSingolaSelector = (state) => get(state, "catastoOpen.startDownloadVisuraImSingola");
+
+export const queryObjDataVisuraJsonSelector = (state) => get(state, "catastoOpen.queryObj");
+export const dataVisuraJsonSelector = (state) => get(state, "catastoOpen.visuraJson");
+export const showModalJsonSelector = (state) => get(state, "catastoOpen.showModalJson");

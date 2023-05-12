@@ -77,6 +77,10 @@ export const CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:START
 export const CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:END_DOWNLOAD_VISURA_IM_SINGOLA';
 export const CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:ERROR_DOWNLOAD_VISURA_IM_SINGOLA';
 export const CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA = 'CATASTO_OPEN:WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA';
+export const CATASTO_OPEN_LOADED_DATA_VISURA_JSON = 'CATASTO_OPEN:LOADED_DATA_VISURA_JSON';
+export const CATASTO_OPEN_SAVE_QUERY_DATA_VISURA_JSON = 'CATASTO_OPEN:SAVE_QUERY_DATA_VISURA_JSON';
+export const CATASTO_OPEN_CONTROL_DISPLAY_DATA_VISURA_JSON = 'CATASTO_OPEN:CONTROL_DISPLAY_DATA_VISURA_JSON';
+export const CATASTO_OPEN_LOAD_SINGLE_VISURA_JSON = 'CATASTO_OPEN:LOAD_SINGLE_VISURA_JSON';
 
 export function activateCatastoOpenPanel() {
     return {
@@ -582,5 +586,34 @@ export function errorDownloadVisuraImSingole(errorMsg) {
 export function weAreDoneDownloadingVisuraImSingola() {
     return {
         type: CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA
+    };
+}
+
+export function loadedDataVisuraJson(payload) {
+    return {
+        type: CATASTO_OPEN_LOADED_DATA_VISURA_JSON,
+        payload
+    };
+}
+
+export function saveQueryDataVisuraJson(queryObj) {
+    return {
+        type: CATASTO_OPEN_SAVE_QUERY_DATA_VISURA_JSON,
+        queryObj
+    };
+}
+
+export function controlDisplayDataVisuraJson(show) {
+    return {
+        type: CATASTO_OPEN_CONTROL_DISPLAY_DATA_VISURA_JSON,
+        show
+    };
+}
+
+export function loadSingleVisuraJson(immobile, propertyType) {
+    return {
+        type: CATASTO_OPEN_LOAD_SINGLE_VISURA_JSON,
+        immobile,
+        propertyType
     };
 }

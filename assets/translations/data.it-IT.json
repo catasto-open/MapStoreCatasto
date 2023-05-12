@@ -301,8 +301,11 @@
         "dateInputError": "L'intervallo di date inserite non è corretto.",
         "printBtn" : {
             "label" : "Stampa"
+        },
+        "showBtn" : {
+            "label" : "Mostra Visura"
         }
-    }
+      }
     }
   }
 }
