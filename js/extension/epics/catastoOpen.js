@@ -676,7 +676,7 @@ export default () => ({
                 const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
                 const fixedComuni = fixedComuniSelector(state);
                 const selectedAddress = selectedAddressSelector(state);
-                if (selectedAddress !== undefined) {
+                if (selectedAddress) {
                     return Rx.Observable.empty();
                 }
                 const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;

@@ -532,7 +532,9 @@ export default function(state = {
             loadedResults: false,
             selectedToponym: null,
             selectedImmType: null,
-            hasSubmitedSearch: false
+            hasSubmitedSearch: false,
+            selectedAddress: null,
+            houseNumber: ''
         };
     case CATASTO_OPEN_START_DATE_SELECTED:
         return {
