@@ -1,8 +1,308 @@
-    {
-    "locale": "it-IT",
-    "messages": {
-        "extension": {
-            "message": "Messaggio!"
+{
+  "locale": "it-IT",
+  "messages": {
+    "extension": {
+      "number":"Numero",
+      "catastoOpenPanel": {
+        "nominative": "Nominativo",
+        "title": "Ricerca Catastale",
+        "searchButton": "Cerca",
+        "noResults": "Nessun risultato per la tua ricerca",
+        "noOwner": "Nessun proprietario",
+        "toggleSearchFilterTooltip": "Filtra i risultati",
+        "error" : "Siamo spiacenti, c'è stato un errore nel caricamento del catasto. Ti chiediamo di riprovare.",
+        "owners": "Titolari",
+        "resumePreviousResults": "Torna alla tabella precedente",
+        "services": {
+          "parcels": {
+            "placeholder": "Ricerca per immobili",
+            "filters": {
+              "cities": {
+                "name": "Comune",
+                "placeholder": "Scegli un comune",
+                "noResultsText": "Nessun comune trovato"
+              },
+              "sections": {
+                "name": "Sezione",
+                "placeholder": "Scegli una sezione",
+                "noResultsText": "Nessuna sezione trovata"
+              },
+              "sheets": {
+                "name": "Foglio",
+                "placeholder": "Scegli un foglio",
+                "noResultsText": "Nessun foglio trovato",
+                "zoomTooltip": "Zoom sul foglio"
+              },
+              "lands": {
+                "name": "Terreno",
+                "placeholder": "Scegli un terreno",
+                "noResultsText": "Nessun terreno trovato",
+                "zoomTooltip": "Zoom sul terreno",
+                "detailTooltip": "Visualizza dettagli terreno"
+              },
+              "buildings": {
+                "name": "Fabbricato",
+                "placeholder": "Scegli un fabbricato",
+                "noResultsText": "Nessun fabbricato trovato",
+                "zoomTooltip": "Zoom sul fabbricato",
+                "detailTooltip": "Visualizza dettagli fabbricato"
+              }
+          },
+          "filtersTypes": {
+              "immobile": {
+                  "placeholder": "Filtra per dati catastali"
+              },
+              "immobilebyadd": {
+                  "placeholder": "Filtra per indirizzo",
+                  "filters": {
+                      "toponym": {
+                          "name": "Toponimo",
+                          "placeholder": "VIA, VIALLE, ..."
+                      },
+                      "addressName": {
+                          "name": "Indirizzo",
+                          "placeholder": "Inserisci indirizzo"
+                      },
+                      "ncivico": {
+                          "name": "Numero civico",
+                          "placeholder": "Inserisci numero civico"
+                      }
+                  }
+              },
+              "immobilebycode": {
+                  "placeholder": "Filtra per codice immobile",
+                  "filters": {
+                      "immobileType": {
+                          "name": "Tipo Immobile",
+                          "placeholder": "Scegli tipo immobile"
+                      },
+                      "immobileCode": {
+                          "name": "Codice Immobile",
+                          "placeholder": "Inserisci codice immobile"
+                      }
+                  }
+              }
+          }
+          },
+          "naturalSubjects": {
+            "name": "Persone Fisiche",
+            "placeholder": "Ricerca per persone fisiche",
+            "filters": {
+              "firstAndLastName": {
+                "name": "Nome e Cognome",
+                "placeholder": "Filtra per dati anagrafici",
+                "filters": {
+                  "firstName": {
+                    "name": "Nome*"
+                  },
+                  "lastName": {
+                    "name": "Cognome*"
+                  },
+                  "birthDate": {
+                    "name": "Data di nascita"
+                  },
+                  "birthPlace": {
+                    "name": "Comune di nascita"
+                  }
+                }
+              },
+              "fiscalCode": {
+                "name": "Codice Fiscale",
+                "placeholder": "Filtra per codice fiscale"
+                },
+              "subjectCode": {
+                    "name": "Codice Soggetto",
+                    "placeholder": "Filtra per codice soggeto"
+                }
+            },
+            "columns": {
+              "subjectCode": "Codice soggetto",
+              "lastName": "Cognome",
+              "firstName": "Nome",
+              "fiscalCode": "Codice Fiscale",
+              "dateOfBirth": "Data di nascita",
+              "cityOfBirth": "Comune di nascita",
+              "province": "Provincia"
+            }
+          },
+          "legalSubjects": {
+            "name": "Persone Giuridiche",
+            "placeholder": "Ricerca per persone giuridiche",
+            "filters": {
+              "vatNumber": {
+                "name": "Partita IVA",
+                "placeholder": "Filtra per partita IVA"
+              },
+              "businessName": {
+                "name": "Ragione Sociale",
+                "placeholder": "Filtra per ragione sociale"
+              },
+              "identificationCode": {
+                  "name": "Codice Identificativo",
+                  "placeholder": "Filtra per codice soggetto"
+              }
+            },
+            "columns": {
+              "subjectCode": "Codice identificativo",
+              "businessName": "Ragione Sociale",
+              "vatNumber": "Partita IVA",
+              "branch": "Sede",
+              "province": "Provincia"
+            }
+          }
+        },
+        "subjectProperties": {
+          "name": "Immobili",
+          "zoomTooltip": "Zoom sull'immobile",
+          "detailTooltip": "Visualizza immobili",
+          "columns":{
+            "subordinate": "Subalterno",
+            "right": "Titolo",
+            "part": "Quota",
+            "classification": "Classamento",
+            "class": "Classe",
+            "consistency": "Consistenza",
+            "income": "Rendita",
+            "lot": "Partita",
+            "immobileCode": "Immobile"
+          }
+        },
+        "landDetails": {
+          "name": "Dettaglio Terreni",
+          "columns":{
+            "subordinate": "Subalterno",
+            "quality": "Qualità",
+            "class": "Classe",
+            "hectares": "Ettari",
+            "are": "Are",
+            "centiare": "Centiare",
+            "lot": "Partita",
+            "cadastralRent": "Reddito Dominicale",
+            "agriculturalRent": "Reddito Agrario",
+            "viewerTooltip": "Visualizza titolari",
+            "viewerTooltipDetail": "Visualizza Dettagli",
+            "property": "Immobile",
+            "propertyType": "Tipo Immobile",
+            "_class": "Classe",
+            "startDate": "Data Inizio",
+            "endDate": "Data Fine",
+            "citycode": "Codice Comune",
+            "sectioncode": "Codice Sezione",
+            "progressiv": "Stadio dell’Immobile",
+            "province": "Provincia",
+            "sheetcode": "Foglio",
+            "particella": "Particella",
+            "qualita": "Qualita",
+            "numerof": "Numero",
+            "flagredd": "Flag Reddito",
+            "flagporz": "Flag Porzioni",
+            "flagdeduz": "Flag Deduzioni",
+            "dominicl": "Reddito Dominicale (Lire)",
+            "dominice": "Reddito Dominicale (Euro)",
+            "agrariol": "Reddito Agrario (Lire)",
+            "agrarioe": "Reddito Agrario (Euro)",
+            "genregist": "Data di Registrazione",
+            "gentipo": "Tipo di Generazione",
+            "gennumero": "Numero di Generazione",
+            "genprogre": "Progressivo Generazione",
+            "genanno": "Anno Generazione",
+            "conregist": "Data Registrazione Concluzione",
+            "contipo": "Tipo Concluzione",
+            "connumero": "Numero Concluzione",
+            "conprogre": "Progressivo Finale",
+            "conanno": "Anno di Concluzione",
+            "annotazion": "Annotazione",
+            "mutaziniz": "Mutazione Iniziale",
+            "mutazfine": "Mutazione Finale",
+            "gencausa": "Codice Causale Generazione",
+            "gendescr": "Descrizione Causale Generazione",
+            "concausa": "Codice Causale Concluzione",
+            "condescr": "Descrizione Causale Concluzione"
+          }
+        },
+        "buildingDetails": {
+          "name": "Dettaglio Fabbricati",
+          "columns":{
+            "subordinate": "Subalterno",
+            "censusZone": "Zona Censuaria",
+            "category": "Categoria",
+            "class": "Classe",
+            "consistency": "Consistenza",
+            "rent": "Rendita",
+            "lot": "Partita",
+            "viewerTooltip": "Visualizza titolari",
+            "viewerTooltipDetail": "Visualizza Dettagli",
+            "property": "Immobile",
+            "propertyType": "Tipo Immobile",
+            "_class": "Classe",
+            "startDate": "Data Inizio",
+            "endDate": "Data Fine",
+            "citycode": "Codice Comune",
+            "sectioncode": "Codice Sezione",
+            "progressiv": "Stadio dell’Immobile",
+            "sheetcode": "Foglio",
+            "particella": "Particella",
+            "province": "Provincia",
+            "numerof": "Numero",
+            "superficie": "Superficie",
+            "rendital": "Reddito Dominicale (Lire)",
+            "lotto": "Localizzazione UIU",
+            "edificio": "Edificio",
+            "scala": "Scala",
+            "interno1": "Interno 1",
+            "interno2": "Interno 2",
+            "piano1": "Piano 1",
+            "piano2": "Piano 2",
+            "piano3" : "Piano 3",
+            "piano4" : "Piano 4",
+            "genregist": "Data di Registrazione",
+            "gentipo": "Tipo di Generazione",
+            "gennumero": "Numero di Generazione",
+            "genprogre": "Progressivo Generazione",
+            "genanno": "Anno Generazione",
+            "conregist": "Data Registrazione Concluzione",
+            "contipo": "Tipo Concluzione",
+            "connumero": "Numero Concluzione",
+            "conprogre": "Progressivo Finale",
+            "conanno": "Anno di Concluzione",
+            "annotazion": "Annotazione",
+            "mutaziniz": "Mutazione Iniziale",
+            "mutazfine": "Mutazione Finale",
+            "protnotif": "Protocollo Notifica",
+            "datanotif": "Data Notifica",
+            "gencausa": "Codice Causale Generazione",
+            "gendescr": "Descrizione Causale Generazione",
+            "concausa": "Codice Causale Concluzione",
+            "condescr": "Descrizione Causale Concluzione",
+            "flagclass": "Flag Classe"
+          }
+        },
+        "searchContainer": {
+          "title": "Configura la tua ricerca",
+          "serviceSelect": {
+            "placeholder": "Scegli un'opzione di ricerca"
+          }
+        },
+        "typesOfImmobileSearch": {
+            "placeholder": "Scegli un tipo di filtra ricerca"
+        },
+        "temporalSearch": {
+            "label": "Ricerca temporale",
+            "startDateLabel": "Dal",
+            "endDateLabel": "al"
+        },
+        "historicalSearch" : {
+            "label": "Ricerca Storica"
+        },
+        "extraColumns" : {
+            "startDate": "Data inizio",
+            "endDate": "Data fine"
+        },
+        "dateInputError": "L'intervallo di date inserite non è corretto.",
+        "printBtn" : {
+            "label" : "Stampa"
         }
     }
+    }
+  }
 }

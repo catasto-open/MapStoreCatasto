@@ -1,10 +1,10 @@
-#SAMPLE_EXTENSION {
-    background-color: rgba(255,255,255,.9);
-    border-radius: 10px;
-    max-width: 550px;
-    padding: 10px;
-    margin: 10px;
-    position: absolute;
-    top: 50px;
-    z-index: 1000;
+.search-result-grid-loader{
+    text-align: -webkit-center;
+}
+/*
+!important is needed because the library we used
+use inline style which cannot be overridden unless
+we use !important*/
+#cadastral-search-root {
+    position: static!important;
 }

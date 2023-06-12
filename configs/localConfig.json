@@ -278,7 +278,56 @@
             },
             "FeedbackMask"
         ],
-        "desktop": ["Details", "CatastoOpen",
+        "desktop": ["Details",
+        {
+          "name" : "CatastoOpen",
+          "cfg" : {
+              "filterServices": [
+                  {
+                      "descriptions" : {
+                          "en" : "Search by properties",
+                          "it" : "Ricerca per immobili"
+                      },
+                      "state_identifier" : "parcels",
+                      "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
+                      "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"],
+                      "useHistoricalSearch": true
+                  },
+                  {
+                      "descriptions" : {
+                          "en" : "Search by natural persons",
+                          "it" : "Ricerca per persone fisiche"
+                      },
+                      "state_identifier" : "naturalSubjects",
+                      "naturalSubjectColumnsKeys": ["subjects", "lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth","province"],
+                      "useHistoricalSearch": true
+                  },
+                  {
+                      "descriptions" : {
+                          "en" : "Search by legal persons",
+                          "it" : "Ricerca per persone giuridiche"
+                      },
+                      "state_identifier" : "legalSubjects",
+                      "legalSubjectColumnsKeys": ["subjects", "businessName", "vatNumber", "branch", "province"],
+                      "useHistoricalSearch": true
+                  }
+              ],
+               "ownerDetails": {
+                   "subjectPropertyColumnsKeys": ["immobile", "city", "section", "sheet", "number", "subordinate", "right", "part", "classification", "_class", "consistency", "income", "lot"],
+                   "propertyOwnerColumnsKeys": ["nominative", "fiscalCode", "city", "right", "part"],
+                   "showDate": true
+                   },
+               "backend": {
+                   "name": "Geoserver",
+                   "url": "http://172.18.0.1:8600/geoserver/"
+               },
+               "printEndPointURL" : "http://localhost:5000/siscat/api/v1",
+               "fixedComuni" : {
+                   "comuni": "ROMA",
+                   "codice": "H501"
+               }
+                }
+            },
           {
             "name": "Map",
             "cfg": {

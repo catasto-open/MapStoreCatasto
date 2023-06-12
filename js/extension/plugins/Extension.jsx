@@ -1,50 +1,84 @@
-import {connect} from "react-redux";
 import { name } from '../../../config';
-
-import ExtensionComponent from "../components/Component";
-import Rx from "rxjs";
-import { changeZoomLevel } from "@mapstore/actions/map";
-
 import '../assets/style.css';
+import burgerMenuContainer from "@js/extension/containers/BurgerMenu";
+import SmartCatastoOpenPanel from "@js/extension/components/CatastoOpenPanel";
+
+/**
+ * CatastoOpen Plugin.
+ * @static
+ * @memberof plugins
+ * @name CatastoOpen
+ * @class CatastoOpen
+ * @prop {array} cfg.filterServices, if given, defines list of services and corresponding columns
+ * @prop {object} cfg.ownerDetails, if given, defines list of columns for the two type of owners
+ * @prop {object} cfg.backend, if given, defines the endpoint of geoserver
+ * @prop {string} cfg.printEndPointURL, if given, the stampa visura is presented
+ * @prop {object} cfg.fixedComuni, if given, used for the comune, notice the key of the object
+ * @example the following is the default config
+ * {
+ *   "name" : "CatastoOpen",
+ *   "cfg" : {
+ *       "filterServices": [
+ *           {
+ *             "descriptions" : {
+ *                 "en" : "Search by properties",
+ *                 "it" : "Ricerca per immobili"
+ *              },
+ *             "state_identifier" : "parcels",
+ *             "landDetailColumnsKeys": ["subordinate", "quality", "_class", "hectares", "are", "centiare", "lot", "cadastralRent", "agriculturalRent"],
+ *              "buildingDetailColumns": ["subordinate", "censusZone", "category", "_class", "consistency", "rent", "lot"],
+ *              "useTemporalSearch": true,
+ *              "useHistoricalSearch": true
+ *          },
+ *          {
+ *             "descriptions" : {
+ *                 "en" : "Search by natural persons",
+ *                 "it" : "Ricerca per persone fisiche"
+ *             },
+ *             "state_identifier" : "naturalSubjects",
+ *             "naturalSubjectColumnsKeys": ["lastName", "firstName", "fiscalCode", "dateOfBirth", "cityOfBirth"],
+ *             "useTemporalSearch": true,
+ *             "useHistoricalSearch": true
+ *          },
+ *          {
+ *             "descriptions" : {
+ *                 "en" : "Search by legal persons",
+ *                 "it" : "Ricerca per persone giuridiche"
+ *             },
+ *             "state_identifier" : "legalSubjects",
+ *             "legalSubjectColumnsKeys": ["businessName", "vatNumber", "branch"],
+ *             "useTemporalSearch": true,
+ *             "useHistoricalSearch": true
+ *          }
+ *     ],
+ *      "ownerDetails": {
+ *      "subjectPropertyColumnsKeys": ["city", "section", "sheet", "number", "subordinate", "right", "part", "classification", "_class", "consistency", "income", "lot"],
+ *          "propertyOwnerColumnsKeys": ["nominative", "fiscalCode", "city", "right", "part"],
+ *          "showDate": true
+ *          },
+ *      "backend": {
+ *          "name": "Geoserver",
+ *          "url": "http://172.21.0.1:8600/geoserver/"
+ *      },
+ *      "printEndPointURL" : "http://localhost:5000/api/v1",
+ *      "fixedComuni" : {
+ *          "comuni": "ROMA",
+ *          "codice": "H501"
+ *          }
+ *    }
+ * }
+ */
+
 export default {
     name,
-    component: connect(state => ({
-        value: state.sampleExtension && state.sampleExtension.value
-    }), {
-        onIncrease: () => {
-            return {
-                type: 'INCREASE_COUNTER'
-            };
-        }, changeZoomLevel
-    })(ExtensionComponent),
-    reducers: {
-        sampleExtension: (state = { value: 1 }, action) => {
-            if (action.type === 'INCREASE_COUNTER') {
-                return { value: state.value + 1 };
-            }
-            return state;
-        }
-    },
+    component: SmartCatastoOpenPanel,
     epics: {
-        logCounterValue: (action$, store) => action$.ofType('INCREASE_COUNTER').switchMap(() => {
-            /* eslint-disable */
-            console.log('CURRENT VALUE: ' + store.getState().sampleExtension.value);
-            /* eslint-enable */
-            return Rx.Observable.empty();
-        })
+        ...require("@js/extension/epics/catastoOpen").default(),
+        ...require("@js/extension/epics/resultGrid").default()
     },
-    containers: {
-        Toolbar: {
-            name: "sampleExtension",
-            position: 10,
-            text: "INC",
-            doNotHide: true,
-            action: () => {
-                return {
-                    type: 'INCREASE_COUNTER'
-                };
-            },
-            priority: 1
-        }
-    }
+    reducers: {
+        catastoOpen: require('@js/extension/reducers/catastoOpen').default,
+        resultGrid: require('@js/extension/reducers/resultGrid').default
+    },
+    containers: burgerMenuContainer
 };

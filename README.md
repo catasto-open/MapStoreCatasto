@@ -80,6 +80,8 @@ ConfigUtils.setConfigProp('translationsPath', ['./MapStore2/web/client/translati
 
 This will run webpack dev server on port 8081 with MapStore, simulating the `extensions.json` on the default extensions path (the path is relative), and will run on port 8082 the effective modules to load.
 
+## [Configuration](./js/extension/docs/README.md)
+
 ## Under the hood
 
 MapStore extensions are based on WebPack 5 [Module Federation](https://webpack.js.org/concepts/module-federation/).
@@ -108,5 +110,3 @@ Here a list of hints to develop your extension:
 - In order to debug the extension in `ext:start` + `ext:startapp` mode, you need to add `devtool: 'eval'` to `build/webpack.config.js`.
 - Most of the times you will develop extensions for the main map. For this reason you can find in `app.json` some code comments dedicated to configuring this project to have a plain map on startup. It has not been configured as default because this project is intended to have less differences as possible from a standard project.
 - When the `extensions.json` is configured in `app.jsx` via `extensionsRegistry` and `extensionsFolder`, in order to emulate the `extensions.json` from Webpack DevServer for testing, the paths configured in `build/module.app.webpack.config.js` and `build/webpack.config.js` needs to be modified accordingly
-
-
