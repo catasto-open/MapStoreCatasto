@@ -87,7 +87,7 @@ class SearchForm extends React.Component {
         case "IDENTIFICATION-CODE":
             return (<FormControl
                 type="number"
-                onChange={e => this.props.control("identificationCode",e.target.value)}
+                onChange={e => this.props.control("identificationCode", e.target.value)}
                 value={this.props.value?.identificationCode}
             />);
         default:

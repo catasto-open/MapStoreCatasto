@@ -168,7 +168,7 @@ class SearchContainer extends React.Component {
         isLoadingAddress: false,
         isValidInputOnImmAddress: false,
         houseNumber: '',
-        immobileCode: '',
+        immobileCode: null,
         hasSubmitedSearch: false,
         selectedImmType: null,
         selectedCity: null,
