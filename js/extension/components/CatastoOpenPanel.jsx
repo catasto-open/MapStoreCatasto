@@ -10,9 +10,13 @@ import ButtonB from '@mapstore/components/misc/Button';
 import tooltip from '@mapstore/components/misc/enhancers/tooltip';
 import '@js/extension/assets/style.css';
 import {
-    catastoOpenActiveSelector, catastoOpenisReducedSelector,
-    errorSelector, loadedResultSelector,
-    loadingResultSelector, searchResultSelector, searchResultTypeSelector,
+    catastoOpenActiveSelector,
+    catastoOpenisReducedSelector,
+    errorSelector,
+    loadedResultSelector,
+    loadingResultSelector,
+    searchResultSelector,
+    searchResultTypeSelector,
     messageForUserSelector,
     isTemporalSearchCheckedSelector,
     selectedImmobileSelector,
@@ -34,7 +38,8 @@ import {
     setPrintEndPoint,
     setFixedComuni,
     startDownloadVisura,
-    startDownloadVisuraImSingola
+    startDownloadVisuraImSingola,
+    loadSingleVisuraJson
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -263,7 +268,8 @@ class CatastoOpenPanel extends React.Component {
         isStartedDownloadVisuraCsv: PropTypes.bool,
         errorDownloadMsg: PropTypes.object,
         onClickDownloadVisuraImSingola: PropTypes.func,
-        isStartedDownloadVisuraImSingola: PropTypes.bool
+        isStartedDownloadVisuraImSingola: PropTypes.bool,
+        onLoadSingleVisuraJson: PropTypes.func
     };
 
     static defaultProps = {
@@ -327,7 +333,8 @@ class CatastoOpenPanel extends React.Component {
         fixedComuni: null,
         setFixedComuni: () => {},
         onClickDownloadVisura: () => {},
-        onClickDownloadVisuraImSingola: () => {}
+        onClickDownloadVisuraImSingola: () => {},
+        onLoadSingleVisuraJson: () => {}
     };
 
     componentWillReceiveProps(nextProp) {
@@ -361,6 +368,7 @@ class CatastoOpenPanel extends React.Component {
         let printPdf = false;
         let printCsv = false;
         let printTipId = "extension.catastoOpenPanel.printBtn.label";
+        let vusuraTipId = "extension.catastoOpenPanel.showBtn.label";
         let extending = false;
         switch (this.props.searchResultType) {
         case naturalSubjectType:
@@ -390,7 +398,7 @@ class CatastoOpenPanel extends React.Component {
             if (this.props.isTemporalSearchChecked === true && this.props.ownerDetails.showDate === true) {
                 columns = [...columns, ...this.props.extraColumns];
             }
-            columns = [
+            columns = this.props.doweHavePrint ? [
                 {key: 'selectButton', name: '', frozen: true, width: 50,
                     formatter: ({row} = {}) => {
                         const coordinates = row?.feature?.geometry?.coordinates;
@@ -433,7 +441,51 @@ class CatastoOpenPanel extends React.Component {
                             null;
                     }
                 },
-                ...columns];
+                {key: 'visuraButton', name: '', frozen: true, width: 50,
+                    formatter: ({row} = {}) => {
+                        const immobile = row?.immobile;
+                        const propertyType = row?.propertyType;
+                        return immobile ?
+                            (<Button
+                                tooltipId={vusuraTipId}
+                                tooltipPosition={"bottom"}
+                                onClick={() => this.props.onLoadSingleVisuraJson(immobile, propertyType)}
+                            >
+                                <Glyphicon glyph={"eye-open"} style={{color: "#333333"}}/>
+                            </Button>) :
+                            null;
+                    }
+                },
+                ...columns]
+                : [
+                    {key: 'selectButton', name: '', frozen: true, width: 50,
+                        formatter: ({row} = {}) => {
+                            const coordinates = row?.feature?.geometry?.coordinates;
+                            return coordinates ? (<Button
+                                tooltipId={"extension.catastoOpenPanel.subjectProperties.zoomTooltip"}
+                                tooltipPosition={"bottom"}
+                                onClick={() => this.zoomToProperty(row)}
+                            >
+                                <Glyphicon glyph={"zoom-to"} style={{color: "#333333"}}/>
+                            </Button>) : null;
+                        }
+                    },
+                    {key: 'propertyType', name: '', frozen: true, width: 35,
+                        formatter: ({value} = {}) => {
+                            return value === subjectLandPropertyType ?
+                                <OverlayTrigger placement="bottom"
+                                    overlay={<Tooltip><Message
+                                        msgId="extension.catastoOpenPanel.services.parcels.filters.lands.name"/></Tooltip>}>
+                                    <Glyphicon glyph="1-layer"/>
+                                </OverlayTrigger> : value === subjectBuildingPropertyType ?
+                                    <OverlayTrigger placement="bottom"
+                                        overlay={<Tooltip><Message
+                                            msgId="extension.catastoOpenPanel.services.parcels.filters.buildings.name"/></Tooltip>}>
+                                        <Glyphicon glyph="home"/>
+                                    </OverlayTrigger> : null;
+                        }
+                    },
+                    ...columns];
             addLayerOnSelect = false;
             resume = true;
             title = "extension.catastoOpenPanel.subjectProperties.name";
@@ -603,7 +655,8 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         setPrintEndPoint: setPrintEndPoint,
         setFixedComuni: setFixedComuni,
         onClickDownloadVisura: startDownloadVisura,
-        onClickDownloadVisuraImSingola: startDownloadVisuraImSingola
+        onClickDownloadVisuraImSingola: startDownloadVisuraImSingola,
+        onLoadSingleVisuraJson: loadSingleVisuraJson
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;

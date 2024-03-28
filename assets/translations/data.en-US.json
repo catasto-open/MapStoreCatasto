@@ -301,6 +301,9 @@
         "dateInputError": "The range of date inserted is not correct.",
         "printBtn" : {
             "label" : "Print"
+        },
+        "showBtn" : {
+            "label" : "Show Visura"
         }
        }
     }
