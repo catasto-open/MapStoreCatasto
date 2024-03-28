@@ -345,7 +345,7 @@ export default function(state = {
                 ...state.subjectForm,
                 [action.payload.field]: action.payload.value
             }
-        }
+        };
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN:
         return {
             ...state,
