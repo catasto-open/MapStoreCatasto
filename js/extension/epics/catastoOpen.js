@@ -43,6 +43,8 @@ import {
     CATASTO_OPEN_END_DOWNLOAD_VISURA,
     CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA,
     CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA,
+    CATASTO_OPEN_LOADED_DATA_VISURA_JSON,
+    CATASTO_OPEN_LOAD_SINGLE_VISURA_JSON,
     loadError,
     loadCityData,
     loadedToponym,
@@ -74,7 +76,10 @@ import {
     errorDownloadVisura,
     endDownloadVisuraImSingole,
     errorDownloadVisuraImSingole,
-    weAreDoneDownloadingVisuraImSingola
+    weAreDoneDownloadingVisuraImSingola,
+    loadedDataVisuraJson,
+    saveQueryDataVisuraJson,
+    controlDisplayDataVisuraJson
 } from "@js/extension/actions/catastoOpen";
 import {
     services,
@@ -113,11 +118,14 @@ import {
     doweHaveFixedComuniSelector,
     fixedComuniSelector,
     printObjSelector,
-    selectedAddressSelector
+    selectedAddressSelector,
+    queryObjDataVisuraJsonSelector,
+    showModalJsonSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
-    getVisuraBlob
+    getVisuraBlob, getVisuraJSON
 } from "@js/extension/api/visura";
+import isEqual from 'lodash/isEqual';
 /**
  * Epics for CATASTO-OPEN PLUGIN
  * @name epics.catastoOpen
@@ -600,6 +608,44 @@ export default () => ({
                     .switchMap((response) => Rx.Observable.of(loadedPropertyOwnerData(response.data)))
                     .catch(e => Rx.Observable.of(loadError(e.message)));
             }),
+    loadPropertyOwnerDataEpicClone: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_LOAD_PROPERTY_OWNER_DATA)
+            .switchMap((action) => {
+                const state = store.getState();
+                const isshowModalJson = showModalJsonSelector(state);
+                if (isshowModalJson) {
+                    return Rx.Observable.empty();
+                }
+                const doweHaveFixedComuni = doweHaveFixedComuniSelector(state);
+                const fixedComuni = fixedComuniSelector(state);
+                const cityCode = doweHaveFixedComuni ? fixedComuni.codice : state.catastoOpen?.selectedCity?.code;
+                const headers = state?.security?.token ? {Authorization: `Bearer ${state.security.token}` } : null;
+                const dowe = doweHavePrintSelector(state);
+                const prevQuery = queryObjDataVisuraJsonSelector(state);
+                if (dowe) {
+                    const endPoint = printEndPointSelector(state);
+                    let printObj = {
+                        headers: headers,
+                        pathName: "catasto/dati/visura",
+                        url: endPoint.endsWith('/') ? `${endPoint}catasto/dati/visura` : `${endPoint}/catasto/dati/visura`
+                    };
+                    let query = {};
+                    query.comune = cityCode;
+                    query.codiceimmobile = action?.property.property;
+                    query.tipoimmobile = action?.property.propertyType;
+                    query.flagricercastorica = state?.catastoOpen.isHistoricalSearchChecked ? true : false;
+                    printObj.query = query;
+                    if (isEqual(prevQuery, query)) {
+                        return Rx.Observable.of(controlDisplayDataVisuraJson(true));
+                    }
+                    return Rx.Observable.defer(() => getVisuraJSON(printObj))
+                        .switchMap((response) => {
+                            return Rx.Observable.of(...[loadedDataVisuraJson(response.data), saveQueryDataVisuraJson(query)]);
+                        })
+                        .catch(() => Rx.Observable.empty());
+                }
+                return Rx.Observable.empty();
+            }),
     loadedPropertyOwnerDataEpic: (action$) =>
         action$.ofType(CATASTO_OPEN_LOADED_PROPERTY_OWNER_DATA)
             .switchMap((action) => {
@@ -771,5 +817,44 @@ export default () => ({
                 alink.download = filename;
                 alink.click();
                 return Rx.Observable.of(weAreDoneDownloadingVisuraImSingola());
+            }),
+    dataJsonLoadedEpic: (action$) =>
+        action$.ofType(CATASTO_OPEN_LOADED_DATA_VISURA_JSON)
+            .switchMap(() => {
+                return Rx.Observable.of(controlDisplayDataVisuraJson(true));
+            }),
+    loadSingleVisuraJsonEpic: (action$, store) =>
+        action$.ofType(CATASTO_OPEN_LOAD_SINGLE_VISURA_JSON)
+            .switchMap((action) => {
+                const state = store.getState();
+                const isshowModalJson = showModalJsonSelector(state);
+                if (isshowModalJson) {
+                    return Rx.Observable.empty();
+                }
+                const headers = state?.security?.token ? {Authorization: `Bearer ${state.security.token}` } : null;
+                const dowe = doweHavePrintSelector(state);
+                const prevQuery = queryObjDataVisuraJsonSelector(state);
+                if (dowe) {
+                    const endPoint = printEndPointSelector(state);
+                    let printObj = {
+                        headers: headers,
+                        pathName: "catasto/dati/visura",
+                        url: endPoint.endsWith('/') ? `${endPoint}catasto/dati/visura` : `${endPoint}/catasto/dati/visura`
+                    };
+                    let query = {};
+                    query.codiceimmobile = action?.immobile;
+                    query.tipoimmobile = action?.propertyType === "Fabbricati" ? "F" : "T";
+                    query.flagricercastorica = state?.catastoOpen.isHistoricalSearchChecked ? true : false;
+                    printObj.query = query;
+                    if (isEqual(prevQuery, query)) {
+                        return Rx.Observable.of(controlDisplayDataVisuraJson(true));
+                    }
+                    return Rx.Observable.defer(() => getVisuraJSON(printObj))
+                        .switchMap((response) => {
+                            return Rx.Observable.of(...[loadedDataVisuraJson(response.data), saveQueryDataVisuraJson(query)]);
+                        })
+                        .catch(() => Rx.Observable.empty());
+                }
+                return Rx.Observable.empty();
             })
 });

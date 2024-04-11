@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import {Panel, Checkbox} from 'react-bootstrap';
+import { Panel, Checkbox } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import Message from '@mapstore/components/I18N/Message';
 import Select from 'react-select';
-import {buildingLayer, geomFeatureToLayer, landLayer, services, sheetLayer, tomorrow} from "@js/extension/utils/catastoOpen";
+import { buildingLayer, geomFeatureToLayer, landLayer, services, sheetLayer, tomorrow } from "@js/extension/utils/catastoOpen";
 import SearchFilter from "@js/extension/components/search/SearchFilter";
 import FormCol from '@js/extension/components/search/FormCol';
 import {
@@ -35,7 +35,8 @@ import {
     onChangeHistoricalSearchCheckbox,
     startDateSelected,
     endDateSelected,
-    setMessageForUser
+    setMessageForUser,
+    controlDisplayDataVisuraJson
 } from "@js/extension/actions/catastoOpen";
 import {
     selectedServiceSelector,
@@ -77,10 +78,14 @@ import {
     isLoadingTownSelector,
     townsSelector,
     fixedComuniSelector,
-    doweHaveFixedComuniSelector
+    doweHaveFixedComuniSelector,
+    dataVisuraJsonSelector,
+    showModalJsonSelector,
+    queryObjDataVisuraJsonSelector
 } from "@js/extension/selectors/catastoOpen";
 import SearchForm from "@js/extension/components/search/SearchForm";
 import SearchHistory from '@js/extension/components/search/SearchHistory';
+import ModalVisura from "@js/extension/components/visura/ModalVisura";
 import isNil from 'lodash/isNil';
 
 class SearchContainer extends React.Component {
@@ -153,7 +158,11 @@ class SearchContainer extends React.Component {
         endDateValueOnChange: PropTypes.func,
         setMessageForUser: PropTypes.func,
         fixedComuni: PropTypes.object,
-        doweHaveFixedComuni: PropTypes.bool
+        doweHaveFixedComuni: PropTypes.bool,
+        dataVisuraJson: PropTypes.object,
+        showModalJson: PropTypes.bool,
+        modalController: PropTypes.func,
+        queryObjDataVisuraJson: PropTypes.object
     };
 
     static defaultProps = {
@@ -181,19 +190,23 @@ class SearchContainer extends React.Component {
         buildings: [],
         selectedBuilding: null,
         selectedSubjectFilter: null,
-        updateSubjectForm: () => {},
-        updateSubjectFormLoadTown: () => {},
+        updateSubjectForm: () => { },
+        updateSubjectFormLoadTown: () => { },
         isLoadingTown: false,
         towns: [],
         subjectFormButtonActive: true,
         subjectForm: null,
-        loadSubjects: () => {},
-        loadLayer: () => {},
+        loadSubjects: () => { },
+        loadLayer: () => { },
         isTemporalSearchChecked: false,
         isHistoricalSearchChecked: false,
-        onChangeTemporalSearchCheckbox: () => {},
+        onChangeTemporalSearchCheckbox: () => { },
         fixedComuni: null,
-        doweHaveFixedComuni: false
+        doweHaveFixedComuni: false,
+        dataVisuraJson: {},
+        showModalJson: false,
+        modalController: () => { },
+        queryObjDataVisuraJson: {}
     };
 
     componentWillReceiveProps(nextProp) {
@@ -223,7 +236,7 @@ class SearchContainer extends React.Component {
         return (
             <div>
                 <div className="pull-left">
-                    <Message msgId="extension.catastoOpenPanel.searchContainer.title"/>
+                    <Message msgId="extension.catastoOpenPanel.searchContainer.title" />
                 </div>
             </div>);
     }
@@ -232,45 +245,45 @@ class SearchContainer extends React.Component {
         return (
             <>
                 <Select
-                    style={{marginBottom: 10}}
+                    style={{ marginBottom: 10 }}
                     clearable={false}
                     searchable={false}
-                    placeholder={<Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder"/>}
+                    placeholder={<Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder" />}
                     options={this.serviceOptions()}
-                    onChange={(val) => this.props.onSelectService(val && val.value ? val :  null)}
+                    onChange={(val) => this.props.onSelectService(val && val.value ? val : null)}
                     value={this.props.selectedService}>
                 </Select>
-                { this.useTemporalSearch() &&
-                (<>
-                    <Checkbox
-                        checked={this.props.isTemporalSearchChecked}
-                        onChange={this.handleOnChangeOfCheckBox}
-                    >
-                        <Message msgId="extension.catastoOpenPanel.temporalSearch.label"/>
-                    </Checkbox>
-                    <SearchHistory
-                        active={this.props.isTemporalSearchChecked}
-                        startDateValue={this.props.startDateValue}
-                        startDateValueOnChange={this.props.startDateValueOnChange}
-                        endDateValue={this.props.endDateValue}
-                        endDateValueOnChange={this.props.endDateValueOnChange}
-                    />
-                </>
-                )}
-                { this.useHistoricalSearch() &&
-                (
-                    <Checkbox
-                        checked={this.props.isHistoricalSearchChecked}
-                        onChange={this.handleHistoricalOnChangeOfCheckBox}>
-                        <Message msgId="extension.catastoOpenPanel.historicalSearch.label"/>
-                    </Checkbox>
-                )}
+                {this.useTemporalSearch() &&
+                    (<>
+                        <Checkbox
+                            checked={this.props.isTemporalSearchChecked}
+                            onChange={this.handleOnChangeOfCheckBox}
+                        >
+                            <Message msgId="extension.catastoOpenPanel.temporalSearch.label" />
+                        </Checkbox>
+                        <SearchHistory
+                            active={this.props.isTemporalSearchChecked}
+                            startDateValue={this.props.startDateValue}
+                            startDateValueOnChange={this.props.startDateValueOnChange}
+                            endDateValue={this.props.endDateValue}
+                            endDateValueOnChange={this.props.endDateValueOnChange}
+                        />
+                    </>
+                    )}
+                {this.useHistoricalSearch() &&
+                    (
+                        <Checkbox
+                            checked={this.props.isHistoricalSearchChecked}
+                            onChange={this.handleHistoricalOnChangeOfCheckBox}>
+                            <Message msgId="extension.catastoOpenPanel.historicalSearch.label" />
+                        </Checkbox>
+                    )}
                 {this.props.selectedService?.value === services[0].id ?
                     <Select
-                        style={{marginBottom: 10}}
+                        style={{ marginBottom: 10 }}
                         clearable={false}
                         searchable={false}
-                        placeholder={<Message msgId="extension.catastoOpenPanel.typesOfImmobileSearch.placeholder"/>}
+                        placeholder={<Message msgId="extension.catastoOpenPanel.typesOfImmobileSearch.placeholder" />}
                         options={this.searchImmTypeOptions()}
                         onChange={this.props.onSelectSearchImmType}
                         value={this.props.selectedSearchImmType}>
@@ -281,7 +294,7 @@ class SearchContainer extends React.Component {
     }
 
     renderSwitchImmobile = () => {
-        const style = {marginBottom: 10};
+        const style = { marginBottom: 10 };
         switch (this.props.selectedSearchImmType?.value) {
         case services[0].filters[0].id:
             return (
@@ -311,7 +324,7 @@ class SearchContainer extends React.Component {
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.sheets.noResultsText"}
                         zoomActive={!!this.props.selectedSheet}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.sheets.zoomTooltip"}
-                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedSheet, sheetLayer))}/>
+                        onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedSheet, sheetLayer))} />
                     <SearchFilter
                         buttonStyle={style}
                         selectStyle={style}
@@ -451,7 +464,7 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.lands.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.lands.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.lands.noResultsText"}
-                        zoomActive={!!this.props.selectedLand  && !isNil(this.props.selectedLand?.feature?.geometry)}
+                        zoomActive={!!this.props.selectedLand && !isNil(this.props.selectedLand?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.lands.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedLand, landLayer))}
                         detailActive={!!this.props.selectedLand}
@@ -470,7 +483,7 @@ class SearchContainer extends React.Component {
                         title={"extension.catastoOpenPanel.services.parcels.filters.buildings.name"}
                         placeholder={"extension.catastoOpenPanel.services.parcels.filters.buildings.placeholder"}
                         noResultsText={"extension.catastoOpenPanel.services.parcels.filters.buildings.noResultsText"}
-                        zoomActive={!!this.props.selectedBuilding  && !isNil(this.props.selectedBuilding?.feature?.geometry)}
+                        zoomActive={!!this.props.selectedBuilding && !isNil(this.props.selectedBuilding?.feature?.geometry)}
                         zoomTooltip={"extension.catastoOpenPanel.services.parcels.filters.buildings.zoomTooltip"}
                         onZoom={() => this.props.loadLayer(geomFeatureToLayer(this.props.selectedBuilding, buildingLayer))}
                         detailActive={!!this.props.selectedBuilding}
@@ -494,7 +507,7 @@ class SearchContainer extends React.Component {
                     options={this.cityOptions()}
                     onChange={(val) => this.props.onSelectCity(val && val.value ? val : null)}
                     value={this.props.selectedCity}
-                    onInputChange={(inputValue)=> this.props.loadCities(inputValue)}
+                    onInputChange={(inputValue) => this.props.loadCities(inputValue)}
                     title={"extension.catastoOpenPanel.services.parcels.filters.cities.name"}
                     placeholder={"extension.catastoOpenPanel.services.parcels.filters.cities.placeholder"}
                     noResultsText={"extension.catastoOpenPanel.services.parcels.filters.cities.noResultsText"}
@@ -507,8 +520,8 @@ class SearchContainer extends React.Component {
     }
 
     renderSubjectSearchForm = () => {
-        const style = {marginBottom: 10};
-        const placeholder = <Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder"/>;
+        const style = { marginBottom: 10 };
+        const placeholder = <Message msgId="extension.catastoOpenPanel.searchContainer.serviceSelect.placeholder" />;
         if (this.props.selectedService?.value && this.props.selectedService?.value !== services[0].id && this.doWeHaveDatesValid()) {
             return (
                 <div>
@@ -516,8 +529,8 @@ class SearchContainer extends React.Component {
                         style={style}
                         placeholder={placeholder}
                         options={this.subjectFormFilters()}
-                        onChange={(val) => this.props.onSelectSubjectFilter(val && val.value ? val :  null)}
-                        value={this.props.selectedSubjectFilter}/>
+                        onChange={(val) => this.props.onSelectSubjectFilter(val && val.value ? val : null)}
+                        value={this.props.selectedSubjectFilter} />
                     <SearchForm
                         active={!!this.props.selectedSubjectFilter}
                         value={this.props.subjectForm}
@@ -527,13 +540,25 @@ class SearchContainer extends React.Component {
                         activeButton={this.props.subjectFormButtonActive}
                         onSubmitForm={() => this.props.loadSubjects(this.props.subjectForm)}
                         loadTown={this.props.updateSubjectFormLoadTown}
-                        towns={this.props.towns.map((_) => ({value: _.code, label: _.name}))}
+                        towns={this.props.towns.map((_) => ({ value: _.code, label: _.name }))}
                         isLoadingTown={this.props.isLoadingTown}
                     />
                 </div>);
         }
         return null;
     }
+
+    renderModalVisura = () => {
+        if (this.props.dataVisuraJson && this.props.showModalJson) {
+            return (<ModalVisura
+                show={this.props.showModalJson}
+                onClose={() => this.props.modalController(false)}
+                dataVisuraJson={this.props.dataVisuraJson}
+                queryObjDataVisuraJson={this.props.queryObjDataVisuraJson}
+            />);
+        }
+        return null;
+    };
 
     render() {
         return (
@@ -545,13 +570,14 @@ class SearchContainer extends React.Component {
                     {this.renderServiceSelect()}
                     {this.renderPropertySearchFilter()}
                     {this.renderSubjectSearchForm()}
+                    {this.renderModalVisura()}
                 </Panel>
             </div>);
     }
 
     serviceOptions() {
         const reducedFilterServices = this.props.filterServices.reduce(
-            (finallist, obj)  => {
+            (finallist, obj) => {
                 var x = finallist.concat([obj.state_identifier]);
                 return x;
             }, []
@@ -560,14 +586,14 @@ class SearchContainer extends React.Component {
             {
                 ...s,
                 value: s.id,
-                label: <Message msgId={s.placeholder}/>
+                label: <Message msgId={s.placeholder} />
             }));
     }
 
     searchImmTypeOptions = () => {
         return services[0].filters.map((item) => ({
             value: item.id,
-            label: <Message msgId={item.placeholder}/>
+            label: <Message msgId={item.placeholder} />
         }));
     }
 
@@ -633,14 +659,14 @@ class SearchContainer extends React.Component {
         return this.props.selectedService?.filters.map((f) => ({
             ...f,
             value: f.id,
-            label: <Message msgId={f.placeholder}/>
+            label: <Message msgId={f.placeholder} />
         }));
     };
 
     immobileTypeOptions = () => {
         return services[0].filters[0].filters.map((item) => ({
             value: item.id,
-            label: <Message msgId={item.name}/>
+            label: <Message msgId={item.name} />
         }));
     };
 
@@ -727,7 +753,8 @@ export const searchContainerActions = {
     onChangeHistoricalSearchCheckbox: onChangeHistoricalSearchCheckbox,
     startDateValueOnChange: startDateSelected,
     endDateValueOnChange: endDateSelected,
-    setMessageForUser: setMessageForUser
+    setMessageForUser: setMessageForUser,
+    modalController: controlDisplayDataVisuraJson
 };
 
 export const searchContainerSelector = createStructuredSelector({
@@ -770,7 +797,10 @@ export const searchContainerSelector = createStructuredSelector({
     isLoadingTown: isLoadingTownSelector,
     towns: townsSelector,
     fixedComuni: fixedComuniSelector,
-    doweHaveFixedComuni: doweHaveFixedComuniSelector
+    doweHaveFixedComuni: doweHaveFixedComuniSelector,
+    dataVisuraJson: dataVisuraJsonSelector,
+    showModalJson: showModalJsonSelector,
+    queryObjDataVisuraJson: queryObjDataVisuraJsonSelector
 });
 
 export default SearchContainer;
