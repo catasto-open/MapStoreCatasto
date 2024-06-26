@@ -398,6 +398,7 @@ export const buildingDetailParser = (feature) => {
     const concausa = properties?.con_causa;
     const condescr = properties?.con_descr;
     const flagclass = properties?.flag_class;
+    const indirizzo = properties?.indirizzo;
     return {
         property,
         propertyType,
@@ -447,7 +448,8 @@ export const buildingDetailParser = (feature) => {
         gendescr,
         concausa,
         condescr,
-        flagclass
+        flagclass,
+        indirizzo
     };
 };
 
