@@ -5,7 +5,7 @@ import ContainerDimensions from 'react-container-dimensions';
 import Message from '@mapstore/components/I18N/Message';
 import DockPanel from '@js/extension/components/misc/panels/DockPanel';
 import { createStructuredSelector } from 'reselect';
-import { Alert, Glyphicon, Tooltip} from 'react-bootstrap';
+import { Alert, Glyphicon, Tooltip, Tabs, Tab} from 'react-bootstrap';
 import ButtonB from '@mapstore/components/misc/Button';
 import tooltip from '@mapstore/components/misc/enhancers/tooltip';
 import '@js/extension/assets/style.css';
@@ -21,7 +21,12 @@ import {
     isStartedDownloadVisuraPdfSelector,
     isStartedDownloadVisuraCsvSelector,
     errorDownloadMsgSelector,
-    isStartedDownloadVisuraImSingolaSelector
+    isStartedDownloadVisuraImSingolaSelector,
+    isExploreEnabledSelector,
+    isStartedDownloadListaImmPdfSelector,
+    isStartedDownloadListaImmCsvSelector,
+    errorDownloadListaMsgSelector,
+    selectedTabSelector
 } from "@js/extension/selectors/catastoOpen";
 import {
     deactivateCatastoOpenPanel,
@@ -34,7 +39,10 @@ import {
     setPrintEndPoint,
     setFixedComuni,
     startDownloadVisura,
-    startDownloadVisuraImSingola
+    startDownloadVisuraImSingola,
+    onInitBaseLayers,
+    onTabSelect,
+    startDownloadListaImmobile
 } from "@js/extension/actions/catastoOpen";
 import SearchContainer, {
     searchContainerActions,
@@ -60,6 +68,7 @@ import OverlayTrigger from "@mapstore/components/misc/OverlayTrigger";
 import Toolbar from "./search/SearchResultGridToolbar";
 import DetailImmobile from "@js/extension/components/search/DetailImmobile";
 import {rowSelector} from "@js/extension/selectors/resultGrid";
+import SmartExploreContainer from "@js/extension/components/explore/ExploreContainer";
 
 const Button = tooltip(ButtonB);
 
@@ -224,6 +233,12 @@ const propertyOwnerColumns = [
         resizable: true, sortable: true, filterable: true}
 ];
 
+const extrasDetailsColForExplore = [
+    { key: 'sheetcode', name: <Message msgId={"extension.catastoOpenPanel.services.parcels.filters.sheets.name"} />,
+        resizable: true, sortable: true, filterable: true},
+    { key: 'particella', name: <Message msgId={"extension.number"} />,
+        resizable: true, sortable: true, filterable: true}
+];
 class CatastoOpenPanel extends React.Component {
     static propTypes = {
         id: PropTypes.string,
@@ -263,7 +278,16 @@ class CatastoOpenPanel extends React.Component {
         isStartedDownloadVisuraCsv: PropTypes.bool,
         errorDownloadMsg: PropTypes.object,
         onClickDownloadVisuraImSingola: PropTypes.func,
-        isStartedDownloadVisuraImSingola: PropTypes.bool
+        isStartedDownloadVisuraImSingola: PropTypes.bool,
+        baseLayers: PropTypes.object,
+        initBaseLayers: PropTypes.func,
+        onTabSelect: PropTypes.func,
+        isExploreEnabled: PropTypes.bool,
+        onPrintDownloadList: PropTypes.func,
+        isStartedDownloadListaImmPdf: PropTypes.bool,
+        isStartedDownloadListaImmCsv: PropTypes.bool,
+        errorDownloadListaImm: PropTypes.object,
+        selectedTab: PropTypes.string
     };
 
     static defaultProps = {
@@ -327,7 +351,22 @@ class CatastoOpenPanel extends React.Component {
         fixedComuni: null,
         setFixedComuni: () => {},
         onClickDownloadVisura: () => {},
-        onClickDownloadVisuraImSingola: () => {}
+        onClickDownloadVisuraImSingola: () => {},
+        baseLayers: {
+            fabbricati: "CatastoOpen:fabricati",
+            particelle: "CatastoOpen:tereni",
+            show: false,
+            geoserverUrl: "http://geoserver:8080/geoserver/",
+            geometryName: "geom"
+        },
+        initBaseLayers: () => {},
+        onTabSelect: () => {},
+        isExploreEnabled: false,
+        onPrintDownloadList: () => {},
+        isStartedDownloadListaImmPdf: false,
+        isStartedDownloadListaImmCsv: false,
+        errorDownloadListaImm: null,
+        selectedTab: "search"
     };
 
     componentWillReceiveProps(nextProp) {
@@ -340,6 +379,9 @@ class CatastoOpenPanel extends React.Component {
             );
             this.props.setFixedComuni(
                 this.props.fixedComuni
+            );
+            this.props.initBaseLayers(
+                this.props.baseLayers
             );
         }
     }
@@ -362,6 +404,10 @@ class CatastoOpenPanel extends React.Component {
         let printCsv = false;
         let printTipId = "extension.catastoOpenPanel.printBtn.label";
         let extending = false;
+        let onPrintDownload = () => {};
+        let isStartPrintingPDF = false;
+        let isStartPrintingCSV = false;
+        let errorDownload = null;
         switch (this.props.searchResultType) {
         case naturalSubjectType:
             columns = naturalSubjectsDef.length === 1 ? naturalSubjectColumns.filter(
@@ -371,6 +417,10 @@ class CatastoOpenPanel extends React.Component {
             title = "extension.catastoOpenPanel.services.naturalSubjects.name";
             printPdf = this.props.doweHavePrint;
             printCsv = this.props.doweHavePrint;
+            onPrintDownload = this.props.onClickDownloadVisura;
+            isStartPrintingPDF = this.props.isStartedDownloadVisuraPdf;
+            isStartPrintingCSV = this.props.isStartedDownloadVisuraCsv;
+            errorDownload = this.props.errorDownloadMsg;
             extending = true;
             break;
         case legalSubjectType:
@@ -381,6 +431,10 @@ class CatastoOpenPanel extends React.Component {
             title = "extension.catastoOpenPanel.services.legalSubjects.name";
             printPdf = this.props.doweHavePrint;
             printCsv = this.props.doweHavePrint;
+            onPrintDownload = this.props.onClickDownloadVisura;
+            isStartPrintingPDF = this.props.isStartedDownloadVisuraPdf;
+            isStartPrintingCSV = this.props.isStartedDownloadVisuraCsv;
+            errorDownload = this.props.errorDownloadMsg;
             extending = true;
             break;
         case subjectPropertyLayer:
@@ -439,6 +493,10 @@ class CatastoOpenPanel extends React.Component {
             title = "extension.catastoOpenPanel.subjectProperties.name";
             printPdf = this.props.doweHavePrint;
             printCsv = this.props.doweHavePrint;
+            onPrintDownload = this.props.onClickDownloadVisura;
+            isStartPrintingPDF = this.props.isStartedDownloadVisuraPdf;
+            isStartPrintingCSV = this.props.isStartedDownloadVisuraCsv;
+            errorDownload = this.props.errorDownloadMsg;
             extending = true;
             break;
         case buildingDetailLayer:
@@ -448,9 +506,20 @@ class CatastoOpenPanel extends React.Component {
             if (this.props.isTemporalSearchChecked === true && isTemporalSearchOnParcel === true) {
                 columns = [...columns, ...this.props.extraColumns];
             }
+            if (this.props.isExploreEnabled) {
+                columns.splice(1, 0, ...extrasDetailsColForExplore);
+            }
             title = "extension.catastoOpenPanel.buildingDetails.name";
             loadPropertyOwnerOnSelect = true;
             extending = true;
+            if (this.props.selectedTab === "explore") {
+                printPdf = this.props.doweHavePrint;
+                printCsv = this.props.doweHavePrint;
+                onPrintDownload = this.props.onPrintDownloadList;
+                isStartPrintingPDF = this.props.isStartedDownloadListaImmPdf;
+                isStartPrintingCSV = this.props.isStartedDownloadListaImmCsv;
+                errorDownload = this.props.errorDownloadListaImm;
+            }
             break;
         case landDetailLayer:
             columns = parcelsDef.length === 1 ? landDetailColumns.filter(
@@ -459,9 +528,20 @@ class CatastoOpenPanel extends React.Component {
             if (this.props.isTemporalSearchChecked === true && isTemporalSearchOnParcel === true) {
                 columns = [...columns, ...this.props.extraColumns];
             }
+            if (this.props.isExploreEnabled) {
+                columns.splice(1, 0, ...extrasDetailsColForExplore);
+            }
             title = "extension.catastoOpenPanel.landDetails.name";
             loadPropertyOwnerOnSelect = true;
             extending = true;
+            if (this.props.selectedTab === "explore") {
+                printPdf = this.props.doweHavePrint;
+                printCsv = this.props.doweHavePrint;
+                onPrintDownload = this.props.onPrintDownloadList;
+                isStartPrintingPDF = this.props.isStartedDownloadListaImmPdf;
+                isStartPrintingCSV = this.props.isStartedDownloadListaImmCsv;
+                errorDownload = this.props.errorDownloadListaImm;
+            }
             break;
         case propertyOwnerLayer:
             columns = this.props.ownerDetails.propertyOwnerColumnsKeys?.length !== 0 ? propertyOwnerColumns.filter(
@@ -473,6 +553,9 @@ class CatastoOpenPanel extends React.Component {
             title = "extension.catastoOpenPanel.owners";
             resume = true;
             printPdf = this.props.doweHavePrint;
+            onPrintDownload = this.props.onClickDownloadVisura;
+            isStartPrintingPDF = this.props.isStartedDownloadVisuraPdf;
+            errorDownload = this.props.errorDownloadMsg;
             break;
         default:
             break;
@@ -498,10 +581,10 @@ class CatastoOpenPanel extends React.Component {
                                     showExtendBtn={extending}
                                     columns={columns}
                                     rows={this.props.rowResult}
-                                    onClickDownloadVisura={this.props.onClickDownloadVisura}
-                                    isStartedDownloadVisuraPdf={this.props.isStartedDownloadVisuraPdf}
-                                    isStartedDownloadVisuraCsv={this.props.isStartedDownloadVisuraCsv}
-                                    errorDownloadMsg={this.props.errorDownloadMsg}
+                                    onClickDownloadVisura={onPrintDownload}
+                                    isStartedDownloadVisuraPdf={isStartPrintingPDF}
+                                    isStartedDownloadVisuraCsv={isStartPrintingCSV}
+                                    errorDownloadMsg={errorDownload}
                                 />}
                         /> :
                         <SmartSearchResultGrid
@@ -525,10 +608,10 @@ class CatastoOpenPanel extends React.Component {
                                     showExtendBtn={extending}
                                     columns={columns}
                                     rows={this.props.rowResult}
-                                    onClickDownloadVisura={this.props.onClickDownloadVisura}
-                                    isStartedDownloadVisuraPdf={this.props.isStartedDownloadVisuraPdf}
-                                    isStartedDownloadVisuraCsv={this.props.isStartedDownloadVisuraCsv}
-                                    errorDownloadMsg={this.props.errorDownloadMsg}
+                                    onClickDownloadVisura={onPrintDownload}
+                                    isStartedDownloadVisuraPdf={isStartPrintingPDF}
+                                    isStartedDownloadVisuraCsv={isStartPrintingCSV}
+                                    errorDownloadMsg={errorDownload}
                                 />}
                         />}
                     {this.props.searchResultType === propertyOwnerLayer ? <DetailImmobile selectedImmobile={this.props.selectedImmobile}/> : null}
@@ -549,17 +632,28 @@ class CatastoOpenPanel extends React.Component {
                         onClose={() => this.props.deactivate(this.props)}
                         zIndex={1031}
                         onReduce={this.props.onReduce}>
-                        <SmartSearchContainer filterServices={this.props.filterServices} />
-                        {this.props.loadError ?
-                            <Alert bsStyle="danger" style={{borderRadius: 5}}>
-                                <Message msgId={"extension.catastoOpenPanel.error"} />
-                            </Alert> : null}
-                        {this.props.messageForUser ?
-                            <Alert bsStyle="warning" style={{borderRadius: 5}}>
-                                <Message msgId={this.props.messageForUser} />
-                            </Alert> : null}
-                        {this.renderSearchResults()}
-
+                        <Tabs defaultActiveKey="search" id="type-castoOpen-to_show" onSelect={(key) => (this.props.onTabSelect(key))}>
+                            <Tab
+                                eventKey="search"
+                                title={<Message msgId="extension.catastoOpenPanel.tabs.search"/>}>
+                                <SmartSearchContainer filterServices={this.props.filterServices} />
+                                {this.props.loadError ?
+                                    <Alert bsStyle="danger" style={{borderRadius: 5}}>
+                                        <Message msgId={"extension.catastoOpenPanel.error"} />
+                                    </Alert> : null}
+                                {this.props.messageForUser ?
+                                    <Alert bsStyle="warning" style={{borderRadius: 5}}>
+                                        <Message msgId={this.props.messageForUser} />
+                                    </Alert> : null}
+                                {this.renderSearchResults()}
+                            </Tab>
+                            <Tab
+                                eventKey="explore"
+                                title={<Message msgId="extension.catastoOpenPanel.tabs.explore"/>}>
+                                <SmartExploreContainer />
+                                {this.renderSearchResults()}
+                            </Tab>
+                        </Tabs>
                     </DockPanel>)}
                 </ContainerDimensions>
             </div>
@@ -588,7 +682,12 @@ const catastoOpenSelector = createStructuredSelector({
     isStartedDownloadVisuraPdf: isStartedDownloadVisuraPdfSelector,
     isStartedDownloadVisuraCsv: isStartedDownloadVisuraCsvSelector,
     errorDownloadMsg: errorDownloadMsgSelector,
-    isStartedDownloadVisuraImSingola: isStartedDownloadVisuraImSingolaSelector
+    isStartedDownloadVisuraImSingola: isStartedDownloadVisuraImSingolaSelector,
+    isExploreEnabled: isExploreEnabledSelector,
+    isStartedDownloadListaImmPdf: isStartedDownloadListaImmPdfSelector,
+    isStartedDownloadListaImmCsv: isStartedDownloadListaImmCsvSelector,
+    errorDownloadListaImm: errorDownloadListaMsgSelector,
+    selectedTab: selectedTabSelector
 });
 
 const SmartCatastoOpenPanel = connect(catastoOpenSelector,
@@ -603,7 +702,10 @@ const SmartCatastoOpenPanel = connect(catastoOpenSelector,
         setPrintEndPoint: setPrintEndPoint,
         setFixedComuni: setFixedComuni,
         onClickDownloadVisura: startDownloadVisura,
-        onClickDownloadVisuraImSingola: startDownloadVisuraImSingola
+        onClickDownloadVisuraImSingola: startDownloadVisuraImSingola,
+        initBaseLayers: onInitBaseLayers,
+        onTabSelect: onTabSelect,
+        onPrintDownloadList: startDownloadListaImmobile
     })(CatastoOpenPanel);
 
 export default SmartCatastoOpenPanel;

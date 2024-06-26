@@ -274,7 +274,8 @@
             "gendescr": "Descrizione Causale Generazione",
             "concausa": "Codice Causale Concluzione",
             "condescr": "Descrizione Causale Concluzione",
-            "flagclass": "Flag Classe"
+            "flagclass": "Flag Classe",
+            "indirizzo": "Indirizzo"
           }
         },
         "searchContainer": {
@@ -301,8 +302,23 @@
         "dateInputError": "L'intervallo di date inserite non è corretto.",
         "printBtn" : {
             "label" : "Stampa"
+        },
+        "tabs": {
+          "search": "Ricerca",
+          "explore": "Esplora"
+        },
+        "explore": {
+          "title": "Selezionare il tipo di immobile per la ricerca da mappa",
+          "zoomMsgInfo": "Per utilizzare la funzionalità, posizionarsi ad un livello di zoom più vicino.",
+          "btn": {
+            "fab": "Fabbricati",
+            "ter": "Terreni",
+            "delete": "Toglia",
+            "submit": "Ricerca",
+            "cancel": "Annulla"
+          }
         }
-    }
+      }
     }
   }
 }
