@@ -13,3 +13,16 @@ export const getVisuraBlob = (printObj, fileType) => {
         }
     );
 };
+
+export const getListaImmo = (printObj, data) => {
+    const url = printObj.url;
+    return axios.post(
+        url,
+        data,
+        {
+            params: printObj.query,
+            responseType: "blob",
+            headers: printObj.headers
+        }
+    );
+};

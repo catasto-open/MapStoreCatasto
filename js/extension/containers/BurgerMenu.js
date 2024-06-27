@@ -1,7 +1,7 @@
 import React from 'react';
 import Message from "@mapstore/components/I18N/Message";
 import {activateCatastoOpenPanel} from "@js/extension/actions/catastoOpen";
-import FaIcon from '@js/extension/components/FaIcon';
+import { Glyphicon } from 'react-bootstrap';
 
 
 const burgerMenuContainer = {
@@ -9,7 +9,7 @@ const burgerMenuContainer = {
         name: 'CatastoOpen',
         position: 3,
         text: <Message msgId="extension.catastoOpenPanel.title"/>,
-        icon: <FaIcon name="building"/>,
+        icon: <Glyphicon glyph="eye-open"/>,
         action: activateCatastoOpenPanel.bind(null),
         doNotHide: true
     },
@@ -18,7 +18,7 @@ const burgerMenuContainer = {
         position: 3,
         tooltip: "extension.catastoOpenPanel.title",
         text: <Message msgId="extension.catastoOpenPanel.title"/>,
-        icon: <FaIcon name="building"/>,
+        icon: <Glyphicon glyph="eye-open"/>,
         action: activateCatastoOpenPanel.bind(null),
         priority: 1,
         doNotHide: true
@@ -26,7 +26,7 @@ const burgerMenuContainer = {
     Toolbar: {
         name: "CatastoOpen",
         position: 1,
-        text: <FaIcon name="building"/>,
+        text: <Glyphicon glyph="eye-open"/>,
         tooltip: "extension.catastoOpenPanel.title",
         doNotHide: true,
         alwaysVisible: true,

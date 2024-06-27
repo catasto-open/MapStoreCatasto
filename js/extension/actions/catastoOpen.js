@@ -78,6 +78,42 @@ export const CATASTO_OPEN_END_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:END_DOW
 export const CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA = 'CATASTO_OPEN:ERROR_DOWNLOAD_VISURA_IM_SINGOLA';
 export const CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA = 'CATASTO_OPEN:WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA';
 
+export const CATASTO_OPEN_START_DOWNLOAD_LISTA_IMMOBILE = 'CATASTO_OPEN:START_DOWNLOAD_LISTA_IMMOBILE';
+export const CATASTO_OPEN_END_DOWNLOAD_LISTA_IMMOBILE = 'CATASTO_OPEN:END_DOWNLOAD_LISTA_IMMOBILE';
+export const CATASTO_OPEN_ERROR_DOWNLOAD_LISTA_IMMOBILE = 'CATASTO_OPEN:ERROR_DOWNLOAD_LISTA_IMMOBILE';
+
+export const CATASTO_OPEN_INIT_BASE_LAYERS = 'CATASTO_OPEN:INIT_BASE_LAYERS';
+export const CATASTO_OPEN_TAB_SELECT = 'CATASTO_OPEN:TAB_SELECT';
+export const CATASTO_OPEN_EXPLORE_ENABLE = 'CATASTO_OPEN:EXPLORE_ENABLE';
+export const CATASTO_OPEN_CHECK_BASE_LAYERS = 'CATASTO_OPEN:CHECK_BASE_LAYERS';
+export const CATASTO_OPEN_SHOW_BASE_LAYERS = 'CATASTO_OPEN:SHOW_BASE_LAYERS';
+export const CATASTO_OPEN_SET_BASE_LAYERS = 'CATASTO_OPEN:SET_BASE_LAYERS';
+export const CATASTO_OPEN_BASE_LAYERS_ERROR = 'CATASTO_OPEN:BASE_LAYERS_ERROR';
+export const CATASTO_OPEN_TRACK_BASE_LAYERS = 'CATASTO_OPEN:TRACK_BASE_LAYERS';
+export const CATASTO_OPEN_REMOVE_BASE_LAYERS = 'CATASTO_OPEN:REMOVE_BASE_LAYERS';
+export const CATASTO_OPEN_BTN_FAB_CLICKED = 'CATASTO_OPEN:BTN_FAB_CLICKED';
+export const CATASTO_OPEN_BTN_TER_CLICKED = 'CATASTO_OPEN:BTN_TER_CLICKED';
+export const CATASTO_OPEN_LOAD_FAB_FEAT = 'CATASTO_OPEN:LOAD_FAB_FEAT';
+export const CATASTO_OPEN_FAB_FEAT_LOADED = 'CATASTO_OPEN:FAB_FEAT_LOADED';
+export const CATASTO_OPEN_FAB_FEAT_POST_PROCESS = 'CATASTO_OPEN:FAB_FEAT_POST_PROCESS';
+export const CATASTO_OPEN_SELECTION_FAB_DETAIL_LOAD = 'CATASTO_OPEN:SELECTION_FAB_DETAIL_LOAD';
+export const CATASTO_OPEN_FAB_DETAIL_LOAD_START = 'CATASTO_OPEN:FAB_DETAIL_LOAD_START';
+export const CATASTO_OPEN_LOAD_TER_FEAT = 'CATASTO_OPEN:LOAD_TER_FEAT';
+export const CATASTO_OPEN_TER_FEAT_LOADED = 'CATASTO_OPEN:TER_FEAT_LOADED';
+export const CATASTO_OPEN_SELECTION_TER_DETAIL_LOAD = 'CATASTO_OPEN:SELECTION_TER_DETAIL_LOAD';
+export const CATASTO_OPEN_TER_DETAIL_LOAD_START = 'CATASTO_OPEN:TER_DETAIL_LOAD_START';
+export const CATASTO_OPEN_SELECTION_CREATE_GROUP = 'CATASTO_OPEN:SELECTION_CREATE_GROUP';
+export const CATASTO_OPEN_SELECTION_CLEAN_GROUP = 'CATASTO_OPEN:SELECTION_CLEAN_GROUP';
+export const CATASTO_OPEN_SELECTION_APPEND_LAYER = 'CATASTO_OPEN:SELECTION_APPEND_LAYER';
+export const CATASTO_OPEN_SELECTION_REMOVE_FAB_LAYER = 'CATASTO_OPEN:SELECTION_REMOVE_FAB_LAYER';
+export const CATASTO_OPEN_SELECTION_REMOVE_TER_LAYER = 'CATASTO_OPEN:SELECTION_REMOVE_TER_LAYER';
+export const CATASTO_OPEN_FAB_DETAIL_RESULTS_APPEND = 'CATASTO_OPEN:FAB_DETAIL_RESULTS_APPEND';
+export const CATASTO_OPEN_FAB_DETAIL_RESULTS_APPENDED = 'CATASTO_OPEN:FAB_DETAIL_RESULTS_APPENDED';
+export const CATASTO_OPEN_TER_DETAIL_RESULTS_APPEND = 'CATASTO_OPEN:TER_DETAIL_RESULTS_APPEND';
+export const CATASTO_OPEN_TER_DETAIL_RESULTS_APPENDED = 'CATASTO_OPEN:TER_DETAIL_RESULTS_APPENDED';
+export const CATASTO_OPEN_SELECTION_ON_LOAD_DETAILS = 'CATASTO_OPEN:SELECTION_ON_LOAD_DETAILS';
+export const CATASTO_OPEN_SELECTION_EXPLORE_CANCEL = 'CATASTO_OPEN:SELECTION_EXPLORE_CANCEL';
+
 export function activateCatastoOpenPanel() {
     return {
         type: CATASTO_OPEN_ACTIVATE_PANEL
@@ -541,17 +577,41 @@ export function startDownloadVisura(fileType) {
     };
 }
 
-export function endDownloadVisura(fileType, blob) {
+export function endDownloadVisura(fileType, blob, printObj) {
     return {
         type: CATASTO_OPEN_END_DOWNLOAD_VISURA,
         fileType,
-        blob
+        blob,
+        printObj
     };
 }
 
 export function errorDownloadVisura(fileType, errorMsg) {
     return {
         type: CATASTO_OPEN_ERROR_DOWNLOAD_VISURA,
+        fileType,
+        errorMsg
+    };
+}
+
+export function startDownloadListaImmobile(fileType) {
+    return {
+        type: CATASTO_OPEN_START_DOWNLOAD_LISTA_IMMOBILE,
+        fileType
+    };
+}
+
+export function endDownloadListaImmobile(printObj, blob) {
+    return {
+        type: CATASTO_OPEN_END_DOWNLOAD_LISTA_IMMOBILE,
+        printObj,
+        blob
+    };
+}
+
+export function errorDownloadListaImmobile(fileType, errorMsg) {
+    return {
+        type: CATASTO_OPEN_ERROR_DOWNLOAD_LISTA_IMMOBILE,
         fileType,
         errorMsg
     };
@@ -582,5 +642,218 @@ export function errorDownloadVisuraImSingole(errorMsg) {
 export function weAreDoneDownloadingVisuraImSingola() {
     return {
         type: CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA
+    };
+}
+
+export function onInitBaseLayers(baseLayers) {
+    return {
+        type: CATASTO_OPEN_INIT_BASE_LAYERS,
+        baseLayers
+    };
+}
+
+export function onTabSelect(key) {
+    return {
+        type: CATASTO_OPEN_TAB_SELECT,
+        key
+    };
+}
+
+export function onEnableExplore(enabled) {
+    return {
+        type: CATASTO_OPEN_EXPLORE_ENABLE,
+        enabled
+    };
+}
+
+export function checkBaseLayers() {
+    return {
+        type: CATASTO_OPEN_CHECK_BASE_LAYERS
+    };
+}
+
+export function showBaseLayers(layerName, geoserverUrl, isFab = false) {
+    return {
+        type: CATASTO_OPEN_SHOW_BASE_LAYERS,
+        layerName,
+        geoserverUrl,
+        isFab
+    };
+}
+
+export function setBaseLayers(baseLayers) {
+    return {
+        type: CATASTO_OPEN_SET_BASE_LAYERS,
+        baseLayers
+    };
+}
+
+export function gotErrorBaseLayers(errorMsg) {
+    return {
+        type: CATASTO_OPEN_BASE_LAYERS_ERROR,
+        errorMsg
+    };
+}
+
+export function onRemoveBaseLayers() {
+    return {
+        type: CATASTO_OPEN_REMOVE_BASE_LAYERS
+    };
+}
+
+export function onTrackBaseLayers(layerID) {
+    return {
+        type: CATASTO_OPEN_TRACK_BASE_LAYERS,
+        layerID
+    };
+}
+
+export function onFabBtnClicked() {
+    return {
+        type: CATASTO_OPEN_BTN_FAB_CLICKED
+    };
+}
+
+export function onTerBtnClicked() {
+    return {
+        type: CATASTO_OPEN_BTN_TER_CLICKED
+    };
+}
+
+export function onLoadFabFeat(lat, lng) {
+    return {
+        type: CATASTO_OPEN_LOAD_FAB_FEAT,
+        lat,
+        lng
+    };
+}
+
+export function onFabFeatLoaded(payload) {
+    return {
+        type: CATASTO_OPEN_FAB_FEAT_LOADED,
+        payload
+    };
+}
+
+export function onFabFeatPostProcess(payload) {
+    return {
+        type: CATASTO_OPEN_FAB_FEAT_POST_PROCESS,
+        payload
+    };
+}
+
+export function onFabSelectionLoadDetail() {
+    return {
+        type: CATASTO_OPEN_SELECTION_FAB_DETAIL_LOAD
+    };
+}
+
+export function onStartLoadFabDetail(extras) {
+    return {
+        type: CATASTO_OPEN_FAB_DETAIL_LOAD_START,
+        extras
+    };
+}
+
+export function onLoadTerFeat(lat, lng) {
+    return {
+        type: CATASTO_OPEN_LOAD_TER_FEAT,
+        lat,
+        lng
+    };
+}
+
+export function onTerFeatLoaded(payload) {
+    return {
+        type: CATASTO_OPEN_TER_FEAT_LOADED,
+        payload
+    };
+}
+
+export function onTerSelectionLoadDetail() {
+    return {
+        type: CATASTO_OPEN_SELECTION_TER_DETAIL_LOAD
+    };
+}
+
+export function onStartLoadTerDetail(extras) {
+    return {
+        type: CATASTO_OPEN_TER_DETAIL_LOAD_START,
+        extras
+    };
+}
+
+export function selectionCreateGroup() {
+    return {
+        type: CATASTO_OPEN_SELECTION_CREATE_GROUP
+    };
+}
+
+export function selectionCleanGroup() {
+    return {
+        type: CATASTO_OPEN_SELECTION_CLEAN_GROUP
+    };
+}
+
+export function selectionAppendLayer(layer, layerType) {
+    return {
+        type: CATASTO_OPEN_SELECTION_APPEND_LAYER,
+        layer,
+        layerType
+    };
+}
+
+export function onRemoveFabLayer(layerID) {
+    return {
+        type: CATASTO_OPEN_SELECTION_REMOVE_FAB_LAYER,
+        layerID
+    };
+}
+
+export function onRemoveTerLayer(layerID) {
+    return {
+        type: CATASTO_OPEN_SELECTION_REMOVE_TER_LAYER,
+        layerID
+    };
+}
+
+export function onFabDetailsAppend(payload) {
+    return {
+        type: CATASTO_OPEN_FAB_DETAIL_RESULTS_APPEND,
+        payload
+    };
+}
+
+export function onFabDetailsAppended(detailsAppended) {
+    return {
+        type: CATASTO_OPEN_FAB_DETAIL_RESULTS_APPENDED,
+        detailsAppended
+    };
+}
+
+export function onTerDetailsAppend(payload) {
+    return {
+        type: CATASTO_OPEN_TER_DETAIL_RESULTS_APPEND,
+        payload
+    };
+}
+
+export function onTerDetailsAppended(detailsAppended) {
+    return {
+        type: CATASTO_OPEN_TER_DETAIL_RESULTS_APPENDED,
+        detailsAppended
+    };
+}
+
+export function onLoadDetails(status) {
+    return {
+        type: CATASTO_OPEN_SELECTION_ON_LOAD_DETAILS,
+        status
+    };
+}
+
+export function onSelectionExploreCancel() {
+    return {
+        type: CATASTO_OPEN_SELECTION_EXPLORE_CANCEL
     };
 }
