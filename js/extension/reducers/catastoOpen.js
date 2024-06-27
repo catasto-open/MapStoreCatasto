@@ -504,6 +504,7 @@ export default function(state = {
             hasSubmitedSearch: false
         };
     case CATASTO_OPEN_HISTORICAL_SEARCH_CHECKED:
+        const defaultSection = {value: "_", label: "TUTTE LE SEZIONI"};
         return {
             ...state,
             isHistoricalSearchChecked: action.isHistoricalSearchChecked,
@@ -520,7 +521,7 @@ export default function(state = {
             },
             selectedSubjectFilter: null,
             selectedCity: null,
-            selectedSection: null,
+            selectedSection: defaultSection,
             selectedSheet: null,
             selectedLand: null,
             selectedBuilding: null,
