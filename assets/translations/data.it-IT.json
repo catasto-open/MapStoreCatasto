@@ -304,8 +304,8 @@
             "label" : "Stampa"
         },
         "tabs": {
-          "search": "Ricerca",
-          "explore": "Esplora"
+          "search": "Da dati",
+          "explore": "Da mappa"
         },
         "explore": {
           "title": "Selezionare il tipo di immobile per la ricerca da mappa",

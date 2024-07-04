@@ -304,8 +304,8 @@
             "label" : "Print"
         },
         "tabs": {
-          "search": "Search",
-          "explore": "Explore"
+          "search": "From data",
+          "explore": "From Map"
         },
         "explore": {
           "title": "Select the type of property for the map search",
