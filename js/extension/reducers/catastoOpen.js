@@ -102,7 +102,7 @@ export default function(state = {
         {
             firstName: '',
             lastName: '',
-            birthDate: '',
+            birthDate: null,
             birthPlace: null,
             fiscalCode: '',
             subjectCode: '',
@@ -336,7 +336,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -502,7 +502,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -531,7 +531,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -561,7 +561,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -589,7 +589,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
