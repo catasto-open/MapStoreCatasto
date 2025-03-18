@@ -89,6 +89,32 @@ export const printEndPointSelector = (state) => get(state, "catastoOpen.printEnd
 export const printObjSelector = (state) => get(state, "catastoOpen.printObj");
 export const isStartedDownloadVisuraPdfSelector = (state) => get(state, "catastoOpen.isStartedDownloadVisuraPdf");
 export const isStartedDownloadVisuraCsvSelector = (state) => get(state, "catastoOpen.isStartedDownloadVisuraCsv");
+
+export const detailsTypeSelector = (state) => get(state, "catastoOpen.detailsType");
+export const isStartedDownloadListaImmPdfSelector = (state) => get(
+    state,
+    "catastoOpen.isStartedDownloadListaImmPdf"
+);
+export const isStartedDownloadListaImmCsvSelector = (state) => get(
+    state,
+    "catastoOpen.isStartedDownloadListaImmCsv"
+);
+export const errorDownloadListaMsgSelector = (state) => get(
+    state,
+    "catastoOpen.errorDownloadListaMsg"
+);
+
 export const alreadyShownErrorDownloadMsgSelector = (state) => get(state, "catastoOpen.alreadyShownErrorDownloadMsg");
 export const errorDownloadMsgSelector = (state) => get(state, "catastoOpen.errorDownloadMsg");
 export const isStartedDownloadVisuraImSingolaSelector = (state) => get(state, "catastoOpen.startDownloadVisuraImSingola");
+
+export const selectedTabSelector = (state) => get(state, "catastoOpen.selectedTab");
+export const trackedBaseLayersSelector = (state) => get(state, "catastoOpen.trackedBaselayers", []);
+export const baseLayersSelector = (state) => get(state, "catastoOpen.baseLayers");
+export const baseLayersErrorSelector = (state) => get(state, "catastoOpen.baseLayersError", null);
+export const isfabClickedSelector = (state) => get(state, "catastoOpen.fabClicked", false);
+export const isterClickedSelector = (state) => get(state, "catastoOpen.terClicked", false);
+export const isExploreEnabledSelector = (state) => get(state, "catastoOpen.exploreEnabled", false);
+
+export const selectedFabLayersSelector = (state) => get(state, "catastoOpen.selectedFabLayers", []);
+export const selectedTerLayersSelector = (state) => get(state, "catastoOpen.selectedTerLayers", []);

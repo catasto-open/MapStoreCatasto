@@ -398,6 +398,7 @@ export const buildingDetailParser = (feature) => {
     const concausa = properties?.con_causa;
     const condescr = properties?.con_descr;
     const flagclass = properties?.flag_class;
+    const indirizzo = properties?.indirizzo;
     return {
         property,
         propertyType,
@@ -447,7 +448,8 @@ export const buildingDetailParser = (feature) => {
         gendescr,
         concausa,
         condescr,
-        flagclass
+        flagclass,
+        indirizzo
     };
 };
 
@@ -580,6 +582,7 @@ export const printPathNaturalSubject = "catasto/stampa/ricerca/persone_fisiche";
 export const printPathLegalSubject = "catasto/stampa/ricerca/persone_giuridiche";
 export const printPathImmobile = "catasto/stampa/ricerca/immobili";
 export const printPathVisura = "catasto/stampa/visura";
+export const printPathListaImm = "catasto/stampa/ricerca/immobili/query";
 
 export const compareItems = (a, b) => {
     const aNumeric = parseInt(a?.subordinate, 10);
@@ -603,3 +606,192 @@ export const compareItems = (a, b) => {
     const bNonNumeric = b?.subordinate.replace(bNumeric.toString(), '');
     return aNonNumeric.localeCompare(bNonNumeric);
 };
+
+export const checkLayersInDJson = (jsonData, fabricati, particelle) => {
+    const fabparts = fabricati.split(":");
+    const fabName = fabparts[fabparts.length - 1];
+    const terparts = particelle.split(":");
+    const terName = terparts[terparts.length - 1];
+    let fabExist = false;
+    let terExist = false;
+
+    jsonData?.featureTypes.forEach(type => {
+        if (type.typeName === fabName) {
+            fabExist = true;
+        }
+        if (type.typeName === terName) {
+            terExist = true;
+        }
+    });
+
+    return { fabStatus: fabExist, terStatus: terExist };
+};
+
+
+export const fabStyle = () => {
+    const baseSymbolizer = {
+        size: 20,
+        anchor: "center",
+        rotate: 0,
+        fillOpacity: 0.4,
+        kind: "Fill",
+        color: "#A4BF01",
+        outlineColor: "#000000"
+    };
+    return {
+        format: "geostyler",
+        body: {
+            name: 'fab-catasto-open',
+            rules: [{
+                name: 'fab-catasto-open-rule',
+                symbolizers: [baseSymbolizer]
+            }]
+        }
+    };
+};
+
+export const terStyle = () => {
+    const baseSymbolizer = {
+        size: 20,
+        anchor: "center",
+        rotate: 0,
+        fillOpacity: 0.4,
+        kind: "Fill",
+        color: "#EE9F62",
+        outlineColor: "#06172A"
+    };
+    return {
+        format: "geostyler",
+        body: {
+            name: 'ter-catasto-open',
+            rules: [{
+                name: 'ter-catasto-open-rule',
+                symbolizers: [baseSymbolizer]
+            }]
+        }
+    };
+};
+
+export const groupOfSelection = {
+    id: "Default.catOp-b795a427-15e5-4e20-8cf7-ee9d3d5b297b",
+    title: "Catasto-Open-Seleziona"
+};
+
+export const getNodesIdsIfIdExists = (data, idToCheck) => {
+    const findNodesById = (nodes, id) => {
+        for (let node of nodes) {
+            if (node.id === id) {
+                return node.nodes ? node.nodes.map(child => child.id) : [];
+            }
+            if (node.nodes) {
+                const result = findNodesById(node.nodes, id);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    };
+    return findNodesById(data, idToCheck) || [];
+};
+
+export const nodeExistsInTree = (nodes, id) => {
+    if (!nodes || nodes.length === 0) {
+        return false;
+    }
+    for (let node of nodes) {
+        if (node.id === id) return true;
+        if (nodeExistsInTree(node.nodes, id)) return true;
+    }
+    return false;
+};
+
+export const fabSelectedStyle = () => {
+    const baseSymbolizer = {
+        size: 20,
+        anchor: "center",
+        rotate: 0,
+        fillOpacity: 0.4,
+        kind: "Fill",
+        color: "#85e859",
+        outlineColor: "#236705"
+    };
+    return {
+        format: "geostyler",
+        body: {
+            name: 'fab-catasto-open-selected',
+            rules: [{
+                name: 'fab-catasto-open-selected-rule',
+                symbolizers: [baseSymbolizer]
+            }]
+        }
+    };
+};
+
+export const terSelectedStyle = () => {
+    const baseSymbolizer = {
+        size: 20,
+        anchor: "center",
+        rotate: 0,
+        fillOpacity: 0.4,
+        kind: "Fill",
+        color: "#e87e2c",
+        outlineColor: "#72390e"
+    };
+    return {
+        format: "geostyler",
+        body: {
+            name: 'ter-catasto-selected-open',
+            rules: [{
+                name: 'ter-catasto-selected-rule',
+                symbolizers: [baseSymbolizer]
+            }]
+        }
+    };
+};
+
+export const featToLayer = (feat, style) => {
+    const uid = `${feat.properties?.foglio}-${feat.properties?.numero}-${feat.properties?.sezione}`;
+    let layer = {};
+    layer.type = "vector";
+    layer.visibility = true;
+    layer.id = uid;
+    layer.hideLoading = true;
+    layer.extras = {
+        foglio: feat.properties?.foglio,
+        numero: feat.properties?.numero,
+        sezione: feat.properties?.sezione
+    };
+    layer.features = [feat];
+    layer.title = uid;
+    layer.style = style;
+    return layer;
+};
+
+export const fabFeatToLayer = (features, style) => {
+    const feat = features[0];
+    const uid = `${feat.properties?.foglio}-${feat.properties?.numero}-${feat.properties?.sezione}`;
+    let layer = {};
+    layer.type = "vector";
+    layer.visibility = true;
+    layer.id = uid;
+    layer.hideLoading = true;
+    layer.extras = {
+        foglio: feat.properties?.foglio,
+        numero: feat.properties?.numero,
+        sezione: feat.properties?.sezione
+    };
+    layer.features = features;
+    layer.title = uid;
+    layer.style = style;
+    return layer;
+};
+
+export const createCQLFab = (feat) => {
+    return `foglio=${feat.properties?.foglio} AND numero=${feat.properties?.numero} AND sezione='${feat.properties?.sezione}'`;
+};
+
+export const doesIDExists = (list, id) => {
+    return list && list.some(elem => elem.id === id);
+};
+

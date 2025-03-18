@@ -1,112 +1,54 @@
-# Template project to create MapStore extensions
+# MapStoreCatasto
+MapStoreCatasto is an application designed to provide a user-friendly interface for accessing and visualizing cadastral data on an interactive map. It aims to simplify the process of exploring and querying property boundaries, ownership information, and other relevant cadastral details.
 
-This repository is a template where to start to create [MapStore Extensions](https://mapstore.readthedocs.io/en/latest/developer-guide/extensions/).
+Features
+- Interactive Map: MapStoreCatasto utilizes an interactive map interface to display cadastral data. Users can navigate and zoom in/out on the map to explore specific areas of interest.
+- Cadastral Data Visualization: The application allows users to overlay cadastral data on the map, providing a visual representation of property boundaries, land divisions, and other relevant cadastral information.
+- Search and Query: Users can search for specific addresses, property IDs, or owners to quickly locate and access the corresponding cadastral data. The application also supports querying and filtering options to refine search results based on specific criteria.
+- Information Display: MapStoreCatasto presents detailed information about cadastral features, such as property ownership, area measurements, zoning regulations, and any associated legal or administrative records.
+- Layer Management: Users have control over the visibility and order of cadastral layers displayed on the map. They can toggle layers on/off, change their transparency, and rearrange their stacking order to facilitate better visualization.
 
-It is basically a customized MapStore project that allows to run, test and build a sample extension.
-You can copy this repository and modify the sample extension to develop your own one.
+MapStoreCatasto is based on [MapStore](https://github.com/geosolutions-it/MapStore2) and it's distributed as [extension](https://docs.mapstore.geosolutionsgroup.com/en/latest/developer-guide/extensions/).
 
-## Quick Start
+## Getting Started
+To use MapStoreCatasto, follow these steps:
 
-Clone the repository with the --recursive option to automatically clone submodules.
+1. Clone the repository:
 
-`git clone --recursive https://github.com/geosolutions-it/MapStoreExtension`
-
-Install NodeJS >= 12.16.1 , if needed, from [here](https://nodejs.org/en/download/releases/).
-
-You can start the development application locally:
-
-`npm install`
-
-`npm start`
-
-The application runs at `http://localhost:8081` afterwards. You will see, opening a map, the sample plugin on top of the map.
-
-
-## Start creating your own extension
-
-If you have to create an extension, you will have to
-
-- find a name for it
-- write the code/css for the plugin and its reducers/epics to implement the effective extension.
-
-### Naming the plugin
-
-The first step to create the plugin is to name it. To do it, you have to edit 3 files:
-
-- Edit `config.js` to change the name of your extension.
-- Edit `assets/index.json` and change the "name" entry with the name of your plugin. (here you can customize dependencies, if needed)
-- Edit `localConfig.json` replacing "SampleExtension", in `plugins/desktop` section, with the name of your Extension (for running local development)
-- *[only for version <= 2020.01.xx]* Edit  `package.json` changing `name` entry with a unique name for your extension. E.g. `mapstore-extension-<ext-name>.`
-
-> **note** Edit the `name` in `package.json` is not strictly needed from version 2021.02.xx. Anyway it is a good practice to choose a unique `name` in your `package.json` for a new npm project, in general.
-
-### Start developing
-
-The main entry point of the plugin is `js/extension/plugins/Extension.jsx`. It contains a sample plugin with a sample reducer (probably you will need to rename the reducer), and a sample epic that you can see as example and replace with yours.
-You should not move or change the `js/extension/plugins/Extension.jsx` file, but you can change all the other files inside `js/extension/` directory. You edit the oher files and add new ones from this starting point.
-
-Moreover you can edit:
-
-- `assets/index.json`: to customize extension dependencies.
-- `assets/translations/`: to set up your translations.
-
-### Build Extension
-
-To build the extension you should run
-
-- `npm run ext:build`
-
-This will create a zip with the name of your extension in `dist` directory.
-
-
-### Test Module
-
-The current project contains the plugin on its own. In a production environment the extension will be loaded dynamically from the MapStore back-end.
-You can simulate in dev-mode this condition by:
-
-Commenting `js/app.js` the lines indicated in `js/app.jsx`, that allow to load the plugin in the main app.
-
-```javascript
-// Import plugin directly in application. Comment the 3 lines below to test the extension live.
-const extensions = require('./extensions').default;
-plugins.plugins = { ...plugins.plugins, ...extensions };
-ConfigUtils.setConfigProp('translationsPath', ['./MapStore2/web/client/translations', './assets/translations']);
-// end of lines to comment
+```bash
+git clone https://github.com/your-username/MapStoreCatasto.git
 ```
 
-- run, in 2 different console the following commands:
-  - `npm run ext:start`
-  - `npm run ext:startapp`
+2. Install the necessary dependencies:
 
-This will run webpack dev server on port 8081 with MapStore, simulating the `extensions.json` on the default extensions path (the path is relative), and will run on port 8082 the effective modules to load.
+```bash
+cd MapStoreCatasto
+npm install
+```
 
-## [Configuration](./js/extension/docs/README.md)
+*just* in case of errors, try these
 
-## Under the hood
+```bash
+npm install --force
+npm audit fix --force
+```
 
-MapStore extensions are based on WebPack 5 [Module Federation](https://webpack.js.org/concepts/module-federation/).
-MapStore uses `ModuleFederationPlugin` to expose the shared libs and provide the proper entry points.
+3. Configure the application:
 
-An extension can `build/createExtensionWebpackConfig.js` utility to create an extension with the same shared libs.
-This utility function create the base structure to export the proper files as a federate module compatible with MapStore (passing the `name` of the extension and the exposes argument).
-This project basically uses this utility function, and is configured to:
+Open the `/config/localconfig.json` file and update the geoserver endpoint with the one of [catasto-db](https://github.com/catasto-open/catasto-db). Add the same endpoint to `useCORS` property.
 
-- Run MapStore and debug the plugin, as a normal plugin
-- Run the test mode of the module, simulating the effective installation
-- Build the final zip file ready to be installed
+4. Build and run the application:
 
-### Limitations
+```bash
+npm start
+```
 
-For now, components retrieved from MapStore (using the import) will be a **copy of the existing ones**, so calling methods directly on some files imported from MapStore will not have any effect (e.g. register MapInfo Viewers, trying to load resolutions or from ConfigUtils).
+5. Access the application:
+Open your web browser and navigate to [http://localhost:3000](http://localhost:8081) to access MapStore. MapstoreCatasto will be available in the application menu.
 
-You can add to your extension **only** `css`, `js` and `png`, `jpg`, `gif` image files (other than translations folder and `index.json`). Future improvements could allow to add other assets types(icons, fonts, json ...)
 
-## Dev Hints
+## Contributing
 
-Here a list of hints to develop your extension:
+Contributions to MapStoreCatasto are welcome! If you find any bugs, have feature suggestions, or would like to contribute enhancements, please open an issue or submit a pull request to the project repository.
 
-- In order to keep your changes as much self contained as possible we suggest to put all your code (and assets) in `js/extension/`. (Put css in `js/extension/assets/`, etc...)
-- Use the `@mapstore` alias to refer to MapStore components. This helps your code to be compatible with future enhancements when mapstore will be published as a separated package, that can be shared
-- In order to debug the extension in `ext:start` + `ext:startapp` mode, you need to add `devtool: 'eval'` to `build/webpack.config.js`.
-- Most of the times you will develop extensions for the main map. For this reason you can find in `app.json` some code comments dedicated to configuring this project to have a plain map on startup. It has not been configured as default because this project is intended to have less differences as possible from a standard project.
-- When the `extensions.json` is configured in `app.jsx` via `extensionsRegistry` and `extensionsFolder`, in order to emulate the `extensions.json` from Webpack DevServer for testing, the paths configured in `build/module.app.webpack.config.js` and `build/webpack.config.js` needs to be modified accordingly
+When contributing, please ensure you follow the existing code style, write clear commit messages, and provide appropriate documentation for any changes or additions.

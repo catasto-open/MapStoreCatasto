@@ -403,3 +403,42 @@ export const getBuildingByCodiceImm = (cityCode, immobileCode, endDate, startDat
     return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
         : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
 };
+
+export const getCapabilities = (geoserverOwsUrl, headers) => {
+    const requestParams = {
+        service: service,
+        version: version,
+        request: "DescribeFeatureType",
+        outputFormat: outputFormat
+    };
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
+};
+
+export const getFeatureForExplore = (geoserverOwsUrl, typename, lat, lng, geometryName, headers) => {
+    const requestParams = {
+        service: service,
+        version: "1.1.0",
+        request: request,
+        outputFormat: outputFormat,
+        srsName: srsName,
+        typeName: typename,
+        CQL_FILTER: `INTERSECTS("${geometryName}",SRID=4326;POINT(${lng} ${lat}))`
+    };
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
+};
+
+export const getFabFeatureForExplore = (geoserverOwsUrl, typename, query, headers) => {
+    const requestParams = {
+        service: service,
+        version: "1.1.0",
+        request: request,
+        outputFormat: outputFormat,
+        srsName: srsName,
+        typeName: typename,
+        CQL_FILTER: query
+    };
+    return headers === null ? axios.get(geoserverOwsUrl, { params: requestParams })
+        : axios.get(geoserverOwsUrl, { params: requestParams, headers: headers });
+};

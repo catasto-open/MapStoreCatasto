@@ -65,7 +65,25 @@ import {
     CATASTO_OPEN_ERROR_DOWNLOAD_VISURA,
     CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA,
     CATASTO_OPEN_WE_ARE_DONE_DOWNLOADING_VISURA_IM_SINGOLA,
-    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA
+    CATASTO_OPEN_ERROR_DOWNLOAD_VISURA_IM_SINGOLA,
+    CATASTO_OPEN_SET_BASE_LAYERS,
+    CATASTO_OPEN_BASE_LAYERS_ERROR,
+    CATASTO_OPEN_TRACK_BASE_LAYERS,
+    CATASTO_OPEN_INIT_BASE_LAYERS,
+    CATASTO_OPEN_BTN_FAB_CLICKED,
+    CATASTO_OPEN_BTN_TER_CLICKED,
+    CATASTO_OPEN_EXPLORE_ENABLE,
+    CATASTO_OPEN_SELECTION_APPEND_LAYER,
+    CATASTO_OPEN_SELECTION_REMOVE_FAB_LAYER,
+    CATASTO_OPEN_SELECTION_REMOVE_TER_LAYER,
+    CATASTO_OPEN_FAB_DETAIL_RESULTS_APPENDED,
+    CATASTO_OPEN_TAB_SELECT,
+    CATASTO_OPEN_SELECTION_ON_LOAD_DETAILS,
+    CATASTO_OPEN_TER_DETAIL_RESULTS_APPENDED,
+    CATASTO_OPEN_SELECTION_EXPLORE_CANCEL,
+    CATASTO_OPEN_START_DOWNLOAD_LISTA_IMMOBILE,
+    CATASTO_OPEN_END_DOWNLOAD_LISTA_IMMOBILE,
+    CATASTO_OPEN_ERROR_DOWNLOAD_LISTA_IMMOBILE
 } from "@js/extension/actions/catastoOpen";
 import {
     buildingDetailLayer,
@@ -75,7 +93,8 @@ import {
     propertyOwnerLayer,
     subjectPropertyLayer,
     printPathLegalSubject,
-    printPathNaturalSubject
+    printPathNaturalSubject,
+    doesIDExists
 } from "@js/extension/utils/catastoOpen";
 
 export default function(state = {
@@ -83,7 +102,7 @@ export default function(state = {
         {
             firstName: '',
             lastName: '',
-            birthDate: '',
+            birthDate: null,
             birthPlace: null,
             fiscalCode: '',
             subjectCode: '',
@@ -101,6 +120,7 @@ export default function(state = {
         };
     case CATASTO_OPEN_DEACTIVATE_PANEL:
         return {
+            trackedBaselayers: state?.trackedBaselayers,
             layer: state?.layer,
             reduced: false
         };
@@ -316,7 +336,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -345,7 +365,7 @@ export default function(state = {
                 ...state.subjectForm,
                 [action.payload.field]: action.payload.value
             }
-        }
+        };
     case CATASTO_OPEN_UPDATE_SUBJECT_FORM_LOAD_TOWN:
         return {
             ...state,
@@ -482,7 +502,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -504,13 +524,14 @@ export default function(state = {
             hasSubmitedSearch: false
         };
     case CATASTO_OPEN_HISTORICAL_SEARCH_CHECKED:
+        const defaultSection = {value: "_", label: "TUTTE LE SEZIONI"};
         return {
             ...state,
             isHistoricalSearchChecked: action.isHistoricalSearchChecked,
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -520,7 +541,7 @@ export default function(state = {
             },
             selectedSubjectFilter: null,
             selectedCity: null,
-            selectedSection: null,
+            selectedSection: defaultSection,
             selectedSheet: null,
             selectedLand: null,
             selectedBuilding: null,
@@ -540,7 +561,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -568,7 +589,7 @@ export default function(state = {
             subjectForm: {
                 firstName: '',
                 lastName: '',
-                birthDate: '',
+                birthDate: null,
                 birthPlace: null,
                 fiscalCode: '',
                 subjectCode: '',
@@ -719,6 +740,41 @@ export default function(state = {
                 errorDownloadMsg: action.errorMsg,
                 isStartedDownloadVisuraPdf: false
             };
+    case CATASTO_OPEN_START_DOWNLOAD_LISTA_IMMOBILE:
+        return action.fileType === "pdf" ?
+            {
+                ...state,
+                isStartedDownloadListaImmPdf: true,
+                errorDownloadListaMsg: null
+            } :
+            {
+                ...state,
+                isStartedDownloadListaImmCsv: true,
+                errorDownloadListaMsg: null
+            };
+    case CATASTO_OPEN_END_DOWNLOAD_LISTA_IMMOBILE:
+        const fileType = action.printObj?.fileType;
+        return fileType === "pdf" ?
+            {
+                ...state,
+                isStartedDownloadListaImmPdf: false
+            } :
+            {
+                ...state,
+                isStartedDownloadListaImmCsv: false
+            };
+    case CATASTO_OPEN_ERROR_DOWNLOAD_LISTA_IMMOBILE:
+        return action.fileType === "pdf" ?
+            {
+                ...state,
+                isStartedDownloadListaImmPdf: false,
+                errorDownloadListaMsg: action.errorMsg
+            } :
+            {
+                ...state,
+                isStartedDownloadListaImmCsv: false,
+                errorDownloadListaMsg: action.errorMsg
+            };
     case CATASTO_OPEN_START_DOWNLOAD_VISURA_IM_SINGOLA:
         return {
             ...state,
@@ -733,6 +789,159 @@ export default function(state = {
         return {
             ...state,
             startDownloadVisuraImSingola: false
+        };
+    case CATASTO_OPEN_TAB_SELECT:
+        return {
+            ...state,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            selectedTab: action.key
+        };
+    case CATASTO_OPEN_INIT_BASE_LAYERS:
+        return {
+            ...state,
+            initBaseLayers: action.baseLayers,
+            trackedBaselayers: []
+        };
+    case CATASTO_OPEN_SET_BASE_LAYERS:
+        return {
+            ...state,
+            baseLayers: action.baseLayers
+        };
+    case CATASTO_OPEN_BASE_LAYERS_ERROR:
+        return {
+            ...state,
+            baseLayersError: action.errorMsg,
+            trackedBaselayers: []
+        };
+    case CATASTO_OPEN_TRACK_BASE_LAYERS:
+        const trackedBaselayers = state.trackedBaselayers || [];
+        if (!trackedBaselayers.includes(action.layerID)) {
+            return {
+                ...state,
+                trackedBaselayers: [...trackedBaselayers, action.layerID]
+            };
+        }
+        return state;
+    case CATASTO_OPEN_BTN_FAB_CLICKED:
+        const isFabClicked = state.fabClicked || false;
+        return {
+            ...state,
+            fabClicked: !isFabClicked,
+            terClicked: false,
+            selectedFabLayers: [],
+            selectedTerLayers: [],
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            detailsType: "F"
+        };
+    case CATASTO_OPEN_BTN_TER_CLICKED:
+        const isTerClicked = state.terClicked || false;
+        return {
+            ...state,
+            terClicked: !isTerClicked,
+            fabClicked: false,
+            selectedFabLayers: [],
+            selectedTerLayers: [],
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            detailsType: "T"
+        };
+    case CATASTO_OPEN_EXPLORE_ENABLE:
+        return {
+            ...state,
+            exploreEnabled: action.enabled
+        };
+    case CATASTO_OPEN_SELECTION_APPEND_LAYER:
+        const newID = action.layer.id;
+        const layerType = action.layerType;
+        if (layerType === "fab") {
+            const actualSelectedFabLayers = state?.selectedFabLayers || [];
+            let updatedLayers;
+            const doesExist = doesIDExists(actualSelectedFabLayers, newID);
+            if (doesExist) {
+                updatedLayers = actualSelectedFabLayers.filter(layer => layer.id !== newID);
+            } else {
+                updatedLayers = [...actualSelectedFabLayers, action.layer];
+            }
+            return {
+                ...state,
+                selectedFabLayers: updatedLayers,
+                searchResults: null,
+                searchResultType: null,
+                loadedResults: false
+            };
+        }
+        const _actualSelectedTerLayers = state?.selectedTerLayers || [];
+        let updatedLayers;
+        const doesExist = doesIDExists(_actualSelectedTerLayers, newID);
+        if (doesExist) {
+            updatedLayers = _actualSelectedTerLayers.filter(layer => layer.id !== newID);
+        } else {
+            updatedLayers = [..._actualSelectedTerLayers, action.layer];
+        }
+        return {
+            ...state,
+            selectedTerLayers: updatedLayers,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false
+        };
+    case CATASTO_OPEN_SELECTION_REMOVE_FAB_LAYER:
+        let actualSelectedFabLayers = state?.selectedFabLayers || [];
+        return {
+            ...state,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            selectedFabLayers: actualSelectedFabLayers.filter(layer => layer.id !== action.layerID)
+        };
+    case CATASTO_OPEN_SELECTION_REMOVE_TER_LAYER:
+        let actualSelectedTerLayers = state?.selectedTerLayers || [];
+        return {
+            ...state,
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false,
+            selectedTerLayers: actualSelectedTerLayers.filter(layer => layer.id !== action.layerID)
+        };
+    case CATASTO_OPEN_FAB_DETAIL_RESULTS_APPENDED:
+        return {
+            ...state,
+            loadingResults: false,
+            loadedResults: true,
+            searchResults: action?.detailsAppended,
+            searchResultType: buildingDetailLayer
+        };
+    case CATASTO_OPEN_TER_DETAIL_RESULTS_APPENDED:
+        return {
+            ...state,
+            loadingResults: false,
+            loadedResults: true,
+            searchResults: action?.detailsAppended,
+            searchResultType: landDetailLayer
+        };
+    case CATASTO_OPEN_SELECTION_ON_LOAD_DETAILS:
+        return {
+            ...state,
+            loadingResults: action.status,
+            loadedResults: !action.status,
+            searchResults: null,
+            searchResultType: null
+        };
+    case CATASTO_OPEN_SELECTION_EXPLORE_CANCEL:
+        return {
+            ...state,
+            terClicked: false,
+            fabClicked: false,
+            selectedFabLayers: [],
+            selectedTerLayers: [],
+            searchResults: null,
+            searchResultType: null,
+            loadedResults: false
         };
     default:
         return state;

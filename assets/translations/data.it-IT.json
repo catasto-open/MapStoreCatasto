@@ -10,7 +10,7 @@
         "noResults": "Nessun risultato per la tua ricerca",
         "noOwner": "Nessun proprietario",
         "toggleSearchFilterTooltip": "Filtra i risultati",
-        "error" : "Siamo spiacenti, c'è stato un errore nel caricamento del catasto. Ti chiediamo di riprovare.",
+        "error" : "Siamo spiacenti, c'è stato un errore nel caricamento. Ti chiediamo di riprovare.",
         "owners": "Titolari",
         "resumePreviousResults": "Torna alla tabella precedente",
         "services": {
@@ -112,7 +112,7 @@
                 },
               "subjectCode": {
                     "name": "Codice Soggetto",
-                    "placeholder": "Filtra per codice soggeto"
+                    "placeholder": "Filtra per codice soggetto"
                 }
             },
             "columns": {
@@ -206,18 +206,18 @@
             "gennumero": "Numero di Generazione",
             "genprogre": "Progressivo Generazione",
             "genanno": "Anno Generazione",
-            "conregist": "Data Registrazione Concluzione",
-            "contipo": "Tipo Concluzione",
-            "connumero": "Numero Concluzione",
+            "conregist": "Data Registrazione Conclusione",
+            "contipo": "Tipo Conclusione",
+            "connumero": "Numero Conclusione",
             "conprogre": "Progressivo Finale",
-            "conanno": "Anno di Concluzione",
+            "conanno": "Anno di Conclusione",
             "annotazion": "Annotazione",
             "mutaziniz": "Mutazione Iniziale",
             "mutazfine": "Mutazione Finale",
             "gencausa": "Codice Causale Generazione",
             "gendescr": "Descrizione Causale Generazione",
-            "concausa": "Codice Causale Concluzione",
-            "condescr": "Descrizione Causale Concluzione"
+            "concausa": "Codice Causale Conclusione",
+            "condescr": "Descrizione Causale Conclusione"
           }
         },
         "buildingDetails": {
@@ -260,11 +260,11 @@
             "gennumero": "Numero di Generazione",
             "genprogre": "Progressivo Generazione",
             "genanno": "Anno Generazione",
-            "conregist": "Data Registrazione Concluzione",
-            "contipo": "Tipo Concluzione",
-            "connumero": "Numero Concluzione",
+            "conregist": "Data Registrazione Conclusione",
+            "contipo": "Tipo Conclusione",
+            "connumero": "Numero Conclusione",
             "conprogre": "Progressivo Finale",
-            "conanno": "Anno di Concluzione",
+            "conanno": "Anno di Conclusione",
             "annotazion": "Annotazione",
             "mutaziniz": "Mutazione Iniziale",
             "mutazfine": "Mutazione Finale",
@@ -272,9 +272,10 @@
             "datanotif": "Data Notifica",
             "gencausa": "Codice Causale Generazione",
             "gendescr": "Descrizione Causale Generazione",
-            "concausa": "Codice Causale Concluzione",
-            "condescr": "Descrizione Causale Concluzione",
-            "flagclass": "Flag Classe"
+            "concausa": "Codice Causale Conclusione",
+            "condescr": "Descrizione Causale Conclusione",
+            "flagclass": "Flag Classe",
+            "indirizzo": "Indirizzo"
           }
         },
         "searchContainer": {
@@ -301,8 +302,23 @@
         "dateInputError": "L'intervallo di date inserite non è corretto.",
         "printBtn" : {
             "label" : "Stampa"
+        },
+        "tabs": {
+          "search": "Da dati",
+          "explore": "Da mappa"
+        },
+        "explore": {
+          "title": "Selezionare il tipo di immobile per la ricerca da mappa",
+          "zoomMsgInfo": "Per utilizzare la funzionalità, posizionarsi ad un livello di zoom più vicino.",
+          "btn": {
+            "fab": "Fabbricati",
+            "ter": "Terreni",
+            "delete": "Toglia",
+            "submit": "Ricerca",
+            "cancel": "Annulla"
+          }
         }
-    }
+      }
     }
   }
 }

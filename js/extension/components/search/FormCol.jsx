@@ -34,7 +34,8 @@ class FormCol extends React.Component {
         onInputChange: () => {},
         typeInput: "text",
         showSearchButton: false,
-        activeButton: false
+        activeButton: false,
+        valueNotObj: ""
     }
     render() {
         return this.props.active && (

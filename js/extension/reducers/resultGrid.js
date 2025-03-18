@@ -34,7 +34,18 @@ export default function(state = {}, action) {
                     return;
                 }
                 const columnKey = filter.column.key;
-                filteredRows = filteredRows.filter((row) => (row[columnKey] === null) ? false : row[columnKey].toUpperCase().match(filterTerm));
+                filteredRows = filteredRows.filter(
+                    (row) => {
+                        const columnValue = row[columnKey];
+                        if (columnValue === null) {
+                            return false;
+                        }
+                        if (typeof columnValue !== "string") {
+                            return columnValue.toString().toUpperCase().match(filterTerm);
+                        }
+                        return columnValue.toUpperCase().match(filterTerm);
+                    }
+                );
             }
         );
         return {
